@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { uiConfig } from "@/config/ui.config";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -19,11 +20,24 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
+  const activeTheme =
+    uiConfig.themeMode === "dark" ? uiConfig.dark : uiConfig.light;
+
   return (
-    <html lang="en">
+    <html
+      lang="en"
+      className={uiConfig.themeMode === "dark" ? "dark" : ""}
+      style={
+        {
+          "--primary": activeTheme.primary,
+          "--background": activeTheme.background,
+          "--foreground": activeTheme.foreground,
+        } as React.CSSProperties
+      }
+    >
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
