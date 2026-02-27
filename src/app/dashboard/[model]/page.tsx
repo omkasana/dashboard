@@ -1,9 +1,18 @@
-"use client";
+import DynamicModule from "@/components/module/dynamic-module";
+import { modulesRegistry } from "@/config/modules/index";
 
-import { useParams } from "next/navigation";
+interface Props {
+  params: Promise<{ model: string }>;
+}
 
-export default function Page() {
-  const { model } = useParams<{ model: string }>();
+export default async function ModulePage({ params }: Props) {
+  const { model } = await params;
 
-  return <div>{model}</div>;
+  const config = modulesRegistry[model];
+
+  if (!config) {
+    return <div className="p-6">Module not found — param: {model}</div>;
+  }
+
+  return <DynamicModule config={config} />;
 }

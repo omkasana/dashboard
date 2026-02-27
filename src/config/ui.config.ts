@@ -6,10 +6,61 @@ export const uiConfig = {
 
   sidebarPosition: "left" as SidebarPosition,
 
-  // sidebar logik
+  // =========================================================
+  // 🧭 SIDEBAR CONFIGURATION
+  // Controls sidebar behavior & interaction logic
+  // =========================================================
   sidebar: {
-    accordion: true, //auto close menu
-    autoNavigateFirstChild: true, //auto open submenu when click menu
+    /*
+     * Accordion Mode
+     * --------------------------------------------------------
+     * true  → Only ONE parent menu can stay open at a time.
+     *         Opening another closes the previous.
+     *
+     * false → Multiple parent menus can stay open.
+     *         Useful for content-heavy dashboards.
+     */
+    accordion: true,
+
+    /*
+     * Auto Navigate First Child
+     * --------------------------------------------------------
+     * true  → Clicking a parent menu automatically navigates
+     *         to its first child route.
+     *
+     * false → Clicking parent only expands/collapses.
+     *         No automatic redirection.
+     */
+    autoNavigateFirstChild: true,
+
+    /*
+     * Collapsible Sidebar
+     * --------------------------------------------------------
+     * true  → Sidebar can collapse into icon-only mode.
+     *
+     * false → Sidebar remains fixed width.
+     */
+    collapsible: true,
+
+    /*
+     * Default Collapsed State
+     * --------------------------------------------------------
+     * true  → Sidebar loads in collapsed mode.
+     * false → Sidebar loads expanded.
+     */
+    defaultCollapsed: false,
+
+    /*
+     * Persist State
+     * --------------------------------------------------------
+     * true  → Saves:
+     *           - Open menus
+     *           - Collapsed state
+     *         in localStorage.
+     *
+     * false → Sidebar resets on page reload.
+     */
+    persistState: true,
   },
 
   font: {
