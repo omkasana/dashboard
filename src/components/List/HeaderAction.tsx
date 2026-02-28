@@ -1,7 +1,10 @@
+"use client";
+
 import { Upload, Download, Plus } from "lucide-react";
+import { useRef } from "react";
 
 interface HeaderActionsProps {
-  onImport?: () => void;
+  onImport?: (file: File) => void;
   onExport?: () => void;
   onAdd?: () => void;
   addLabel?: string;
@@ -13,18 +16,35 @@ export function HeaderActions({
   onAdd,
   addLabel = "Add New",
 }: HeaderActionsProps) {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   return (
     <div className="flex items-center gap-3 flex-wrap">
+      {/* IMPORT */}
       {onImport && (
-        <button
-          onClick={onImport}
-          className="px-4 h-9 text-sm rounded-lg border border-border bg-background hover:bg-muted transition flex items-center gap-2"
-        >
-          <Upload className="h-4 w-4" />
-          Import
-        </button>
+        <>
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept=".csv,.json"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) onImport(file);
+            }}
+          />
+
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            className="px-4 h-9 text-sm rounded-lg border border-border bg-background hover:bg-muted transition flex items-center gap-2"
+          >
+            <Upload className="h-4 w-4" />
+            Import
+          </button>
+        </>
       )}
 
+      {/* EXPORT */}
       {onExport && (
         <button
           onClick={onExport}
@@ -35,6 +55,7 @@ export function HeaderActions({
         </button>
       )}
 
+      {/* ADD */}
       {onAdd && (
         <button
           onClick={onAdd}

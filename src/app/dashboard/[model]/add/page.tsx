@@ -14,5 +14,5 @@ export default async function ModulePage({ params }: Props) {
     return <div className="p-6">Module not found — param: {model}</div>;
   }
 
-  return <DynamicModule config={config} />;
+  return <> Add {model}</>;
 }

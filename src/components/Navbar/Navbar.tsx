@@ -6,7 +6,7 @@ import { Menu } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger } from "../UI/Sheet";
 import Sidebar from "../UI/Sidebar";
 import { Breadcrumb } from "./Breadcrumb";
-import GlobalSearch from "@/components/GlobalSearch";
+import GlobalSearch from "@/components/UI/GlobalSearch";
 import { NotificationsDropdown } from "./NotificationDropDown";
 import { ProfileDropdown } from "./ProfileDropDown";
 

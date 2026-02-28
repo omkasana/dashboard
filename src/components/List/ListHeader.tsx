@@ -13,7 +13,7 @@ interface PageHeaderProps {
 
   onSearch?: (value: string) => void;
   onAdd?: () => void;
-  onImport?: () => void;
+  onImport?: (file: File) => void; // ✅ FIXED
   onExport?: () => void;
   onFilterToggle?: () => void;
 
@@ -24,7 +24,7 @@ interface PageHeaderProps {
   addLabel?: string;
 }
 
-export default function PageHeader({
+export default function ListHeader({
   title,
   description,
   onSearch,
