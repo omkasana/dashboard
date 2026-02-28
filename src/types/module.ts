@@ -1,8 +1,23 @@
-export type ViewType = "table" | "list" | "grid" | "kanban";
+export type ViewType =
+  | "table"
+  | "list"
+  | "grid"
+  | "kanban"
+  | "calendar"
+  | "timeline"
+  | "analytics"
+  | "map"
+  | "gallery";
 
 export interface TableColumn {
   key: string;
   label: string;
+}
+
+export interface FilterField {
+  key: string;
+  label: string;
+  options: string[];
 }
 
 export interface ModuleConfig {
@@ -21,6 +36,11 @@ export interface ModuleConfig {
     placeholder?: string;
   };
 
+  filters?: {
+    enabled: boolean;
+    fields: FilterField[];
+  };
+
   views?: {
     enabled: boolean;
     defaultView: ViewType;
@@ -34,7 +54,9 @@ export interface ModuleConfig {
 
   grid?: {
     enabled: boolean;
-    type: string;
+    type: "card" | "compact" | "minimal";
     fields: string[];
   };
+
+  data?: any[]; // optional dynamic data source
 }

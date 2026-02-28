@@ -1,6 +1,6 @@
 "use client";
 
-import ActionMenu from "./action-menu";
+import ActionMenu from "../ActionMenu";
 
 interface Props {
   data: any[];

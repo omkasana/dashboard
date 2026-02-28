@@ -15,31 +15,41 @@ export const usersConfig: ModuleConfig = {
     enabled: true,
     placeholder: "Search users...",
   },
+  filters: {
+    enabled: true,
+    fields: [
+      {
+        key: "role",
+        label: "Role",
+        options: ["Operative", "CEO", "Chairman"],
+      },
+      {
+        key: "status",
+        label: "Status",
+        options: ["Active", "Inactive"],
+      },
+    ],
+  },
 
   views: {
     enabled: true,
     defaultView: "table",
-    available: ["table", "grid"],
+    available: [
+      "table",
+      "list",
+      "grid",
+      "kanban",
+      "calendar",
+      "timeline",
+      "analytics",
+      "map",
+      "gallery",
+    ],
   },
 
   table: {
     enabled: true,
     columns: [
-      { key: "name", label: "Full Name" },
-      { key: "email", label: "Email Address" },
-      { key: "phone", label: "Phone Number" },
-      { key: "role", label: "Role" },
-      { key: "status", label: "Status" },
-      { key: "name", label: "Full Name" },
-      { key: "email", label: "Email Address" },
-      { key: "phone", label: "Phone Number" },
-      { key: "role", label: "Role" },
-      { key: "status", label: "Status" },
-      { key: "name", label: "Full Name" },
-      { key: "email", label: "Email Address" },
-      { key: "phone", label: "Phone Number" },
-      { key: "role", label: "Role" },
-      { key: "status", label: "Status" },
       { key: "name", label: "Full Name" },
       { key: "email", label: "Email Address" },
       { key: "phone", label: "Phone Number" },
