@@ -68,7 +68,7 @@ export const uiConfig = {
   },
 
   light: {
-    primary: "#ef4444", // red
+    primary: "#2251BF", // red
     primaryForeground: "#ffffff",
 
     secondary: "#f1f5f9",
