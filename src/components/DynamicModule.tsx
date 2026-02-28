@@ -4,9 +4,9 @@ import { useState } from "react";
 import type { ModuleConfig, ViewType } from "@/types/module";
 
 import PageHeader from "@/components/List/ListHeader";
-import FilterPanel from "@/components/Module/FilterPanel";
+import FilterPanel from "@/components/Model/FilterPanel";
 import { useModuleState } from "@/hooks/useModule";
-import ViewRenderer from "./Module/ViewRendered";
+import ViewRenderer from "./Model/ViewRendered";
 
 interface Props {
   config: ModuleConfig;

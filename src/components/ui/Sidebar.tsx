@@ -87,7 +87,7 @@ export default function Sidebar({ variant = "vertical" }: SidebarProps) {
               {/* Dropdown */}
               <div
                 className={cn(
-                  "absolute left-0 min-w-[220px] rounded-lg border bg-popover shadow-xl p-2 z-50",
+                  "absolute left-0 min-w-55 rounded-lg border bg-popover shadow-xl p-2 z-50",
                   "transition-all duration-150 ease-out",
                   isOpen
                     ? "opacity-100 translate-y-0 pointer-events-auto"

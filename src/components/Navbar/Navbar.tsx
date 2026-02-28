@@ -36,7 +36,7 @@ export default function Navbar() {
 
       {/* CENTER */}
       <div className="flex-1 flex justify-center">
-        <div className="w-[500px] max-w-full">
+        <div className="w-125 max-w-full">
           <GlobalSearch />
         </div>
       </div>

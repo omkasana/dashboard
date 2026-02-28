@@ -56,7 +56,7 @@ export default function ActionMenu() {
               left: coords.left,
               width: 160,
             }}
-            className="bg-background border border-border rounded-lg shadow-xl p-2 z-[9999]"
+            className="bg-background border border-border rounded-lg shadow-xl p-2 z-9999"
           >
             <button className="block w-full text-left px-3 py-2 hover:bg-muted rounded-md">
               View
