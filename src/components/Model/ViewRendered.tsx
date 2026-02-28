@@ -20,6 +20,7 @@ export default function ViewRenderer({ view, config, data }: Props) {
           density="compact"
           columns={config.table.columns}
           data={data}
+          moduleId={config.id}
         />
       );
 
@@ -31,14 +32,17 @@ export default function ViewRenderer({ view, config, data }: Props) {
           styleType="card"
           fields={config.grid.fields}
           data={data}
+          moduleId={config.id}
         />
       );
 
     case "list":
-      return <ListEngine density="compact" data={data} />;
+      return <ListEngine density="compact" data={data} moduleId={config.id} />;
 
     case "kanban":
-      return <KanbanEngine density="compact" data={data} />;
+      return (
+        <KanbanEngine density="compact" data={data} moduleId={config.id} />
+      );
 
     default:
       return null;

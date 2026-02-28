@@ -7,6 +7,7 @@ interface Props {
   fields: string[];
   density: "comfortable" | "compact";
   styleType: "card" | "minimal" | "detailed";
+  moduleId: string;
 }
 
 export default function GridEngine({
@@ -14,6 +15,7 @@ export default function GridEngine({
   fields,
   density,
   styleType,
+  moduleId,
 }: Props) {
   const padding = density === "compact" ? "p-4" : "p-6";
 
@@ -26,7 +28,7 @@ export default function GridEngine({
         >
           <div className="flex justify-between mb-4">
             <p className="font-semibold">{item.name}</p>
-            <ActionMenu />
+            <ActionMenu id={item.id} moduleId={moduleId} />
           </div>
 
           {styleType !== "minimal" &&

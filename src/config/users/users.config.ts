@@ -1,3 +1,4 @@
+import { userData } from "@/dummy/user.data";
 import type { ModuleConfig } from "@/types/module";
 
 export const usersConfig: ModuleConfig = {
@@ -63,4 +64,5 @@ export const usersConfig: ModuleConfig = {
     type: "card",
     fields: ["name", "email", "role"],
   },
+  data: userData,
 };

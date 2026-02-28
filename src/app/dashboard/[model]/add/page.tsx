@@ -5,7 +5,7 @@ interface Props {
   params: Promise<{ model: string }>;
 }
 
-export default async function ModulePage({ params }: Props) {
+export default async function AddPage({ params }: Props) {
   const { model } = await params;
 
   const config = modulesRegistry[model];

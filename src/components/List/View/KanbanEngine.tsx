@@ -5,9 +5,10 @@ import ActionMenu from "../ActionMenu";
 interface Props {
   data: any[];
   density: "comfortable" | "compact";
+  moduleId: string;
 }
 
-export default function KanbanEngine({ data, density }: Props) {
+export default function KanbanEngine({ data, density, moduleId }: Props) {
   const padding = density === "compact" ? "p-3" : "p-4";
   const statuses = ["Active", "Inactive"];
 
@@ -32,7 +33,7 @@ export default function KanbanEngine({ data, density }: Props) {
                         {item.role}
                       </p>
                     </div>
-                    <ActionMenu />
+                    <ActionMenu id={item.id} moduleId={moduleId} />
                   </div>
                 </div>
               ))}

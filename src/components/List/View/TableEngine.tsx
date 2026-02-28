@@ -6,9 +6,15 @@ interface Props {
   columns: { key: string; label: string }[];
   data: any[];
   density: "comfortable" | "compact";
+  moduleId: string;
 }
 
-export default function TableEngine({ columns, data, density }: Props) {
+export default function TableEngine({
+  columns,
+  data,
+  density,
+  moduleId,
+}: Props) {
   const padding = density === "compact" ? "py-2" : "py-4";
 
   return (
@@ -17,7 +23,7 @@ export default function TableEngine({ columns, data, density }: Props) {
         <thead className="border-b border-border">
           <tr>
             {columns.map((col) => (
-              <th key={col.key} className="px-6 py-4 text-left">
+              <th key={col.key} className="px-6 py-4 text-left font-medium">
                 {col.label}
               </th>
             ))}
@@ -26,8 +32,11 @@ export default function TableEngine({ columns, data, density }: Props) {
         </thead>
 
         <tbody className="divide-y divide-border">
-          {data.map((row, i) => (
-            <tr key={i} className="hover:bg-muted/30">
+          {data.map((row) => (
+            <tr
+              key={row.id} // ✅ use real id
+              className="hover:bg-muted/30 transition"
+            >
               {columns.map((col) => (
                 <td
                   key={col.key}
@@ -36,8 +45,12 @@ export default function TableEngine({ columns, data, density }: Props) {
                   {row[col.key]}
                 </td>
               ))}
+
               <td className="px-4">
-                <ActionMenu />
+                <ActionMenu
+                  id={row.id} // ✅ fixed
+                  moduleId={moduleId}
+                />
               </td>
             </tr>
           ))}

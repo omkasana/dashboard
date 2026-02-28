@@ -5,16 +5,19 @@ import ActionMenu from "../ActionMenu";
 interface Props {
   data: any[];
   density: "comfortable" | "compact";
+  moduleId: string; // 👈 add this
 }
 
-export default function ListEngine({ data, density }: Props) {
+export default function ListEngine({ data, density, moduleId }: Props) {
   const padding = density === "compact" ? "py-2" : "py-4";
+  console.log("moduleid", moduleId);
 
+  console.log("data", data);
   return (
     <div className="divide-y divide-border">
-      {data.map((item, i) => (
+      {data.map((item) => (
         <div
-          key={i}
+          key={item.id} // ✅ use real id
           className={`flex items-center justify-between px-6 ${padding} hover:bg-muted/30`}
         >
           <div>
@@ -35,7 +38,7 @@ export default function ListEngine({ data, density }: Props) {
               {item.status}
             </span>
 
-            <ActionMenu />
+            <ActionMenu id={item.id} moduleId={moduleId} />
           </div>
         </div>
       ))}
