@@ -3,63 +3,13 @@ export type SidebarPosition = "left" | "right" | "top" | "bottom";
 
 export const uiConfig = {
   themeMode: "light" as ThemeMode,
-
   sidebarPosition: "left" as SidebarPosition,
 
-  // =========================================================
-  // 🧭 SIDEBAR CONFIGURATION
-  // Controls sidebar behavior & interaction logic
-  // =========================================================
   sidebar: {
-    /*
-     * Accordion Mode
-     * --------------------------------------------------------
-     * true  → Only ONE parent menu can stay open at a time.
-     *         Opening another closes the previous.
-     *
-     * false → Multiple parent menus can stay open.
-     *         Useful for content-heavy dashboards.
-     */
     accordion: true,
-
-    /*
-     * Auto Navigate First Child
-     * --------------------------------------------------------
-     * true  → Clicking a parent menu automatically navigates
-     *         to its first child route.
-     *
-     * false → Clicking parent only expands/collapses.
-     *         No automatic redirection.
-     */
     autoNavigateFirstChild: true,
-
-    /*
-     * Collapsible Sidebar
-     * --------------------------------------------------------
-     * true  → Sidebar can collapse into icon-only mode.
-     *
-     * false → Sidebar remains fixed width.
-     */
     collapsible: true,
-
-    /*
-     * Default Collapsed State
-     * --------------------------------------------------------
-     * true  → Sidebar loads in collapsed mode.
-     * false → Sidebar loads expanded.
-     */
     defaultCollapsed: false,
-
-    /*
-     * Persist State
-     * --------------------------------------------------------
-     * true  → Saves:
-     *           - Open menus
-     *           - Collapsed state
-     *         in localStorage.
-     *
-     * false → Sidebar resets on page reload.
-     */
     persistState: true,
   },
 
@@ -68,7 +18,7 @@ export const uiConfig = {
   },
 
   light: {
-    primary: "#2251BF", // red
+    primary: "#2251BF",
     primaryForeground: "#ffffff",
 
     secondary: "#f1f5f9",
@@ -78,11 +28,28 @@ export const uiConfig = {
     foreground: "#0f172a",
 
     muted: "#f3f4f6",
+    mutedForeground: "#6b7280",
+
     border: "#e5e7eb",
+
+    table: {
+      headerBg: "#f3f4f6",
+      rowHover: "#e5e7eb",
+      rowAlternate: "#fafafa",
+      selectedRow: "#e8f0ff",
+    },
+
+    brand: {
+      success: "#22c55e",
+      warning: "#f59e0b",
+      danger: "#ef4444",
+      info: "#3b82f6",
+      neutral: "#64748b",
+    },
   },
 
   dark: {
-    primary: "#2251BF", // r
+    primary: "#2251BF",
     primaryForeground: "#000000",
 
     secondary: "#1f2937",
@@ -92,23 +59,44 @@ export const uiConfig = {
     foreground: "#f8fafc",
 
     muted: "#1e293b",
+    mutedForeground: "#94a3b8",
+
     border: "#334155",
+
+    table: {
+      headerBg: "#1e293b",
+      rowHover: "#334155",
+      rowAlternate: "#172033",
+      selectedRow: "#1d2c52",
+    },
+
+    brand: {
+      success: "#22c55e",
+      warning: "#fbbf24",
+      danger: "#f87171",
+      info: "#60a5fa",
+      neutral: "#94a3b8",
+    },
   },
 };
 
 export const tableUIConfig = {
-  actionColumnPosition: "right", // left | right
+  actionColumnPosition: "right",
   stickyActionColumn: true,
+
+  striped: true,
+  hoverHighlight: true,
+  rowClick: false,
 
   pagination: {
     show: true,
-    position: "bottom", // top | bottom | both
-    align: "center", // left | center | right
+    position: "bottom",
+    align: "center",
   },
 
   pageInfo: {
     show: true,
-    position: "bottom", // top | bottom
+    position: "bottom",
     align: "right",
   },
 

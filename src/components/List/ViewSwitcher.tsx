@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+  useLayoutEffect,
+} from "react";
 import type { ViewType } from "@/types/module";
 import {
   Table2,
@@ -41,43 +47,57 @@ export function ViewSwitcher({
   onViewChange,
 }: Props) {
   const DEFAULT_KEY = `crm-default-view-${moduleId}`;
+
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
+  const [indicatorStyle, setIndicatorStyle] =
+    useState<React.CSSProperties>({});
   const [open, setOpen] = useState(false);
 
   const MAX_VISIBLE = 4;
 
-  /* ================= LOAD DEFAULT ================= */
+  /* ================= LOAD DEFAULT VIEW ================= */
 
   useEffect(() => {
     const saved = localStorage.getItem(DEFAULT_KEY);
-    if (saved && availableViews.includes(saved as ViewType)) {
+    if (
+      saved &&
+      availableViews.includes(saved as ViewType) &&
+      saved !== currentView
+    ) {
       onViewChange(saved as ViewType);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeView = (view: ViewType) => {
+    if (view === currentView) return;
     localStorage.setItem(DEFAULT_KEY, view);
     onViewChange(view);
     setOpen(false);
   };
 
-  /* ================= DYNAMIC PRIMARY LOGIC ================= */
+  /* ================= MEMOIZED PRIMARY / EXTRA ================= */
 
-  const initialPrimary = availableViews.slice(0, MAX_VISIBLE);
+  const { primaryViews, extraViews } = useMemo(() => {
+    const initialPrimary = availableViews.slice(0, MAX_VISIBLE);
 
-  let primaryViews = [...initialPrimary];
-  let extraViews = availableViews.slice(MAX_VISIBLE);
+    let primary = [...initialPrimary];
+    let extra = availableViews.slice(MAX_VISIBLE);
 
-  if (currentView && !primaryViews.includes(currentView)) {
-    primaryViews = [...initialPrimary.slice(0, MAX_VISIBLE - 1), currentView];
+    if (currentView && !primary.includes(currentView)) {
+      primary = [
+        ...initialPrimary.slice(0, MAX_VISIBLE - 1),
+        currentView,
+      ];
+      extra = availableViews.filter((v) => !primary.includes(v));
+    }
 
-    extraViews = availableViews.filter((v) => !primaryViews.includes(v));
-  }
+    return { primaryViews: primary, extraViews: extra };
+  }, [availableViews, currentView]);
 
-  /* ================= SHORTCUT (Mac + Windows) ================= */
+  /* ================= KEYBOARD SHORTCUT ================= */
 
   useEffect(() => {
     const handleKey = (e: KeyboardEvent) => {
@@ -92,7 +112,7 @@ export function ViewSwitcher({
 
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
-  }, [availableViews]);
+  }, [availableViews, currentView]);
 
   /* ================= OUTSIDE CLICK ================= */
 
@@ -106,25 +126,52 @@ export function ViewSwitcher({
       }
     };
 
-    if (open) document.addEventListener("mousedown", handleClick);
-    return () => document.removeEventListener("mousedown", handleClick);
+    if (open) {
+      document.addEventListener("mousedown", handleClick);
+    }
+
+    return () =>
+      document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  /* ================= ANIMATED INDICATOR ================= */
+  /* ================= INDICATOR POSITION ================= */
 
-  useEffect(() => {
-    if (!containerRef.current) return;
+  const updateIndicator = () => {
+    if (!containerRef.current || !currentView) return;
 
     const activeBtn = containerRef.current.querySelector(
-      `[data-view="${currentView}"]`,
-    ) as HTMLElement;
+      `[data-view="${currentView}"]`
+    ) as HTMLElement | null;
 
-    if (activeBtn) {
-      setIndicatorStyle({
+    if (!activeBtn) return;
+
+    setIndicatorStyle((prev) => {
+      const next = {
         width: activeBtn.offsetWidth,
         left: activeBtn.offsetLeft,
-      });
-    }
+      };
+
+      // prevent unnecessary re-renders
+      if (
+        prev.width === next.width &&
+        prev.left === next.left
+      ) {
+        return prev;
+      }
+
+      return next;
+    });
+  };
+
+  useLayoutEffect(() => {
+    updateIndicator();
+  }, [currentView, primaryViews]);
+
+  /* Resize listener for responsive safety */
+  useEffect(() => {
+    window.addEventListener("resize", updateIndicator);
+    return () =>
+      window.removeEventListener("resize", updateIndicator);
   }, [currentView, primaryViews]);
 
   if (!availableViews.length) return null;
@@ -134,16 +181,27 @@ export function ViewSwitcher({
       {/* ================= DESKTOP ================= */}
       <div
         ref={containerRef}
-        className="hidden sm:flex relative items-center bg-black/5 dark:bg-white/5 backdrop-blur-md rounded-2xl p-1 border border-white/10 transition-all duration-300"
+        className="
+          hidden sm:flex relative items-center
+          bg-black/5 dark:bg-white/5
+          backdrop-blur-md
+          rounded-2xl
+          p-1
+          border border-white/10
+          transition-all duration-300
+        "
       >
-        {/* Liquid Glass Indicator */}
+        {/* Animated Indicator */}
         <span
           style={indicatorStyle}
-          className="absolute top-1 bottom-1 rounded-xl transition-all duration-300
-                     bg-primary/70
-                     backdrop-blur-2xl
-                     border border-primary/40
-                     shadow-[0_6px_30px_rgba(0,0,0,0.35)]"
+          className="
+            absolute top-1 bottom-1 rounded-xl
+            transition-all duration-300
+            bg-primary/70
+            backdrop-blur-2xl
+            border border-primary/40
+            shadow-[0_6px_30px_rgba(0,0,0,0.35)]
+          "
         />
 
         {primaryViews.map((view) => {
@@ -154,18 +212,20 @@ export function ViewSwitcher({
               key={view}
               data-view={view}
               onClick={() => changeView(view)}
-              className={`relative z-10 flex items-center gap-2 px-4 h-9 text-sm font-medium rounded-xl transition-all duration-200 ${
-                active
+              className={`relative z-10 flex items-center gap-2 px-4 h-9 text-sm font-medium rounded-xl transition-all duration-200 ${active
                   ? "text-white"
                   : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-              }`}
+                }`}
             >
               {viewIcons[view]}
-              <span className="hidden md:inline capitalize">{view}</span>
+              <span className="hidden md:inline capitalize">
+                {view}
+              </span>
             </button>
           );
         })}
 
+        {/* MORE MENU */}
         {extraViews.length > 0 && (
           <div className="relative ml-1" ref={dropdownRef}>
             <button
@@ -177,25 +237,25 @@ export function ViewSwitcher({
 
             {open && (
               <div
-                className="absolute right-0 mt-3 w-52
-                           bg-background/95
-                           backdrop-blur-xl
-                           border border-border
-                           rounded-2xl
-                           shadow-[0_20px_60px_rgba(0,0,0,0.25)]
-                           z-9999
-                           p-2
-                           animate-in fade-in zoom-in-95 duration-150"
+                className="
+                  absolute right-0 mt-3 w-52
+                  bg-background/95 backdrop-blur-xl
+                  border border-border
+                  rounded-2xl
+                  shadow-[0_20px_60px_rgba(0,0,0,0.25)]
+                  z-[9999]
+                  p-2
+                  animate-in fade-in zoom-in-95 duration-150
+                "
               >
                 {extraViews.map((view) => (
                   <button
                     key={view}
                     onClick={() => changeView(view)}
-                    className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm transition-all duration-150 ${
-                      currentView === view
+                    className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm transition-all duration-150 ${currentView === view
                         ? "bg-primary/15 text-primary border border-primary/30"
                         : "text-foreground hover:bg-muted"
-                    }`}
+                      }`}
                   >
                     {viewIcons[view]}
                     <span className="capitalize">{view}</span>
@@ -211,7 +271,9 @@ export function ViewSwitcher({
       <div className="sm:hidden">
         <select
           value={currentView}
-          onChange={(e) => changeView(e.target.value as ViewType)}
+          onChange={(e) =>
+            changeView(e.target.value as ViewType)
+          }
           className="w-full h-10 rounded-xl border border-border bg-background px-3 text-sm font-medium"
         >
           {availableViews.map((view) => (

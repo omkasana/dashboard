@@ -10,9 +10,11 @@ export default function ThemeProvider({
 }) {
   useEffect(() => {
     const stored =
-      (localStorage.getItem("crm-theme") as ThemeMode) || uiConfig.themeMode;
+      (localStorage.getItem("crm-theme") as ThemeMode) ||
+      uiConfig.themeMode;
 
-    const theme = stored === "dark" ? uiConfig.dark : uiConfig.light;
+    const theme =
+      stored === "dark" ? uiConfig.dark : uiConfig.light;
 
     const root = document.documentElement;
 
@@ -28,6 +30,18 @@ export default function ThemeProvider({
       "--secondary-foreground": theme.secondaryForeground,
       "--border": theme.border,
       "--muted": theme.muted,
+      "--muted-foreground": theme.mutedForeground,
+
+      "--table-header-bg": theme.table.headerBg,
+      "--table-row-hover": theme.table.rowHover,
+      "--table-row-alt": theme.table.rowAlternate,
+      "--table-row-selected": theme.table.selectedRow,
+
+      "--brand-success": theme.brand.success,
+      "--brand-warning": theme.brand.warning,
+      "--brand-danger": theme.brand.danger,
+      "--brand-info": theme.brand.info,
+      "--brand-neutral": theme.brand.neutral,
     }).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });

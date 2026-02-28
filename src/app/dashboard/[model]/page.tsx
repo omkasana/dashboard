@@ -11,7 +11,7 @@ export default async function ModulePage({ params }: Props) {
   const config = modulesRegistry[model];
 
   if (!config) {
-    return <div className="p-6">Module not found — param: {model}</div>;
+    return <div className="p-2">Module not found — param: {model}</div>;
   }
 
   return <DynamicModule config={config} />;

@@ -1,4 +1,4 @@
-import DynamicModule from "@/components/Model/DynamicModule";
+
 import { modulesRegistry } from "@/config/modules/index";
 
 interface Props {

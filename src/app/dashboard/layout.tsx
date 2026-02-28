@@ -2,7 +2,7 @@ import type { ReactNode } from "react";
 import Navbar from "@/components/Navbar/Navbar";
 
 import { uiConfig } from "@/config/ui.config";
-import Sidebar from "@/components/UI/Sidebar";
+import Sidebar from "@/components/Sidebar/Sidebar";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const position = uiConfig.sidebarPosition;
@@ -32,7 +32,7 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
         )}
 
         {/* 🔥 THIS IS THE CRITICAL FIX */}
-        <main className="flex-1 min-w-0 p-6 overflow-hidden">{children}</main>
+        <main className="flex-1 min-w-0 p-4 overflow-hidden">{children}</main>
       </div>
 
       {isBottom && (

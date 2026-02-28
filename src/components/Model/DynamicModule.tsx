@@ -34,15 +34,22 @@ export default function DynamicModule({ config }: Props) {
 
   /* ================= PAGINATION ================= */
 
-  const PAGE_SIZE = 9;
   const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
-  const totalPages = Math.ceil(processedData.length / PAGE_SIZE);
+  const totalItems = processedData.length;
+  const totalPages = Math.ceil(totalItems / pageSize);
 
   const paginatedData = processedData.slice(
-    (currentPage - 1) * PAGE_SIZE,
-    currentPage * PAGE_SIZE,
+    (currentPage - 1) * pageSize,
+    currentPage * pageSize
   );
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [processedData, pageSize]);
+
+
 
   // Reset page when search/filter changes
   useEffect(() => {
@@ -107,16 +114,24 @@ export default function DynamicModule({ config }: Props) {
       )}
 
       {/* VIEW */}
-      <div className="rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
-        <ViewRenderer view={view} config={config} data={paginatedData} />
-      </div>
 
-      {/* PAGINATION */}
-      <Pagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={setCurrentPage}
+      <ViewRenderer
+        view={view}
+        config={config}
+        data={view === "kanban" ? processedData : paginatedData}
       />
+
+
+      {view !== "kanban" && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          totalItems={totalItems}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
+        />
+      )}
     </div>
   );
 }

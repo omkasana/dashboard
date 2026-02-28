@@ -1,5 +1,6 @@
 "use client";
 
+import DataGrid from "../List/View/DataGrid/DataGrid";
 import GridEngine from "../List/View/GridEngine";
 import KanbanEngine from "../List/View/KanbanEngine";
 import ListEngine from "../List/View/ListEngine";
@@ -16,8 +17,8 @@ export default function ViewRenderer({ view, config, data }: Props) {
     case "table":
       if (!config.table?.enabled) return null;
       return (
-        <TableEngine
-          density="compact"
+        <DataGrid
+          density="comfortable"
           columns={config.table.columns}
           data={data}
           moduleId={config.id}
@@ -29,8 +30,7 @@ export default function ViewRenderer({ view, config, data }: Props) {
       return (
         <GridEngine
           density="compact"
-          styleType="card"
-          fields={config.grid.fields}
+          layout={config.grid.layout}
           data={data}
           moduleId={config.id}
         />
@@ -41,7 +41,14 @@ export default function ViewRenderer({ view, config, data }: Props) {
 
     case "kanban":
       return (
-        <KanbanEngine density="compact" data={data} moduleId={config.id} />
+        <KanbanEngine
+          density="compact"
+          data={data}
+          moduleId={config.id}
+          groupBy={config.kanban!.groupBy}
+          columns={config.kanban!.columns}
+          card={config.kanban!.card}
+        />
       );
 
     default:
