@@ -1,7 +1,8 @@
 import type { ReactNode } from "react";
 import Navbar from "@/components/Navbar/Navbar";
-import Sidebar from "@/components/UI/Sidebar";
+
 import { uiConfig } from "@/config/ui.config";
+import Sidebar from "@/components/UI/Sidebar";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
   const position = uiConfig.sidebarPosition;

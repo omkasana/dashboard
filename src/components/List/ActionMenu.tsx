@@ -87,7 +87,7 @@ export default function ActionMenu({ id, moduleId }: Props) {
       <button
         ref={btnRef}
         onClick={toggle}
-        className="p-2 rounded-md hover:bg-muted"
+        className="p-2 rounded-xl hover:bg-white/5 transition"
       >
         <MoreVertical size={16} />
       </button>
@@ -100,27 +100,43 @@ export default function ActionMenu({ id, moduleId }: Props) {
               position: "fixed",
               top: coords.top,
               left: coords.left,
-              width: 160,
+              width: 180,
             }}
-            className="bg-background border border-border rounded-lg shadow-xl p-2 z-9999"
+            className="bg-background/95
+                     backdrop-blur-xl
+                     border border-border
+                     rounded-2xl
+                     shadow-[0_20px_60px_rgba(0,0,0,0.25)]
+                     p-2
+                     z-[9999]
+                     animate-in fade-in zoom-in-95 duration-150"
           >
+            {/* View */}
             <button
               onClick={handleView}
-              className="block w-full text-left px-3 py-2 hover:bg-muted rounded-md"
+              className="flex items-center w-full text-left px-3 py-2 rounded-xl text-sm transition-all duration-150
+                       hover:bg-primary/10 hover:text-primary"
             >
               View
             </button>
 
+            {/* Edit */}
             <button
               onClick={handleEdit}
-              className="block w-full text-left px-3 py-2 hover:bg-muted rounded-md"
+              className="flex items-center w-full text-left px-3 py-2 rounded-xl text-sm transition-all duration-150
+                       hover:bg-primary/10 hover:text-primary"
             >
               Edit
             </button>
 
+            {/* Divider */}
+            <div className="my-2 h-px bg-border" />
+
+            {/* Delete */}
             <button
               onClick={handleDelete}
-              className="block w-full text-left px-3 py-2 text-rose-600 hover:bg-muted rounded-md"
+              className="flex items-center w-full text-left px-3 py-2 rounded-xl text-sm transition-all duration-150
+                       text-rose-500 hover:bg-rose-500/10"
             >
               Delete
             </button>

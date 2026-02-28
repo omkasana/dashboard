@@ -1,14 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { ModuleConfig, ViewType } from "@/types/module";
+import { useRouter } from "next/navigation";
 
 import ListHeader from "@/components/List/ListHeader";
-
-import { useRouter } from "next/navigation";
 import FilterPanel from "./FilterPanel";
 import ViewRenderer from "./ViewRendered";
+
 import { useModuleState } from "@/hooks/useModule";
+import Pagination from "../List/Pagination";
 
 interface Props {
   config: ModuleConfig;
@@ -17,15 +18,36 @@ interface Props {
 export default function DynamicModule({ config }: Props) {
   const router = useRouter();
 
+  /* ================= MODULE STATE ================= */
+
+  const { setSearchQuery, filters, setFilters, processedData } = useModuleState(
+    config.data || [],
+  );
+
+  /* ================= VIEW STATE ================= */
+
   const [view, setView] = useState<ViewType>(
     config.views?.defaultView ?? "table",
   );
 
   const [showFilters, setShowFilters] = useState(false);
 
-  const { setSearchQuery, filters, setFilters, processedData } = useModuleState(
-    config.data || [],
+  /* ================= PAGINATION ================= */
+
+  const PAGE_SIZE = 9;
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(processedData.length / PAGE_SIZE);
+
+  const paginatedData = processedData.slice(
+    (currentPage - 1) * PAGE_SIZE,
+    currentPage * PAGE_SIZE,
   );
+
+  // Reset page when search/filter changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [processedData]);
 
   /* ================= ACTION HANDLERS ================= */
 
@@ -55,20 +77,26 @@ export default function DynamicModule({ config }: Props) {
 
   return (
     <div className="p-1 space-y-8">
+      {/* HEADER */}
       <ListHeader
+        module={config.id}
         title={config.title}
+        description={config.description}
         onAdd={config.actions?.add ? handleAdd : undefined}
         onImport={config.actions?.import ? handleImport : undefined}
         onExport={config.actions?.export ? handleExport : undefined}
         onSearch={config.search?.enabled ? setSearchQuery : undefined}
         onFilterToggle={
-          config.filters?.enabled ? () => setShowFilters((p) => !p) : undefined
+          config.filters?.enabled
+            ? () => setShowFilters((prev) => !prev)
+            : undefined
         }
         currentView={view}
         availableViews={config.views?.available}
         onViewChange={config.views?.enabled ? setView : undefined}
       />
 
+      {/* FILTER PANEL */}
       {showFilters && config.filters?.enabled && (
         <FilterPanel
           fields={config.filters.fields}
@@ -78,9 +106,17 @@ export default function DynamicModule({ config }: Props) {
         />
       )}
 
+      {/* VIEW */}
       <div className="rounded-2xl border border-border bg-background shadow-sm overflow-hidden">
-        <ViewRenderer view={view} config={config} data={processedData} />
+        <ViewRenderer view={view} config={config} data={paginatedData} />
       </div>
+
+      {/* PAGINATION */}
+      <Pagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={setCurrentPage}
+      />
     </div>
   );
 }

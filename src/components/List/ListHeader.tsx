@@ -8,6 +8,7 @@ import { FilterButton } from "./FilterButton";
 import { SearchBar } from "./SearchBar";
 
 interface PageHeaderProps {
+  module: string;
   title: string;
   description?: string;
 
@@ -25,6 +26,7 @@ interface PageHeaderProps {
 }
 
 export default function ListHeader({
+  module,
   title,
   description,
   onSearch,
@@ -53,6 +55,7 @@ export default function ListHeader({
             currentView={currentView}
             availableViews={availableViews}
             onViewChange={onViewChange}
+            moduleId={module}
           />
         )}
       </div>

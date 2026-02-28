@@ -82,7 +82,7 @@ export const uiConfig = {
   },
 
   dark: {
-    primary: "#f87171", // lighter red for dark mode
+    primary: "#2251BF", // r
     primaryForeground: "#000000",
 
     secondary: "#1f2937",
