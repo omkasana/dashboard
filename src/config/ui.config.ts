@@ -95,3 +95,37 @@ export const uiConfig = {
     border: "#334155",
   },
 };
+
+export const tableUIConfig = {
+  actionColumnPosition: "right", // left | right
+  stickyActionColumn: true,
+
+  pagination: {
+    show: true,
+    position: "bottom", // top | bottom | both
+    align: "center", // left | center | right
+  },
+
+  pageInfo: {
+    show: true,
+    position: "bottom", // top | bottom
+    align: "right",
+  },
+
+  rowsPerPage: {
+    show: true,
+    position: "bottom",
+    align: "left",
+  },
+
+  densityToggle: {
+    show: true,
+    position: "top",
+    align: "left",
+  },
+
+  multiSelect: {
+    enabled: true,
+    bulkActions: ["Delete", "Export", "Deactivate"],
+  },
+};

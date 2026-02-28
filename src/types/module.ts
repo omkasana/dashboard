@@ -1,4 +1,4 @@
-export type ViewType = "table" | "grid" | "gridCompact" | "gridDetailed";
+export type ViewType = "table" | "list" | "grid" | "kanban";
 
 export interface TableColumn {
   key: string;
@@ -34,7 +34,7 @@ export interface ModuleConfig {
 
   grid?: {
     enabled: boolean;
-    type: "simple" | "card" | "compact";
-    fields?: string[];
+    type: string;
+    fields: string[];
   };
 }

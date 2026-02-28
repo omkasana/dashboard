@@ -12,28 +12,28 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
   const isBottom = position === "bottom";
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex flex-col">
+    <div className="min-h-screen bg-background text-foreground flex flex-col overflow-x-hidden">
       <Navbar />
 
-      {/* 🔹 Top Navigation */}
       {isTop && (
         <div className="border-b bg-background">
           <Sidebar variant="horizontal" />
         </div>
       )}
 
-      <div className={`flex flex-1 ${isRight ? "flex-row-reverse" : ""}`}>
-        {/* 🔹 Left / Right Sidebar */}
+      <div
+        className={`flex flex-1 min-w-0 ${isRight ? "flex-row-reverse" : ""}`}
+      >
         {(isLeft || isRight) && (
-          <aside className="hidden md:block border-r bg-background">
+          <aside className="hidden md:block border-r bg-background shrink-0">
             <Sidebar variant="vertical" />
           </aside>
         )}
 
-        <main className="flex-1 p-6">{children}</main>
+        {/* 🔥 THIS IS THE CRITICAL FIX */}
+        <main className="flex-1 min-w-0 p-6 overflow-hidden">{children}</main>
       </div>
 
-      {/* 🔹 Bottom Navigation */}
       {isBottom && (
         <div className="border-t bg-background">
           <Sidebar variant="horizontal" />

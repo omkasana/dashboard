@@ -20,7 +20,7 @@ export const modulesRegistry: Record<string, ModuleConfig> = {
     views: {
       enabled: true,
       defaultView: "table",
-      available: ["table", "grid"],
+      available: ["table", "list", "grid", "kanban"],
     },
 
     table: {
@@ -35,6 +35,7 @@ export const modulesRegistry: Record<string, ModuleConfig> = {
     grid: {
       enabled: true,
       type: "card",
+      fields: [],
     },
   },
 };

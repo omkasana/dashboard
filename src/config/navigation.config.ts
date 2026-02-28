@@ -13,7 +13,7 @@ import {
   Users2,
   User,
   Text,
-} from "lucide-react"
+} from "lucide-react";
 
 export const navigationLinks = [
   {
@@ -52,14 +52,12 @@ export const navigationLinks = [
     children: [
       { id: "all-users", name: "All Users", href: "/dashboard/users" },
       { id: "roles", name: "Roles", href: "/dashboard/roles" },
-      { id: "permissions", name: "Permissions", href: "/dashboard/permissions" },
+      {
+        id: "permissions",
+        name: "Permissions",
+        href: "/dashboard/permissions",
+      },
     ],
-  },
-{
-    id: "blogs",
-    name: "blogs",
-    href: "/dashboard/blogs",
-    icon: Text,
   },
 
   {
@@ -109,8 +107,16 @@ export const navigationLinks = [
     icon: Settings,
     children: [
       { id: "general", name: "General", href: "/dashboard/general-settings" },
-      { id: "appearance", name: "Appearance", href: "/dashboard/appearance-settings" },
-      { id: "integrations", name: "Integrations", href: "/dashboard/integrations" },
+      {
+        id: "appearance",
+        name: "Appearance",
+        href: "/dashboard/appearance-settings",
+      },
+      {
+        id: "integrations",
+        name: "Integrations",
+        href: "/dashboard/integrations",
+      },
     ],
   },
-]
+];
