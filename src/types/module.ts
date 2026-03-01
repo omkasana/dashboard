@@ -154,6 +154,15 @@ export interface ModuleConfig {
   };
 
   grid?: GridConfig;
+  calendar?: {
+    enabled: boolean;
+    dateField: string; // which field to use for calendar
+    layout?: {
+      title: string;
+      subtitle?: string;
+      badge?: string;
+    };
+  };
 
   kanban?: KanbanConfig;
 

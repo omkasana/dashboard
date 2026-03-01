@@ -118,20 +118,27 @@ export default function DynamicModule({ config }: Props) {
       <ViewRenderer
         view={view}
         config={config}
-        data={view === "kanban" ? processedData : paginatedData}
+        data={
+          view === "table" ||
+            view === "grid" ||
+            view === "list"
+            ? paginatedData
+            : processedData
+        }
       />
 
-
-      {view !== "kanban" && (
-        <Pagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          pageSize={pageSize}
-          totalItems={totalItems}
-          onPageChange={setCurrentPage}
-          onPageSizeChange={setPageSize}
-        />
-      )}
+      {(view === "table" ||
+        view === "grid" ||
+        view === "list") && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            pageSize={pageSize}
+            totalItems={totalItems}
+            onPageChange={setCurrentPage}
+            onPageSizeChange={setPageSize}
+          />
+        )}
     </div>
   );
 }

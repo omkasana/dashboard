@@ -123,5 +123,15 @@ export const usersConfig: ModuleConfig = {
       badge: "riskLevel",
     },
   },
+  calendar: {
+    enabled: true,
+    dateField: "createdAt",
+
+    layout: {
+      title: "name",
+      subtitle: "role",
+      badge: "status",
+    },
+  },
   data: userData,
 };
