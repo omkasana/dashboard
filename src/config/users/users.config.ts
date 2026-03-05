@@ -55,7 +55,12 @@ export const usersConfig: ModuleConfig = {
       { key: "email", label: "Email Address", type: "text" },
       { key: "phone", label: "Phone Number", type: "text" },
 
-      { key: "department", label: "Department", type: "badge", variant: "info" },
+      {
+        key: "department",
+        label: "Department",
+        type: "badge",
+        variant: "info",
+      },
       { key: "region", label: "Region", type: "badge", variant: "neutral" },
       { key: "planType", label: "Plan", type: "badge", variant: "primary" },
 
@@ -133,5 +138,101 @@ export const usersConfig: ModuleConfig = {
       badge: "status",
     },
   },
+
+  form: {
+    add: [
+      {
+        name: "name",
+        label: "Full Name",
+        type: "text",
+        required: true,
+        placeholder: "Enter full name",
+      },
+
+      {
+        name: "email",
+        label: "Email Address",
+        type: "email",
+        required: true,
+      },
+
+      {
+        name: "phone",
+        label: "Phone Number",
+        type: "phone",
+      },
+
+      {
+        name: "role",
+        label: "Role",
+        type: "select",
+        options: [
+          { label: "Operative", value: "Operative" },
+          { label: "CEO", value: "CEO" },
+          { label: "Chairman", value: "Chairman" },
+        ],
+      },
+
+      {
+        name: "status",
+        label: "Status",
+        type: "radio",
+        options: [
+          { label: "Active", value: "Active" },
+          { label: "Inactive", value: "Inactive" },
+        ],
+      },
+
+      {
+        name: "department",
+        label: "Department",
+        type: "text",
+      },
+
+      {
+        name: "region",
+        label: "Region",
+        type: "select",
+        options: [
+          { label: "India", value: "India" },
+          { label: "US", value: "US" },
+          { label: "Europe", value: "Europe" },
+          { label: "APAC", value: "APAC" },
+        ],
+      },
+
+      {
+        name: "accountValue",
+        label: "Account Value",
+        type: "decimal",
+      },
+
+      {
+        name: "tags",
+        label: "Tags",
+        type: "tags",
+      },
+
+      {
+        name: "avatar",
+        label: "Avatar",
+        type: "file",
+        accept: "image/*",
+      },
+
+      {
+        name: "bio",
+        label: "Bio",
+        type: "editor",
+      },
+
+      {
+        name: "createdAt",
+        label: "Created At",
+        type: "datetime",
+      },
+    ],
+  },
+
   data: userData,
 };

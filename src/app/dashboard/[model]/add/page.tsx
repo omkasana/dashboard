@@ -1,18 +1,22 @@
+"use client";
 
-import { modulesRegistry } from "@/config/modules/index";
+import FormEngine from "@/components/form/FormEngine";
+import { modulesRegistry } from "@/config/modules.registry";
 
-interface Props {
-  params: Promise<{ model: string }>;
-}
-
-export default async function AddPage({ params }: Props) {
+export default async function AddPage({ params }: any) {
   const { model } = await params;
 
   const config = modulesRegistry[model];
 
-  if (!config) {
-    return <div className="p-6">Module not found — param: {model}</div>;
+  if (!config?.form?.add) {
+    return <p>No form schema found</p>;
   }
 
-  return <> Add {model}</>;
+  return (
+    <div className="p-8 space-y-6">
+      <h1 className="text-2xl font-semibold">Add {config.title}</h1>
+
+      <FormEngine schema={config.form.add} />
+    </div>
+  );
 }

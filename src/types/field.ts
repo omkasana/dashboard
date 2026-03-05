@@ -23,7 +23,7 @@ export interface FieldOption {
   value: string | number;
 }
 
-export interface FormField {
+export interface FieldSchema {
   name: string;
   label: string;
   type: FieldType;
@@ -35,37 +35,7 @@ export interface FormField {
 
   multiple?: boolean;
 
-  accept?: string;
+  accept?: string; // file types
 
   defaultValue?: any;
-}
-
-export interface ModuleConfig {
-  id: string;
-  title: string;
-  description?: string;
-
-  actions?: any;
-
-  search?: any;
-
-  filters?: any;
-
-  views?: any;
-
-  table?: any;
-
-  grid?: any;
-
-  kanban?: any;
-
-  calendar?: any;
-
-  /** 🔹 ADD THIS */
-  form?: {
-    add?: FormField[];
-    edit?: FormField[];
-  };
-
-  data?: any[];
 }

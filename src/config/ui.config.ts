@@ -7,7 +7,7 @@ export const uiConfig = {
 
   sidebar: {
     accordion: true,
-    autoNavigateFirstChild: true,
+    autoNavigateFirstChild: false,
     collapsible: true,
     defaultCollapsed: false,
     persistState: true,
