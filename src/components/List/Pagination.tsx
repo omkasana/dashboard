@@ -42,14 +42,11 @@ export default function Pagination({
   const visiblePages = getVisiblePages();
 
   return (
-    <div className="mt-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
+    <div className="mt-2 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
       {/* LEFT: Info + Page Size */}
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
-
         <span>
-          Showing <strong>{startItem}</strong>–
-          <strong>{endItem}</strong> of{" "}
+          Showing <strong>{startItem}</strong>–<strong>{endItem}</strong> of{" "}
           <strong>{totalItems}</strong>
         </span>
 
@@ -57,9 +54,7 @@ export default function Pagination({
           <span>Rows:</span>
           <select
             value={pageSize}
-            onChange={(e) =>
-              onPageSizeChange(Number(e.target.value))
-            }
+            onChange={(e) => onPageSizeChange(Number(e.target.value))}
             className="
               h-9 px-3 rounded-xl
               bg-background/90 backdrop-blur-xl
@@ -79,7 +74,6 @@ export default function Pagination({
 
       {/* RIGHT: Navigation */}
       <div className="flex items-center gap-2">
-
         {/* Prev */}
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -122,22 +116,18 @@ export default function Pagination({
         ))}
 
         {/* Last */}
-        {visiblePages[visiblePages.length - 1] <
-          totalPages && (
-            <>
-              {visiblePages[visiblePages.length - 1] <
-                totalPages - 1 && (
-                  <span className="px-2 text-muted-foreground">
-                    …
-                  </span>
-                )}
-              <PageButton
-                page={totalPages}
-                active={currentPage === totalPages}
-                onClick={onPageChange}
-              />
-            </>
-          )}
+        {visiblePages[visiblePages.length - 1] < totalPages && (
+          <>
+            {visiblePages[visiblePages.length - 1] < totalPages - 1 && (
+              <span className="px-2 text-muted-foreground">…</span>
+            )}
+            <PageButton
+              page={totalPages}
+              active={currentPage === totalPages}
+              onClick={onPageChange}
+            />
+          </>
+        )}
 
         {/* Next */}
         <button
@@ -174,9 +164,10 @@ function PageButton({
       onClick={() => onClick(page)}
       className={`
         w-9 h-9 text-sm font-medium rounded-xl transition-all duration-200
-        ${active
-          ? "bg-primary/70 text-white border border-primary/40 shadow-md"
-          : "bg-background/90 backdrop-blur-xl border border-border hover:bg-primary/10"
+        ${
+          active
+            ? "bg-primary/70 text-white border border-primary/40 shadow-md"
+            : "bg-background/90 backdrop-blur-xl border border-border hover:bg-primary/10"
         }
       `}
     >

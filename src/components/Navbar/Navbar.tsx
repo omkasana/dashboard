@@ -13,7 +13,7 @@ import { Sheet, SheetContent, SheetTrigger } from "../UI/sheet";
 
 export default function Navbar() {
   return (
-    <header className="relative h-16 border-b bg-background flex items-center px-6">
+    <header className="relative h-16 border-b bg-background flex items-center px-6 ">
       {/* ================= LEFT ================= */}
       <div className="flex items-center gap-6 z-10">
         <Sheet>

@@ -42,14 +42,12 @@ export default function DynamicModule({ config }: Props) {
 
   const paginatedData = processedData.slice(
     (currentPage - 1) * pageSize,
-    currentPage * pageSize
+    currentPage * pageSize,
   );
 
   useEffect(() => {
     setCurrentPage(1);
   }, [processedData, pageSize]);
-
-
 
   // Reset page when search/filter changes
   useEffect(() => {
@@ -83,8 +81,9 @@ export default function DynamicModule({ config }: Props) {
   /* ================= RENDER ================= */
 
   return (
-    <div className="p-1 space-y-8">
+    <div className="p-4 space-y-8">
       {/* HEADER */}
+
       <ListHeader
         module={config.id}
         title={config.title}
@@ -119,17 +118,14 @@ export default function DynamicModule({ config }: Props) {
         view={view}
         config={config}
         data={
-          view === "table" ||
-            view === "grid" ||
-            view === "list"
+          view === "table" || view === "grid" || view === "list"
             ? paginatedData
             : processedData
         }
       />
 
-      {(view === "table" ||
-        view === "grid" ||
-        view === "list") && (
+      {(view === "table" || view === "grid" || view === "list") && (
+        <div className="sticky bottom-0 bg-background/80 backdrop-blur-xl py-2">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
@@ -138,7 +134,8 @@ export default function DynamicModule({ config }: Props) {
             onPageChange={setCurrentPage}
             onPageSizeChange={setPageSize}
           />
-        )}
+        </div>
+      )}
     </div>
   );
 }

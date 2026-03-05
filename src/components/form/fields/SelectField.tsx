@@ -1,6 +1,6 @@
 import FieldWrapper from "../FieldWrapper";
 import { inputClass } from "@/lib/inputStyle";
-import { formControlStyle, glassInput } from "@/lib/formStyle";
+import { glassInput } from "@/lib/formStyle";
 
 export default function SelectField({ field }: any) {
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { formControlStyle, glassInput } from "@/lib/formStyle";
+import { glassInput } from "@/lib/formStyle";
 import { inputClass } from "@/lib/inputStyle";
 import { FormField } from "@/types/module";
 import FieldWrapper from "../FieldWrapper";
@@ -32,6 +32,21 @@ export default function TagsField({ field }: { field: FormField }) {
     <FieldWrapper label={field.label}>
       {/* Tag container */}
 
+      {/* Input */}
+
+      <input
+        value={input}
+        placeholder="Add tag"
+        onChange={(e) => setInput(e.target.value)}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            e.preventDefault();
+            addTag();
+          }
+        }}
+        className={inputClass}
+        style={glassInput}
+      />
       <div className="flex flex-wrap gap-2">
         {tags.map((tag) => (
           <span
@@ -58,22 +73,6 @@ export default function TagsField({ field }: { field: FormField }) {
           </span>
         ))}
       </div>
-
-      {/* Input */}
-
-      <input
-        value={input}
-        placeholder="Add tag"
-        onChange={(e) => setInput(e.target.value)}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            e.preventDefault();
-            addTag();
-          }
-        }}
-        className={inputClass}
-        style={glassInput}
-      />
     </FieldWrapper>
   );
 }
