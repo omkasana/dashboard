@@ -1,31 +1,40 @@
 "use client";
-import PhoneInput from "react-phone-number-input";
-import { formControlStyle } from "@/lib/formStyle";
-
-export default function PhoneField({ field }: { field: FormField }) {
-  const [value, setValue] = useState<string | undefined>();
-  return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">{field.label}</label>
-
-      <PhoneInput
-        defaultCountry="US"
-        international
-        value={value}
-        onChange={setValue}
-        style={{
-          ...formControlStyle,
-        }}
-      />
-    </div>
-  );
-}
 
 import { useState } from "react";
-import { FormField } from "@/types/module";
-
+import PhoneInput from "react-phone-number-input";
 import "react-phone-number-input/style.css";
+
+import { FormField } from "@/types/module";
+import { inputClass } from "@/lib/inputStyle";
+import { glassInput } from "@/lib/formStyle";
+import FieldWrapper from "../FieldWrapper";
 
 interface Props {
   field: FormField;
+}
+
+export default function PhoneField({ field }: Props) {
+  const [value, setValue] = useState<string | undefined>();
+
+  return (
+    <FieldWrapper label={field.label}>
+      <div
+        className={inputClass}
+        style={{
+          ...glassInput,
+          display: "flex",
+          alignItems: "center",
+          padding: "0 8px",
+        }}
+      >
+        <PhoneInput
+          defaultCountry="US"
+          international
+          value={value}
+          onChange={setValue}
+          className="w-full bg-transparent outline-none"
+        />
+      </div>
+    </FieldWrapper>
+  );
 }

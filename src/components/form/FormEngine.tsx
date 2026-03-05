@@ -1,25 +1,22 @@
 "use client";
 
-import { FormSection } from "@/types/module";
-import FormSectionComponent from "./FormSection";
+import FormContainer from "./FormContainer";
+import FormSection from "./FormSection";
 
-interface Props {
-  schema: FormSection[];
-}
-
-export default function FormEngine({ schema }: Props) {
+export default function FormEngine({ schema }: any) {
   return (
-    <form className="space-y-8">
-      {schema.map((section) => (
-        <FormSectionComponent key={section.id} section={section} />
-      ))}
+    <FormContainer>
+      <div className="flex flex-col gap-8">
+        {schema.map((section: any) => (
+          <FormSection key={section.title} section={section} />
+        ))}
+      </div>
 
-      <button
-        type="submit"
-        className="h-11 px-6 rounded-xl bg-primary text-white hover:opacity-90"
-      >
-        Save
-      </button>
-    </form>
+      <div className="flex justify-end mt-8">
+        <button className="h-11 px-6 rounded-xl bg-primary text-white font-medium shadow-[0_8px_20px_rgba(0,0,0,0.25)] hover:brightness-110 transition">
+          Save
+        </button>
+      </div>
+    </FormContainer>
   );
 }

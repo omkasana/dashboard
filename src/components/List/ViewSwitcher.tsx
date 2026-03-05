@@ -1,12 +1,6 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-  useLayoutEffect,
-} from "react";
+import { useEffect, useRef, useState, useMemo, useLayoutEffect } from "react";
 import type { ViewType } from "@/types/module";
 import {
   Table2,
@@ -51,8 +45,7 @@ export function ViewSwitcher({
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const [indicatorStyle, setIndicatorStyle] =
-    useState<React.CSSProperties>({});
+  const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const [open, setOpen] = useState(false);
 
   const MAX_VISIBLE = 4;
@@ -87,10 +80,7 @@ export function ViewSwitcher({
     let extra = availableViews.slice(MAX_VISIBLE);
 
     if (currentView && !primary.includes(currentView)) {
-      primary = [
-        ...initialPrimary.slice(0, MAX_VISIBLE - 1),
-        currentView,
-      ];
+      primary = [...initialPrimary.slice(0, MAX_VISIBLE - 1), currentView];
       extra = availableViews.filter((v) => !primary.includes(v));
     }
 
@@ -130,8 +120,7 @@ export function ViewSwitcher({
       document.addEventListener("mousedown", handleClick);
     }
 
-    return () =>
-      document.removeEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
   /* ================= INDICATOR POSITION ================= */
@@ -140,7 +129,7 @@ export function ViewSwitcher({
     if (!containerRef.current || !currentView) return;
 
     const activeBtn = containerRef.current.querySelector(
-      `[data-view="${currentView}"]`
+      `[data-view="${currentView}"]`,
     ) as HTMLElement | null;
 
     if (!activeBtn) return;
@@ -152,10 +141,7 @@ export function ViewSwitcher({
       };
 
       // prevent unnecessary re-renders
-      if (
-        prev.width === next.width &&
-        prev.left === next.left
-      ) {
+      if (prev.width === next.width && prev.left === next.left) {
         return prev;
       }
 
@@ -170,8 +156,7 @@ export function ViewSwitcher({
   /* Resize listener for responsive safety */
   useEffect(() => {
     window.addEventListener("resize", updateIndicator);
-    return () =>
-      window.removeEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
   }, [currentView, primaryViews]);
 
   if (!availableViews.length) return null;
@@ -212,15 +197,14 @@ export function ViewSwitcher({
               key={view}
               data-view={view}
               onClick={() => changeView(view)}
-              className={`relative z-10 flex items-center gap-2 px-4 h-9 text-sm font-medium rounded-xl transition-all duration-200 ${active
+              className={`relative z-10 flex items-center gap-2 px-4 h-9 text-sm font-medium rounded-xl transition-all duration-200 ${
+                active
                   ? "text-white"
                   : "text-muted-foreground hover:text-foreground hover:bg-white/5"
-                }`}
+              }`}
             >
               {viewIcons[view]}
-              <span className="hidden md:inline capitalize">
-                {view}
-              </span>
+              <span className="hidden md:inline capitalize">{view}</span>
             </button>
           );
         })}
@@ -252,10 +236,11 @@ export function ViewSwitcher({
                   <button
                     key={view}
                     onClick={() => changeView(view)}
-                    className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm transition-all duration-150 ${currentView === view
+                    className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm transition-all duration-150 ${
+                      currentView === view
                         ? "bg-primary/15 text-primary border border-primary/30"
                         : "text-foreground hover:bg-muted"
-                      }`}
+                    }`}
                   >
                     {viewIcons[view]}
                     <span className="capitalize">{view}</span>
@@ -271,9 +256,7 @@ export function ViewSwitcher({
       <div className="sm:hidden">
         <select
           value={currentView}
-          onChange={(e) =>
-            changeView(e.target.value as ViewType)
-          }
+          onChange={(e) => changeView(e.target.value as ViewType)}
           className="w-full h-10 rounded-xl border border-border bg-background px-3 text-sm font-medium"
         >
           {availableViews.map((view) => (

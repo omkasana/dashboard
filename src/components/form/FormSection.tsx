@@ -1,49 +1,44 @@
 "use client";
 
 import { useState } from "react";
-import { FormSection as SectionType } from "@/types/module";
+import { ChevronDown } from "lucide-react";
 import FieldRenderer from "./FieldRenderer";
 
-interface Props {
-  section: SectionType;
-}
-
-export default function FormSection({ section }: Props) {
-  const [open, setOpen] = useState(section.defaultOpen ?? true);
-
-  const columns = section.columns ?? 3;
+export default function FormSection({ section }: any) {
+  const [open, setOpen] = useState(true);
 
   return (
-    <div className="border rounded-xl p-6 space-y-6">
+    <div
+      className="
+      rounded-2xl
+      backdrop-blur-lg
+      border border-black/5 dark:border-white/10
+      bg-white/60
+      dark:bg-white/5
+      shadow-sm
+      transition-all duration-300
+      p-6
+      "
+    >
       {/* Header */}
+
       <div
-        className="flex items-center justify-between cursor-pointer"
-        onClick={() => section.collapsible && setOpen(!open)}
+        className="flex items-center justify-between mb-6 cursor-pointer"
+        onClick={() => setOpen(!open)}
       >
-        <div>
-          <h3 className="text-lg font-semibold">{section.title}</h3>
+        <h3 className="text-lg font-semibold tracking-tight text-title">
+          {section.title}
+        </h3>
 
-          {section.description && (
-            <p className="text-sm text-muted-foreground">
-              {section.description}
-            </p>
-          )}
-        </div>
-
-        {section.collapsible && (
-          <span className="text-sm">{open ? "▲" : "▼"}</span>
-        )}
+        <ChevronDown
+          size={18}
+          className={`transition-transform ${open ? "rotate-180" : ""}`}
+        />
       </div>
 
-      {/* Fields */}
       {open && (
-        <div
-          className="grid gap-6"
-          style={{
-            gridTemplateColumns: `repeat(${columns}, minmax(0,1fr))`,
-          }}
-        >
-          {section.fields.map((field) => (
+        <div className="grid md:grid-cols-3 gap-6">
+          {section.fields.map((field: any) => (
             <FieldRenderer key={field.name} field={field} />
           ))}
         </div>

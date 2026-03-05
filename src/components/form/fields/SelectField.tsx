@@ -1,18 +1,17 @@
-import { formControlStyle } from "@/lib/formStyle";
-import { FormField } from "@/types/module";
+import FieldWrapper from "../FieldWrapper";
+import { inputClass } from "@/lib/inputStyle";
+import { formControlStyle, glassInput } from "@/lib/formStyle";
 
-export default function SelectField({ field }: { field: FormField }) {
+export default function SelectField({ field }: any) {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">{field.label}</label>
-
-      <select name={field.name} style={formControlStyle}>
-        {field.options?.map((opt) => (
+    <FieldWrapper label={field.label}>
+      <select name={field.name} className={inputClass} style={glassInput}>
+        {field.options?.map((opt: any) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}
           </option>
         ))}
       </select>
-    </div>
+    </FieldWrapper>
   );
 }

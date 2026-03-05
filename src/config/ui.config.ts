@@ -134,14 +134,24 @@ export const AddFormConfig = {
 
   input: {
     height: 44,
-    radius: 70,
+    radius: 1,
+    paddingX: 14,
   },
 
   glass: {
-    blur: 16,
-    background: "rgba(255,255,255,0.55)",
+    blur: 18,
+
+    backgroundLight: "rgba(255,255,255,0.65)",
+    backgroundDark: "rgba(15,23,42,0.45)",
+
     border: "rgba(255,255,255,0.25)",
+
     shadow: "0 8px 30px rgba(0,0,0,0.15)",
+
+    /* ADD THIS */
+
+    inputBackgroundLight: "rgba(255,255,255,0.75)",
+    inputBackgroundDark: "rgba(255,255,255,0.06)",
   },
 
   button: {

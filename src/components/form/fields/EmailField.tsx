@@ -1,17 +1,25 @@
 "use client";
 
-import { formControlStyle } from "@/lib/formStyle";
+import { glassInput } from "@/lib/formStyle";
+import { inputClass } from "@/lib/inputStyle";
+import { FormField } from "@/types/module";
+import FieldWrapper from "../FieldWrapper";
 
-export default function EmailField({ field }: any) {
+interface Props {
+  field: FormField;
+}
+
+export default function EmailField({ field }: Props) {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">{field.label}</label>
-
+    <FieldWrapper label={field.label}>
       <input
         type="email"
+        name={field.name}
         placeholder={field.placeholder || "example@email.com"}
-        style={formControlStyle}
+        className={inputClass}
+        style={glassInput}
+        required={field.required}
       />
-    </div>
+    </FieldWrapper>
   );
 }

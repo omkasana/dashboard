@@ -1,15 +1,27 @@
 "use client";
 
-import { formControlStyle } from "@/lib/formStyle";
+import { glassInput } from "@/lib/formStyle";
+import { inputClass } from "@/lib/inputStyle";
+import { FormField } from "@/types/module";
+import FieldWrapper from "../FieldWrapper";
 
-export default function DateField({ field }: any) {
+interface Props {
+  field: FormField;
+}
+
+export default function DateField({ field }: Props) {
   const type = field.type === "datetime" ? "datetime-local" : field.type;
 
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium">{field.label}</label>
-
-      <input type={type} style={formControlStyle} />
-    </div>
+    <FieldWrapper label={field.label}>
+      <input
+        type={type}
+        name={field.name}
+        className={inputClass}
+        style={glassInput}
+        required={field.required}
+        defaultValue={field.defaultValue}
+      />
+    </FieldWrapper>
   );
 }
