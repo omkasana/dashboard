@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Menu } from "lucide-react";
 
 import Sidebar from "../Sidebar/Sidebar";
-import { Breadcrumb } from "./Breadcrumb";
+import Breadcrumb from "./Breadcrumb";
 import GlobalSearch from "@/components/UI/GlobalSearch";
 import { NotificationsDropdown } from "./NotificationDropDown";
 import { ProfileDropdown } from "./ProfileDropDown";

@@ -33,14 +33,14 @@ export default function DataGrid({
     switch (column.type) {
       case "number":
         return (
-          <span className="text-right tabular-nums w-full block text-[var(--foreground)]">
+          <span className="text-right tabular-nums w-full block text-foreground">
             {value}
           </span>
         );
 
       case "currency":
         return (
-          <span className="text-right font-semibold tabular-nums w-full block text-[var(--foreground)]">
+          <span className="text-right font-semibold tabular-nums w-full block text-foreground">
             ₹ {Number(value).toLocaleString("en-IN")}
           </span>
         );
@@ -74,10 +74,10 @@ export default function DataGrid({
             className={cn(
               "px-2.5 py-1 rounded-full text-xs font-semibold",
               value === "High"
-                ? "bg-[color-mix(in_srgb,var(--brand-danger)_15%,transparent)] text-[var(--brand-danger)]"
+                ? "bg-[color-mix(in_srgb,var(--brand-danger)_15%,transparent)] text-(--brand-danger)"
                 : value === "Medium"
-                  ? "bg-[color-mix(in_srgb,var(--brand-warning)_15%,transparent)] text-[var(--brand-warning)]"
-                  : "bg-[color-mix(in_srgb,var(--brand-success)_15%,transparent)] text-[var(--brand-success)]",
+                  ? "bg-[color-mix(in_srgb,var(--brand-warning)_15%,transparent)] text-(--brand-warning)"
+                  : "bg-[color-mix(in_srgb,var(--brand-success)_15%,transparent)] text-(--brand-success)",
             )}
           >
             {value}
@@ -89,8 +89,8 @@ export default function DataGrid({
           <span
             className={cn(
               column.strong
-                ? "font-semibold text-[var(--foreground)]"
-                : "text-[var(--foreground)]",
+                ? "font-semibold text-foreground"
+                : "text-foreground",
             )}
           >
             {value}

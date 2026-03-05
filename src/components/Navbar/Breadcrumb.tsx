@@ -2,50 +2,78 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navigationLinks } from "@/config/navigation.config";
+import { Home, Users, Pencil, Package } from "lucide-react";
 
-export function Breadcrumb() {
+const segmentIcons: Record<string, any> = {
+  dashboard: Home,
+  users: Users,
+  edit: Pencil,
+  add: Pencil,
+  products: Package,
+};
+
+const segmentLabels: Record<string, string> = {
+  dashboard: "Dashboard",
+  users: "Users",
+  add: "Add",
+  edit: "Edit",
+};
+
+function formatSegment(segment: string) {
+  return (
+    segmentLabels[segment] ??
+    segment.replace(/-/g, " ").replace(/\b\w/g, (l) => l.toUpperCase())
+  );
+}
+
+export default function Breadcrumb() {
   const pathname = usePathname();
 
-  let currentPage = "Dashboard";
-  let parentName: string | null = null;
+  const segments = pathname.split("/").filter(Boolean);
 
-  for (const item of navigationLinks) {
-    if (item.href === pathname) {
-      currentPage = item.name;
-      break;
-    }
+  let path = "";
 
-    if (item.children) {
-      const child = item.children.find((c) => c.href === pathname);
-      if (child) {
-        currentPage = child.name;
-        parentName = item.name;
-        break;
-      }
-    }
-  }
+  const lastSegment = segments[segments.length - 1] || "dashboard";
+  const PageIcon = segmentIcons[lastSegment];
 
   return (
     <div className="hidden md:flex flex-col min-w-0">
-      <span className="text-lg font-semibold truncate">{currentPage}</span>
+      {/* PAGE TITLE */}
 
-      <div className="flex items-center gap-3 text-sm text-muted-foreground truncate">
-        <Link href="/dashboard">Dashboard</Link>
+      <span className="flex items-center gap-2 text-lg font-semibold truncate">
+        {formatSegment(lastSegment)}
+      </span>
 
-        {parentName && (
-          <>
-            <span>›</span>
-            <span>{parentName}</span>
-          </>
-        )}
+      {/* BREADCRUMB PATH */}
 
-        {pathname !== "/dashboard" && (
-          <>
-            <span>›</span>
-            <span className="text-foreground font-medium">{currentPage}</span>
-          </>
-        )}
+      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+        {segments.map((segment, index) => {
+          path += `/${segment}`;
+
+          const isLast = index === segments.length - 1;
+          const Icon = segmentIcons[segment];
+
+          return (
+            <div key={path} className="flex items-center gap-2">
+              {index !== 0 && <span>›</span>}
+
+              {isLast ? (
+                <span className="flex items-center gap-1 font-medium text-foreground">
+                  {Icon && <Icon size={14} />}
+                  {formatSegment(segment)}
+                </span>
+              ) : (
+                <Link
+                  href={path}
+                  className="flex items-center gap-1 hover:text-foreground"
+                >
+                  {Icon && <Icon size={14} />}
+                  {formatSegment(segment)}
+                </Link>
+              )}
+            </div>
+          );
+        })}
       </div>
     </div>
   );

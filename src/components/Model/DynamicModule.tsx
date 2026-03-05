@@ -32,15 +32,36 @@ export default function DynamicModule({ config }: Props) {
 
   const [showFilters, setShowFilters] = useState(false);
 
+  /* ================= SORT STATE ================= */
+
+  const [sortField, setSortField] = useState(
+    config.table?.columns?.[0]?.key || "",
+  );
+
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+
   /* ================= PAGINATION ================= */
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize, setPageSize] = useState(10);
 
-  const totalItems = processedData.length;
+  /* ================= SORT DATA ================= */
+
+  const sortedData = [...processedData].sort((a, b) => {
+    const aVal = a[sortField];
+    const bVal = b[sortField];
+
+    if (aVal === bVal) return 0;
+
+    const result = aVal > bVal ? 1 : -1;
+
+    return sortOrder === "asc" ? result : -result;
+  });
+
+  const totalItems = sortedData.length;
   const totalPages = Math.ceil(totalItems / pageSize);
 
-  const paginatedData = processedData.slice(
+  const paginatedData = sortedData.slice(
     (currentPage - 1) * pageSize,
     currentPage * pageSize,
   );
@@ -49,7 +70,6 @@ export default function DynamicModule({ config }: Props) {
     setCurrentPage(1);
   }, [processedData, pageSize]);
 
-  // Reset page when search/filter changes
   useEffect(() => {
     setCurrentPage(1);
   }, [processedData]);
@@ -82,8 +102,6 @@ export default function DynamicModule({ config }: Props) {
 
   return (
     <div className="p-4 space-y-8">
-      {/* HEADER */}
-
       <ListHeader
         module={config.id}
         title={config.title}
@@ -102,17 +120,19 @@ export default function DynamicModule({ config }: Props) {
         onViewChange={config.views?.enabled ? setView : undefined}
       />
 
-      {/* FILTER PANEL */}
       {showFilters && config.filters?.enabled && (
         <FilterPanel
           fields={config.filters.fields}
+          columns={config.table.columns}
           filters={filters}
           setFilters={setFilters}
+          sortField={sortField}
+          setSortField={setSortField}
+          sortOrder={sortOrder}
+          setSortOrder={setSortOrder}
           onReset={() => setFilters({})}
         />
       )}
-
-      {/* VIEW */}
 
       <ViewRenderer
         view={view}

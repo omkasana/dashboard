@@ -156,11 +156,11 @@ export default function VerticalSidebar() {
                     {item.children.map((child) => (
                       <Link
                         key={child.id}
-                        href={child.href!}
+                        href={child.href + "/view"}
                         className={cn(
                           "block px-3 py-2 rounded-lg text-sm transition-all duration-200",
                           "hover:translate-x-1",
-                          pathname === child.href
+                          pathname === child.href + "/view"
                             ? "text-primary bg-primary/10"
                             : "text-muted-foreground hover:text-foreground hover:bg-white/5",
                         )}

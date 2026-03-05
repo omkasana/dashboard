@@ -10,35 +10,45 @@ interface Props {
   field: FormField;
 }
 
-export default function FileUploadField({ field }: Props) {
-  const [file, setFile] = useState<File | null>(null);
-  const [preview, setPreview] = useState<string | null>(null);
+interface FileItem {
+  file: File;
+  preview?: string;
+}
 
+export default function FileUploadField({ field }: Props) {
+  const [files, setFiles] = useState<FileItem[]>([]);
+
+  /* cleanup previews */
   useEffect(() => {
     return () => {
-      if (preview) URL.revokeObjectURL(preview);
+      files.forEach((f) => {
+        if (f.preview) URL.revokeObjectURL(f.preview);
+      });
     };
-  }, [preview]);
+  }, [files]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const f = e.target.files?.[0];
+    const selected = Array.from(e.target.files || []);
 
-    if (!f) return;
+    const mapped = selected.map((file) => ({
+      file,
+      preview: file.type.startsWith("image")
+        ? URL.createObjectURL(file)
+        : undefined,
+    }));
 
-    setFile(f);
+    setFiles((prev) => [...prev, ...mapped]);
 
-    if (f.type.startsWith("image")) {
-      const url = URL.createObjectURL(f);
-      setPreview(url);
-    } else {
-      setPreview(null);
-    }
+    e.target.value = "";
   };
 
-  const removeFile = () => {
-    if (preview) URL.revokeObjectURL(preview);
-    setFile(null);
-    setPreview(null);
+  const removeFile = (index: number) => {
+    setFiles((prev) => {
+      const item = prev[index];
+      if (item.preview) URL.revokeObjectURL(item.preview);
+
+      return prev.filter((_, i) => i !== index);
+    });
   };
 
   return (
@@ -49,6 +59,7 @@ export default function FileUploadField({ field }: Props) {
         type="file"
         name={field.name}
         accept={field.accept}
+        multiple
         onChange={handleChange}
         className={inputClass}
         style={{
@@ -57,35 +68,50 @@ export default function FileUploadField({ field }: Props) {
         }}
       />
 
-      {/* Preview */}
+      {/* Preview Grid */}
 
-      {preview && (
-        <div className="flex items-start gap-4">
-          <img
-            src={preview}
-            alt="preview"
-            className="
-            w-40
-            h-40
-            object-cover
-            rounded-xl
-            border border-border
-            shadow-sm
-            "
-          />
+      {files.length > 0 && (
+        <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
+          {files.map((item, index) => (
+            <div
+              key={index}
+              className="
+              relative
+              rounded-xl
+              overflow-hidden
+              border border-border
+              bg-background
+              shadow-sm
+              "
+            >
+              {item.preview ? (
+                <img
+                  src={item.preview}
+                  className="w-full h-28 object-cover"
+                  alt="preview"
+                />
+              ) : (
+                <div className="h-28 flex items-center justify-center text-xs text-muted-foreground">
+                  {item.file.name}
+                </div>
+              )}
 
-          <button
-            type="button"
-            onClick={removeFile}
-            className="
-            text-sm
-            text-red-500
-            hover:text-red-600
-            transition
-            "
-          >
-            Remove
-          </button>
+              <button
+                type="button"
+                onClick={() => removeFile(index)}
+                className="
+                absolute top-1 right-1
+                bg-black/60 text-white
+                text-xs
+                px-2 py-0.5
+                rounded-md
+                hover:bg-black/80
+                "
+              >
+                ✕
+              </button>
+            </div>
+          ))}
         </div>
       )}
     </FieldWrapper>

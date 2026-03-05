@@ -3,7 +3,7 @@ export type SidebarPosition = "left" | "right" | "top" | "bottom";
 
 export const uiConfig = {
   themeMode: "light" as ThemeMode,
-  sidebarPosition: "right" as SidebarPosition,
+  sidebarPosition: "left" as SidebarPosition,
 
   sidebar: {
     accordion: true,

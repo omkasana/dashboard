@@ -166,6 +166,7 @@ export const usersConfig: ModuleConfig = {
             label: "Avatar",
             type: "file",
             accept: "image/*",
+            multiple: true,
           },
         ],
       },
@@ -240,13 +241,13 @@ export const usersConfig: ModuleConfig = {
           {
             name: "bio",
             label: "Bio",
-            type: "editor",
+            type: "textarea",
           },
 
           {
             name: "createdAt",
             label: "Created At",
-            type: "datetime",
+            type: "date",
           },
         ],
       },
