@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState, useMemo, useLayoutEffect } from "react";
+import { createPortal } from "react-dom";
 import type { ViewType } from "@/types/module";
 import {
   Table2,
@@ -44,9 +45,11 @@ export function ViewSwitcher({
 
   const containerRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const portalRef = useRef<HTMLDivElement>(null);
 
   const [indicatorStyle, setIndicatorStyle] = useState<React.CSSProperties>({});
   const [open, setOpen] = useState(false);
+  const [dropdownRect, setDropdownRect] = useState<DOMRect | null>(null);
 
   const MAX_VISIBLE = 4;
 
@@ -61,7 +64,6 @@ export function ViewSwitcher({
     ) {
       onViewChange(saved as ViewType);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const changeView = (view: ViewType) => {
@@ -71,7 +73,7 @@ export function ViewSwitcher({
     setOpen(false);
   };
 
-  /* ================= MEMOIZED PRIMARY / EXTRA ================= */
+  /* ================= MEMO PRIMARY / EXTRA ================= */
 
   const { primaryViews, extraViews } = useMemo(() => {
     const initialPrimary = availableViews.slice(0, MAX_VISIBLE);
@@ -87,31 +89,51 @@ export function ViewSwitcher({
     return { primaryViews: primary, extraViews: extra };
   }, [availableViews, currentView]);
 
-  /* ================= KEYBOARD SHORTCUT ================= */
+  /* ================= INDICATOR ================= */
+
+  const updateIndicator = () => {
+    if (!containerRef.current || !currentView) return;
+
+    const activeBtn = containerRef.current.querySelector(
+      `[data-view="${currentView}"]`,
+    ) as HTMLElement | null;
+
+    if (!activeBtn) return;
+
+    setIndicatorStyle({
+      width: activeBtn.offsetWidth,
+      left: activeBtn.offsetLeft,
+    });
+  };
+
+  useLayoutEffect(() => {
+    updateIndicator();
+  }, [currentView, primaryViews]);
 
   useEffect(() => {
-    const handleKey = (e: KeyboardEvent) => {
-      if (!(e.metaKey || e.ctrlKey)) return;
+    window.addEventListener("resize", updateIndicator);
+    return () => window.removeEventListener("resize", updateIndicator);
+  }, [currentView, primaryViews]);
 
-      const index = Number(e.key) - 1;
-      if (!isNaN(index) && availableViews[index]) {
-        e.preventDefault();
-        changeView(availableViews[index]);
-      }
-    };
+  /* ================= DROPDOWN POSITION ================= */
 
-    window.addEventListener("keydown", handleKey);
-    return () => window.removeEventListener("keydown", handleKey);
-  }, [availableViews, currentView]);
+  useEffect(() => {
+    if (open && dropdownRef.current) {
+      setDropdownRect(dropdownRef.current.getBoundingClientRect());
+    }
+  }, [open]);
 
   /* ================= OUTSIDE CLICK ================= */
 
   useEffect(() => {
     const handleClick = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
+      const target = e.target as Node;
+
+      const insideTrigger = dropdownRef.current?.contains(target);
+
+      const insidePortal = portalRef.current?.contains(target);
+
+      if (!insideTrigger && !insidePortal) {
         setOpen(false);
       }
     };
@@ -123,47 +145,25 @@ export function ViewSwitcher({
     return () => document.removeEventListener("mousedown", handleClick);
   }, [open]);
 
-  /* ================= INDICATOR POSITION ================= */
+  /* ================= ESC CLOSE ================= */
 
-  const updateIndicator = () => {
-    if (!containerRef.current || !currentView) return;
-
-    const activeBtn = containerRef.current.querySelector(
-      `[data-view="${currentView}"]`,
-    ) as HTMLElement | null;
-
-    if (!activeBtn) return;
-
-    setIndicatorStyle((prev) => {
-      const next = {
-        width: activeBtn.offsetWidth,
-        left: activeBtn.offsetLeft,
-      };
-
-      // prevent unnecessary re-renders
-      if (prev.width === next.width && prev.left === next.left) {
-        return prev;
-      }
-
-      return next;
-    });
-  };
-
-  useLayoutEffect(() => {
-    updateIndicator();
-  }, [currentView, primaryViews]);
-
-  /* Resize listener for responsive safety */
   useEffect(() => {
-    window.addEventListener("resize", updateIndicator);
-    return () => window.removeEventListener("resize", updateIndicator);
-  }, [currentView, primaryViews]);
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+
+    if (open) {
+      window.addEventListener("keydown", handleEsc);
+    }
+
+    return () => window.removeEventListener("keydown", handleEsc);
+  }, [open]);
 
   if (!availableViews.length) return null;
 
   return (
     <>
-      {/* ================= DESKTOP ================= */}
+      {/* DESKTOP */}
       <div
         ref={containerRef}
         className="
@@ -176,7 +176,7 @@ export function ViewSwitcher({
           transition-all duration-300
         "
       >
-        {/* Animated Indicator */}
+        {/* Indicator */}
         <span
           style={indicatorStyle}
           className="
@@ -209,7 +209,7 @@ export function ViewSwitcher({
           );
         })}
 
-        {/* MORE MENU */}
+        {/* MORE BUTTON */}
         {extraViews.length > 0 && (
           <div className="relative ml-1" ref={dropdownRef}>
             <button
@@ -218,41 +218,51 @@ export function ViewSwitcher({
             >
               <MoreHorizontal size={16} />
             </button>
-
-            {open && (
-              <div
-                className="
-                  absolute right-0 mt-3 w-52
-                  bg-background/95 backdrop-blur-xl
-                  border border-border
-                  rounded-2xl
-                  shadow-[0_20px_60px_rgba(0,0,0,0.25)]
-                  z-[9999]
-                  p-2
-                  animate-in fade-in zoom-in-95 duration-150
-                "
-              >
-                {extraViews.map((view) => (
-                  <button
-                    key={view}
-                    onClick={() => changeView(view)}
-                    className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm transition-all duration-150 ${
-                      currentView === view
-                        ? "bg-primary/15 text-primary border border-primary/30"
-                        : "text-foreground hover:bg-muted"
-                    }`}
-                  >
-                    {viewIcons[view]}
-                    <span className="capitalize">{view}</span>
-                  </button>
-                ))}
-              </div>
-            )}
           </div>
         )}
       </div>
 
-      {/* ================= MOBILE ================= */}
+      {/* PORTAL DROPDOWN */}
+      {open &&
+        dropdownRect &&
+        createPortal(
+          <div
+            ref={portalRef}
+            className="
+              fixed
+              bg-background/95 backdrop-blur-xl
+              border border-border
+              rounded-2xl
+              shadow-[0_20px_60px_rgba(0,0,0,0.25)]
+              z-[9999]
+              p-2
+              animate-in fade-in zoom-in-95 duration-150
+            "
+            style={{
+              top: dropdownRect.bottom + 8,
+              left: dropdownRect.right - 208,
+              width: 208,
+            }}
+          >
+            {extraViews.map((view) => (
+              <button
+                key={view}
+                onClick={() => changeView(view)}
+                className={`flex items-center gap-3 w-full px-3 py-2 rounded-xl text-sm transition-all duration-150 ${
+                  currentView === view
+                    ? "bg-primary/15 text-primary border border-primary/30"
+                    : "text-foreground hover:bg-muted"
+                }`}
+              >
+                {viewIcons[view]}
+                <span className="capitalize">{view}</span>
+              </button>
+            ))}
+          </div>,
+          document.body,
+        )}
+
+      {/* MOBILE */}
       <div className="sm:hidden">
         <select
           value={currentView}
