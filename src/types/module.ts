@@ -23,6 +23,19 @@ export interface FieldOption {
   value: string | number;
 }
 
+export interface FormSection {
+  id: string;
+  title: string;
+
+  description?: string;
+
+  collapsible?: boolean;
+  defaultOpen?: boolean;
+
+  columns?: number;
+
+  fields: FormField[];
+}
 export interface FormField {
   name: string;
   label: string;
@@ -63,8 +76,8 @@ export interface ModuleConfig {
 
   /** 🔹 ADD THIS */
   form?: {
-    add?: FormField[];
-    edit?: FormField[];
+    add?: FormSection[];
+    edit?: FormSection[];
   };
 
   data?: any[];

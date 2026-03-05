@@ -1,5 +1,6 @@
 "use client";
 
+import { formControlStyle } from "@/lib/formStyle";
 import { useState } from "react";
 
 export default function FileUploadField({ field }: any) {
@@ -21,9 +22,13 @@ export default function FileUploadField({ field }: any) {
 
       <input
         type="file"
+        name={field.name}
         accept={field.accept}
         onChange={handleChange}
-        className="border border-border rounded-xl p-2"
+        style={{
+          ...formControlStyle,
+          padding: "6px",
+        }}
       />
 
       {preview && <img src={preview} className="w-40 rounded-lg border" />}

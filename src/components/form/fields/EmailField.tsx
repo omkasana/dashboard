@@ -1,5 +1,7 @@
 "use client";
 
+import { formControlStyle } from "@/lib/formStyle";
+
 export default function EmailField({ field }: any) {
   return (
     <div className="flex flex-col gap-2">
@@ -8,7 +10,7 @@ export default function EmailField({ field }: any) {
       <input
         type="email"
         placeholder={field.placeholder || "example@email.com"}
-        className="h-10 rounded-xl border border-border px-3 bg-background"
+        style={formControlStyle}
       />
     </div>
   );

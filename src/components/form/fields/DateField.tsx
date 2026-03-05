@@ -1,5 +1,7 @@
 "use client";
 
+import { formControlStyle } from "@/lib/formStyle";
+
 export default function DateField({ field }: any) {
   const type = field.type === "datetime" ? "datetime-local" : field.type;
 
@@ -7,10 +9,7 @@ export default function DateField({ field }: any) {
     <div className="flex flex-col gap-2">
       <label className="text-sm font-medium">{field.label}</label>
 
-      <input
-        type={type}
-        className="h-10 rounded-xl border border-border px-3 bg-background"
-      />
+      <input type={type} style={formControlStyle} />
     </div>
   );
 }

@@ -1,20 +1,18 @@
-"use client";
+import { formControlStyle } from "@/lib/formStyle";
+import { FormField } from "@/types/module";
 
-import Select from "react-select";
-
-export default function SelectField({ field }: any) {
-  const isMulti = field.type === "multiselect";
-
+export default function SelectField({ field }: { field: FormField }) {
   return (
     <div className="flex flex-col gap-2">
       <label className="text-sm font-medium">{field.label}</label>
 
-      <Select
-        options={field.options}
-        isMulti={isMulti}
-        className="react-select-container"
-        classNamePrefix="react-select"
-      />
+      <select name={field.name} style={formControlStyle}>
+        {field.options?.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+      </select>
     </div>
   );
 }

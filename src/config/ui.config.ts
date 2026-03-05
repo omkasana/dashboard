@@ -117,3 +117,35 @@ export const tableUIConfig = {
     bulkActions: ["Delete", "Export", "Deactivate"],
   },
 };
+
+export const AddFormConfig = {
+  layout: {
+    columns: 3,
+    gap: 24,
+    sectionGap: 32,
+  },
+
+  section: {
+    collapsible: true,
+    showProgress: true,
+    radius: 16,
+    padding: 24,
+  },
+
+  input: {
+    height: 44,
+    radius: 70,
+  },
+
+  glass: {
+    blur: 16,
+    background: "rgba(255,255,255,0.55)",
+    border: "rgba(255,255,255,0.25)",
+    shadow: "0 8px 30px rgba(0,0,0,0.15)",
+  },
+
+  button: {
+    height: 44,
+    radius: 12,
+  },
+};
