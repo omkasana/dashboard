@@ -17,6 +17,16 @@ export type FieldType =
   | "date"
   | "time"
   | "datetime";
+export type ViewType =
+  | "table"
+  | "list"
+  | "grid"
+  | "kanban"
+  | "calendar"
+  | "timeline"
+  | "analytics"
+  | "map"
+  | "gallery";
 
 export interface FieldOption {
   label: string;
