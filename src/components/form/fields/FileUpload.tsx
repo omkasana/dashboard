@@ -108,7 +108,7 @@ export default function FileUploadField({
                   key={index}
                   className="
                   relative
-                  flex-shrink-0
+                  shrink-0
                   w-24 h-24
                   rounded-xl
                   overflow-hidden

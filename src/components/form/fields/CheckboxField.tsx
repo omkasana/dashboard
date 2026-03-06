@@ -43,7 +43,7 @@ export default function CheckboxField({
                 type="checkbox"
                 checked={selected.includes(val)}
                 onChange={() => toggle(val)}
-                className="h-4 w-4 accent-[var(--primary)]"
+                className="h-4 w-4 accent-primary"
               />
 
               {opt.label}

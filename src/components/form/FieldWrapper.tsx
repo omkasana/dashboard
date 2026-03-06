@@ -66,7 +66,7 @@ export default function FieldWrapper({
                   -translate-x-1/2
                   mb-3
                   w-max
-                  max-w-[260px]
+                  max-w-65
                   transition-all
                   duration-200
                   ${
@@ -96,7 +96,7 @@ export default function FieldWrapper({
                     className="
                     absolute
                     left-1/2
-                    bottom-[-5px]
+                    -bottom-1.25
                     -translate-x-1/2
                     w-3 h-3
                     bg-background
