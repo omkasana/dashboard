@@ -183,6 +183,7 @@ export const usersConfig: ModuleConfig = {
       {
         id: "account",
         title: "Account Details",
+
         columns: 3,
         collapsible: true,
 
@@ -198,6 +199,19 @@ export const usersConfig: ModuleConfig = {
               { label: "Operative", value: "Operative" },
               { label: "CEO", value: "CEO" },
               { label: "Chairman", value: "Chairman" },
+              { label: "Managing Director", value: "Managing Director" },
+              { label: "Chief Technology Officer", value: "CTO" },
+              { label: "Chief Financial Officer", value: "CFO" },
+              { label: "Chief Operating Officer", value: "COO" },
+              { label: "Vice President", value: "Vice President" },
+              { label: "Director", value: "Director" },
+              { label: "Senior Manager", value: "Senior Manager" },
+              { label: "Manager", value: "Manager" },
+              { label: "Team Lead", value: "Team Lead" },
+              { label: "Senior Analyst", value: "Senior Analyst" },
+              { label: "Analyst", value: "Analyst" },
+              { label: "Associate", value: "Associate" },
+              { label: "Intern", value: "Intern" },
             ],
           },
 
@@ -276,7 +290,7 @@ export const usersConfig: ModuleConfig = {
           {
             name: "createdAt",
             label: "Created At",
-            type: "date",
+            type: "time",
             required: false,
             info: "Date when the user record was created.",
           },
