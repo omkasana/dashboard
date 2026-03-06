@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import type { ModuleConfig, ViewType } from "@/types/module";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +10,7 @@ import ViewRenderer from "./ViewRendered";
 
 import { useModuleState } from "@/hooks/useModule";
 import Pagination from "../List/Pagination";
+import ExportDialog from "@/components/List/ExportDialog";
 
 interface Props {
   config: ModuleConfig;
@@ -18,11 +19,12 @@ interface Props {
 export default function DynamicModule({ config }: Props) {
   const router = useRouter();
 
+  const [showExport, setShowExport] = useState(false);
+
   /* ================= MODULE STATE ================= */
 
-  const { setSearchQuery, filters, setFilters, processedData } = useModuleState(
-    config.data || [],
-  );
+  const { searchQuery, setSearchQuery, filters, setFilters, processedData } =
+    useModuleState(config.data || []);
 
   /* ================= VIEW STATE ================= */
 
@@ -47,32 +49,45 @@ export default function DynamicModule({ config }: Props) {
 
   /* ================= SORT DATA ================= */
 
-  const sortedData = [...processedData].sort((a, b) => {
-    const aVal = a[sortField];
-    const bVal = b[sortField];
+  const sortedData = useMemo(() => {
+    if (!sortField) return processedData;
 
-    if (aVal === bVal) return 0;
+    return [...processedData].sort((a, b) => {
+      const aVal = a[sortField];
+      const bVal = b[sortField];
 
-    const result = aVal > bVal ? 1 : -1;
+      if (aVal === bVal) return 0;
 
-    return sortOrder === "asc" ? result : -result;
-  });
+      const result = aVal > bVal ? 1 : -1;
+
+      return sortOrder === "asc" ? result : -result;
+    });
+  }, [processedData, sortField, sortOrder]);
+
+  /* ================= PAGINATION DATA ================= */
 
   const totalItems = sortedData.length;
-  const totalPages = Math.ceil(totalItems / pageSize);
 
-  const paginatedData = sortedData.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize,
-  );
+  const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
+
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return sortedData.slice(start, start + pageSize);
+  }, [sortedData, currentPage, pageSize]);
+
+  /* ================= RESET PAGE WHEN DATA CHANGES ================= */
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [processedData, pageSize]);
+  }, [searchQuery, filters, pageSize]);
+
+  /* ================= KEEP PAGE IN RANGE ================= */
 
   useEffect(() => {
-    setCurrentPage(1);
-  }, [processedData]);
+    if (currentPage > totalPages) {
+      setCurrentPage(totalPages);
+    }
+  }, [currentPage, totalPages]);
 
   /* ================= ACTION HANDLERS ================= */
 
@@ -85,17 +100,7 @@ export default function DynamicModule({ config }: Props) {
   };
 
   const handleExport = () => {
-    const dataStr = JSON.stringify(processedData, null, 2);
-    const blob = new Blob([dataStr], {
-      type: "application/json",
-    });
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `${config.id}.json`;
-    a.click();
-    URL.revokeObjectURL(url);
+    setShowExport(true);
   };
 
   /* ================= RENDER ================= */
@@ -143,6 +148,14 @@ export default function DynamicModule({ config }: Props) {
             : processedData
         }
       />
+
+      {showExport && (
+        <ExportDialog
+          data={processedData}
+          filename={config.id}
+          onClose={() => setShowExport(false)}
+        />
+      )}
 
       {(view === "table" || view === "grid" || view === "list") && (
         <div className="sticky bottom-0 bg-background/80 backdrop-blur-xl py-2">

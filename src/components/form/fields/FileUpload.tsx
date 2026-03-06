@@ -30,7 +30,7 @@ export default function FileUploadField({ field }: Props) {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selected = Array.from(e.target.files || []);
 
-    const mapped = selected.map((file) => ({
+    const mapped: FileItem[] = selected.map((file) => ({
       file,
       preview: file.type.startsWith("image")
         ? URL.createObjectURL(file)
@@ -64,54 +64,70 @@ export default function FileUploadField({ field }: Props) {
         className={inputClass}
         style={{
           ...glassInput,
-          padding: "6px",
+          padding: "10px",
         }}
       />
 
-      {/* Preview Grid */}
+      {/* Preview Strip */}
 
       {files.length > 0 && (
-        <div className="grid grid-cols-3 md:grid-cols-5 gap-4">
-          {files.map((item, index) => (
-            <div
-              key={index}
-              className="
-              relative
-              rounded-xl
-              overflow-hidden
-              border border-border
-              bg-background
-              shadow-sm
-              "
-            >
-              {item.preview ? (
-                <img
-                  src={item.preview}
-                  className="w-full h-28 object-cover"
-                  alt="preview"
-                />
-              ) : (
-                <div className="h-28 flex items-center justify-center text-xs text-muted-foreground">
-                  {item.file.name}
-                </div>
-              )}
+        <div className="mt-4">
+          <p className="text-xs text-muted-foreground mb-2">Uploaded files</p>
 
-              <button
-                type="button"
-                onClick={() => removeFile(index)}
+          <div
+            className="
+              flex gap-3
+              overflow-x-auto
+              pb-2
+              scrollbar-thin
+              scrollbar-thumb-muted
+            "
+          >
+            {files.map((item, index) => (
+              <div
+                key={index}
                 className="
-                absolute top-1 right-1
-                bg-black/60 text-white
-                text-xs
-                px-2 py-0.5
-                rounded-md
-                hover:bg-black/80
+                  relative
+                  flex-shrink-0
+                  w-24 h-24
+                  rounded-xl
+                  overflow-hidden
+                  border border-border
+                  bg-background
+                  shadow-sm
                 "
               >
-                ✕
-              </button>
-            </div>
-          ))}
+                {item.preview ? (
+                  <img
+                    src={item.preview}
+                    alt="preview"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full text-xs text-muted-foreground text-center px-2">
+                    {item.file.name}
+                  </div>
+                )}
+
+                <button
+                  type="button"
+                  onClick={() => removeFile(index)}
+                  className="
+                    absolute top-1 right-1
+                    w-5 h-5
+                    flex items-center justify-center
+                    rounded-full
+                    bg-black/60
+                    text-white
+                    text-xs
+                    hover:bg-black
+                  "
+                >
+                  ×
+                </button>
+              </div>
+            ))}
+          </div>
         </div>
       )}
     </FieldWrapper>

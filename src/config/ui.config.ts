@@ -120,7 +120,7 @@ export const tableUIConfig = {
 
 export const AddFormConfig = {
   layout: {
-    columns: 3,
+    columns: 4,
     gap: 24,
     sectionGap: 32,
   },
@@ -134,7 +134,7 @@ export const AddFormConfig = {
 
   input: {
     height: 44,
-    radius: 1,
+    radius: 22,
     paddingX: 14,
   },
 

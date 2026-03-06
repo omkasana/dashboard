@@ -181,7 +181,7 @@ export const usersConfig: ModuleConfig = {
           {
             name: "role",
             label: "Role",
-            type: "select",
+            type: "search-select",
             options: [
               { label: "Operative", value: "Operative" },
               { label: "CEO", value: "CEO" },

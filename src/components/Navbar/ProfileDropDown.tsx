@@ -9,9 +9,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/UI/DropdownMenu";
 
+import Link from "next/link";
+
 import { useTheme } from "@/hooks/useTheme";
 import { Avatar, AvatarFallback, AvatarImage } from "../UI/Avatar";
-
 
 export function ProfileDropdown() {
   const { theme, toggleTheme } = useTheme();
@@ -40,9 +41,11 @@ export function ProfileDropdown() {
       </DropdownMenuTrigger>
 
       <DropdownMenuContent align="end" className="w-64">
-        <DropdownMenuItem>
-          <User className="h-4 w-4" />
-          Profile
+        <DropdownMenuItem asChild>
+          <Link href="/dashboard/profile" className="flex items-center gap-2">
+            <User className="h-4 w-4" />
+            Profile
+          </Link>
         </DropdownMenuItem>
 
         <DropdownMenuItem onClick={toggleTheme}>

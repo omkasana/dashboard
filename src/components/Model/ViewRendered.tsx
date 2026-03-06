@@ -24,6 +24,7 @@ export default function ViewRenderer({ view, config, data }: Props) {
       {/* BULK ACTION BAR */}
       <BulkActionsBar
         selectedIds={selectedIds.map(String)}
+        data={data}
         onClear={() => setSelectedIds([])}
       />
 

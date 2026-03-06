@@ -11,6 +11,10 @@ import TagsField from "./fields/TagsField";
 import FileUploadField from "./fields/FileUpload";
 import DateField from "./fields/DateField";
 
+import RadioField from "./fields/RadioField";
+import CheckboxField from "./fields/CheckboxField";
+import BooleanField from "./fields/BooleanField";
+
 interface Props {
   field: FormField;
 }
@@ -32,6 +36,15 @@ export default function FieldRenderer({ field }: Props) {
     case "multiselect":
     case "search-select":
       return <SelectField field={field} />;
+
+    case "radio":
+      return <RadioField field={field} />;
+
+    case "checkbox":
+      return <CheckboxField field={field} />;
+
+    case "boolean":
+      return <BooleanField field={field} />;
 
     case "textarea":
       return <TextAreaField field={field} />;

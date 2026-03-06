@@ -37,7 +37,12 @@ export default function FormSection({ section }: any) {
       </div>
 
       {open && (
-        <div className="grid md:grid-cols-3 gap-6">
+        <div
+          className="grid gap-6"
+          style={{
+            gridTemplateColumns: `repeat(${section.columns || 3}, minmax(0,1fr))`,
+          }}
+        >
           {section.fields.map((field: any) => (
             <FieldRenderer key={field.name} field={field} />
           ))}
