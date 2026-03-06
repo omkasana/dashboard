@@ -1,15 +1,15 @@
 "use client";
 
-import { useState } from "react";
+import { FieldComponentProps } from "@/types/formFieldProps.ts";
 import { FormField } from "@/types/module";
 
-interface Props {
-  field: FormField;
-  error?: string;
-}
-
-export default function BooleanField({ field, error }: Props) {
-  const [enabled, setEnabled] = useState(field.defaultValue || false);
+export default function BooleanField({
+  field,
+  error,
+  value,
+  onChange,
+}: FieldComponentProps) {
+  const enabled = Boolean(value);
 
   return (
     <div className="flex flex-col gap-1">
@@ -20,27 +20,20 @@ export default function BooleanField({ field, error }: Props) {
 
         <button
           type="button"
-          onClick={() => setEnabled(!enabled)}
+          onClick={() => onChange?.(field.name, !enabled)}
           className={`
-            relative inline-flex h-6 w-11 items-center rounded-full
-            transition
-            ${enabled ? "bg-primary" : "bg-muted"}
-            ${error ? "ring-2 ring-red-500" : ""}
-          `}
+          relative inline-flex h-6 w-11 items-center rounded-full
+          transition
+          ${enabled ? "bg-primary" : "bg-muted"}
+        `}
         >
           <span
             className={`
-              inline-block h-4 w-4 transform rounded-full bg-white transition
-              ${enabled ? "translate-x-6" : "translate-x-1"}
-            `}
+            inline-block h-4 w-4 transform rounded-full bg-white transition
+            ${enabled ? "translate-x-6" : "translate-x-1"}
+          `}
           />
         </button>
-
-        <input
-          type="hidden"
-          name={field.name}
-          value={enabled ? "true" : "false"}
-        />
       </div>
 
       {error && <span className="text-xs text-red-500">{error}</span>}

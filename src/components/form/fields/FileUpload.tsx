@@ -5,18 +5,19 @@ import { inputClass } from "@/lib/inputStyle";
 import { glassInput } from "@/lib/formStyle";
 import { FormField } from "@/types/module";
 import FieldWrapper from "../FieldWrapper";
-
-interface Props {
-  field: FormField;
-  error?: string;
-}
+import { FieldComponentProps } from "@/types/formFieldProps.ts";
 
 interface FileItem {
   file: File;
   preview?: string;
 }
 
-export default function FileUploadField({ field, error }: Props) {
+export default function FileUploadField({
+  field,
+  error,
+  value,
+  onChange,
+}: FieldComponentProps) {
   const [files, setFiles] = useState<FileItem[]>([]);
 
   /* cleanup previews */
@@ -55,7 +56,12 @@ export default function FileUploadField({ field, error }: Props) {
   };
 
   return (
-    <FieldWrapper label={field.label}>
+    <FieldWrapper
+      info={field.info}
+      label={field.label}
+      required={field.required}
+      error={error}
+    >
       <div className="flex flex-col gap-2">
         {/* Upload Input */}
 

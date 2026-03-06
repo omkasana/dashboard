@@ -4,33 +4,29 @@ import { glassInput } from "@/lib/formStyle";
 import { inputClass } from "@/lib/inputStyle";
 import { FormField } from "@/types/module";
 import FieldWrapper from "../FieldWrapper";
-
-interface Props {
-  field: FormField;
-  value: string;
-  error?: string;
-  onChange: (name: string, value: string) => void;
-  onBlur: (name: string, value: string) => void;
-}
+import { FieldComponentProps } from "@/types/formFieldProps.ts";
 
 export default function EmailField({
   field,
-  value,
   error,
+  value,
   onChange,
-  onBlur,
-}: Props) {
+}: FieldComponentProps) {
   return (
-    <FieldWrapper label={field.label} required={field.required} error={error}>
+    <FieldWrapper
+      label={field.label}
+      info={field.info}
+      required={field.required}
+      error={error}
+    >
       <input
         type="email"
         name={field.name}
-        value={value}
+        value={value || ""}
         placeholder={field.placeholder || "example@email.com"}
+        onChange={(e) => onChange?.(field.name, e.target.value)}
         className={`${inputClass} ${error ? "border-red-500" : ""}`}
         style={glassInput}
-        onChange={(e) => onChange(field.name, e.target.value)}
-        onBlur={(e) => onBlur(field.name, e.target.value)}
       />
     </FieldWrapper>
   );

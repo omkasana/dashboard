@@ -10,26 +10,43 @@ interface Props {
 }
 
 export default function FormEngine({ schema }: Props) {
+  const [values, setValues] = useState<Record<string, any>>({});
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  /* handle input change */
+
+  const handleChange = (name: string, value: any) => {
+    setValues((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    /* clear error when user edits */
+
+    if (errors[name]) {
+      setErrors((prev) => {
+        const copy = { ...prev };
+        delete copy[name];
+        return copy;
+      });
+    }
+  };
+
+  /* form submit */
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    const form = e.currentTarget as HTMLFormElement;
-
-    const formData = new FormData(form);
 
     const { errors: validationErrors, firstError } = validateForm(
       schema,
-      formData,
+      values,
     );
 
     setErrors(validationErrors);
 
-    /* scroll to first invalid field */
-
     if (firstError) {
-      const element = form.querySelector(
+      const element = document.querySelector(
         `[name="${firstError}"]`,
       ) as HTMLElement;
 
@@ -39,11 +56,28 @@ export default function FormEngine({ schema }: Props) {
       });
 
       element?.focus();
+      return;
     }
 
-    const values = Object.fromEntries(formData.entries());
+    try {
+      setLoading(true);
 
-    console.log("Form submitted:", values);
+      const res = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      const data = await res.json();
+
+      console.log("API response:", data);
+    } catch (err) {
+      console.error("Submit error", err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -55,6 +89,8 @@ export default function FormEngine({ schema }: Props) {
               key={section.title}
               section={section}
               errors={errors}
+              values={values}
+              onChange={handleChange}
             />
           ))}
         </div>
@@ -62,9 +98,16 @@ export default function FormEngine({ schema }: Props) {
         <div className="flex justify-end mt-8">
           <button
             type="submit"
-            className="h-11 px-6 rounded-xl bg-primary text-white font-medium shadow-[0_8px_20px_rgba(0,0,0,0.25)] hover:brightness-110 transition"
+            disabled={loading}
+            className="
+            h-11 px-6 rounded-xl
+            bg-primary text-white font-medium
+            shadow-[0_8px_20px_rgba(0,0,0,0.25)]
+            hover:brightness-110 transition
+            disabled:opacity-60
+            "
           >
-            Save
+            {loading ? "Saving..." : "Save"}
           </button>
         </div>
       </form>

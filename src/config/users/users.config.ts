@@ -147,6 +147,8 @@ export const usersConfig: ModuleConfig = {
             required: true,
             placeholder: "Enter full name",
             minLength: 3,
+            info: "Enter the user's legal full name.",
+            errorMessage: "Name must be at least 3 characters long",
           },
 
           {
@@ -154,6 +156,8 @@ export const usersConfig: ModuleConfig = {
             label: "Email Address",
             type: "email",
             required: true,
+            info: "Used for login and system notifications.",
+            errorMessage: "Please enter a valid email address",
           },
 
           {
@@ -161,6 +165,7 @@ export const usersConfig: ModuleConfig = {
             label: "Phone Number",
             type: "phone",
             required: false,
+            info: "Include country code when entering phone number.",
           },
 
           {
@@ -170,6 +175,7 @@ export const usersConfig: ModuleConfig = {
             accept: "image/*",
             multiple: true,
             required: false,
+            info: "Upload profile image (PNG or JPG recommended).",
           },
         ],
       },
@@ -186,6 +192,8 @@ export const usersConfig: ModuleConfig = {
             label: "Role",
             type: "search-select",
             required: true,
+            info: "Defines the user's system permissions.",
+            errorMessage: "Please select a role",
             options: [
               { label: "Operative", value: "Operative" },
               { label: "CEO", value: "CEO" },
@@ -198,6 +206,8 @@ export const usersConfig: ModuleConfig = {
             label: "Status",
             type: "radio",
             required: true,
+            info: "Inactive users cannot access the system.",
+            errorMessage: "Please choose a status",
             options: [
               { label: "Active", value: "Active" },
               { label: "Inactive", value: "Inactive" },
@@ -209,6 +219,7 @@ export const usersConfig: ModuleConfig = {
             label: "Department",
             type: "text",
             required: false,
+            info: "Optional department assignment.",
           },
 
           {
@@ -216,6 +227,8 @@ export const usersConfig: ModuleConfig = {
             label: "Region",
             type: "select",
             required: true,
+            info: "Primary operational region.",
+            errorMessage: "Region selection is required",
             options: [
               { label: "India", value: "India" },
               { label: "US", value: "US" },
@@ -230,6 +243,8 @@ export const usersConfig: ModuleConfig = {
             type: "decimal",
             required: false,
             min: 0,
+            info: "Total account portfolio value.",
+            errorMessage: "Account value cannot be negative",
           },
         ],
       },
@@ -246,6 +261,7 @@ export const usersConfig: ModuleConfig = {
             label: "Tags",
             type: "tags",
             required: false,
+            info: "Add keywords for grouping or filtering users.",
           },
 
           {
@@ -254,6 +270,7 @@ export const usersConfig: ModuleConfig = {
             type: "textarea",
             required: false,
             maxLength: 500,
+            info: "Short description about the user (max 500 characters).",
           },
 
           {
@@ -261,10 +278,12 @@ export const usersConfig: ModuleConfig = {
             label: "Created At",
             type: "date",
             required: false,
+            info: "Date when the user record was created.",
           },
         ],
       },
     ],
   },
+
   data: userData,
 };

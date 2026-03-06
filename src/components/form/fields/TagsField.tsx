@@ -1,40 +1,45 @@
 "use client";
 
 import { useState } from "react";
-import { glassInput } from "@/lib/formStyle";
-import { inputClass } from "@/lib/inputStyle";
-import { FormField } from "@/types/module";
 import FieldWrapper from "../FieldWrapper";
+import { inputClass } from "@/lib/inputStyle";
+import { glassInput } from "@/lib/formStyle";
+import { FieldComponentProps } from "@/types/formFieldProps.ts";
 
-interface Props {
-  field: FormField;
-  error?: string;
-}
-
-export default function TagsField({ field, error }: Props) {
-  const [tags, setTags] = useState<string[]>([]);
+export default function TagsField({
+  field,
+  error,
+  value = [],
+  onChange,
+}: FieldComponentProps) {
   const [input, setInput] = useState("");
 
+  const tags: string[] = Array.isArray(value) ? value : [];
+
   const addTag = () => {
-    const value = input.trim();
+    const tag = input.trim();
 
-    if (!value) return;
+    if (!tag || tags.includes(tag)) return;
 
-    if (tags.includes(value)) {
-      setInput("");
-      return;
-    }
+    onChange?.(field.name, [...tags, tag]);
 
-    setTags([...tags, value]);
     setInput("");
   };
 
   const removeTag = (tag: string) => {
-    setTags(tags.filter((t) => t !== tag));
+    onChange?.(
+      field.name,
+      tags.filter((t) => t !== tag),
+    );
   };
 
   return (
-    <FieldWrapper label={field.label}>
+    <FieldWrapper
+      label={field.label}
+      info={field.info}
+      required={field.required}
+      error={error}
+    >
       <div className="flex flex-col gap-2">
         {/* Input */}
 
@@ -59,13 +64,12 @@ export default function TagsField({ field, error }: Props) {
             <span
               key={tag}
               className="
-              flex items-center gap-1
-              bg-primary/10
-              text-primary
-              px-2 py-1
-              rounded-md
-              text-sm
-              backdrop-blur-md
+                flex items-center gap-1
+                bg-primary/10
+                text-primary
+                px-2 py-1
+                rounded-md
+                text-sm
               "
             >
               {tag}
@@ -73,21 +77,13 @@ export default function TagsField({ field, error }: Props) {
               <button
                 type="button"
                 onClick={() => removeTag(tag)}
-                className="text-xs hover:text-primary/70"
+                className="text-xs hover:opacity-70"
               >
                 ✕
               </button>
             </span>
           ))}
         </div>
-
-        {/* Hidden input for form submission */}
-
-        <input type="hidden" name={field.name} value={JSON.stringify(tags)} />
-
-        {/* Error */}
-
-        {error && <span className="text-xs text-red-500">{error}</span>}
       </div>
     </FieldWrapper>
   );

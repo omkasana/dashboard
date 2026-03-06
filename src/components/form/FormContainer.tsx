@@ -20,7 +20,7 @@ export default function FormContainer({
         "
         style={{
           background:
-            "radial-gradient(circle at top left, var(--primary), transparent 60%)",
+            "radial-gradient(circle at top right, var(--primary), transparent 60%)",
         }}
       />
 

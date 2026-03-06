@@ -1,47 +1,56 @@
 "use client";
 
-import { FormField } from "@/types/module";
+import { FieldComponentProps } from "@/types/formFieldProps.ts";
+import FieldWrapper from "../FieldWrapper";
 
-interface Props {
-  field: FormField;
-  error?: string;
-}
+export default function CheckboxField({
+  field,
+  error,
+  value = [],
+  onChange,
+}: FieldComponentProps) {
+  const selected: string[] = Array.isArray(value) ? value : [];
 
-export default function CheckboxField({ field, error }: Props) {
+  const toggle = (val: string) => {
+    let updated: string[];
+
+    if (selected.includes(val)) {
+      updated = selected.filter((v) => v !== val);
+    } else {
+      updated = [...selected, val];
+    }
+
+    onChange?.(field.name, updated);
+  };
+
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-muted-foreground">
-        {field.label}
-      </label>
+    <FieldWrapper
+      label={field.label}
+      info={field.info}
+      required={field.required}
+      error={error}
+    >
+      <div className="flex flex-col gap-2">
+        {field.options?.map((opt) => {
+          const val = String(opt.value);
 
-      <div
-        className={`flex flex-col gap-2 ${
-          error ? "border border-red-500 rounded-lg p-2" : ""
-        }`}
-      >
-        {field.options?.map((opt) => (
-          <label
-            key={opt.value}
-            className="flex items-center gap-2 text-sm cursor-pointer select-none"
-          >
-            <input
-              type="checkbox"
-              name={field.name}
-              value={opt.value}
-              className="
-                h-4 w-4
-                rounded
-                border-border
-                accent-[var(--primary)]
-              "
-            />
+          return (
+            <label
+              key={val}
+              className="flex items-center gap-2 text-sm cursor-pointer"
+            >
+              <input
+                type="checkbox"
+                checked={selected.includes(val)}
+                onChange={() => toggle(val)}
+                className="h-4 w-4 accent-[var(--primary)]"
+              />
 
-            <span className="text-foreground">{opt.label}</span>
-          </label>
-        ))}
+              {opt.label}
+            </label>
+          );
+        })}
       </div>
-
-      {error && <span className="text-xs text-red-500">{error}</span>}
-    </div>
+    </FieldWrapper>
   );
 }

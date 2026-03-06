@@ -1,3 +1,7 @@
+/* ================================
+FIELD TYPES
+================================ */
+
 export type FieldType =
   | "text"
   | "number"
@@ -17,6 +21,11 @@ export type FieldType =
   | "date"
   | "time"
   | "datetime";
+
+/* ================================
+VIEW TYPES
+================================ */
+
 export type ViewType =
   | "table"
   | "list"
@@ -28,13 +37,58 @@ export type ViewType =
   | "map"
   | "gallery";
 
+/* ================================
+FIELD OPTIONS
+================================ */
+
 export interface FieldOption {
   label: string;
   value: string | number;
 }
 
+/* ================================
+FORM FIELD
+================================ */
+
+export interface FormField {
+  name: string;
+  label: string;
+  type: FieldType;
+
+  /* UX */
+  placeholder?: string;
+  info?: string;
+
+  /* Validation */
+  required?: boolean;
+  errorMessage?: string;
+
+  minLength?: number;
+  maxLength?: number;
+
+  min?: number;
+  max?: number;
+
+  pattern?: string;
+
+  /* Select / Options */
+  options?: FieldOption[];
+
+  /* File */
+  accept?: string;
+  multiple?: boolean;
+
+  /* Default value */
+  defaultValue?: any;
+}
+
+/* ================================
+FORM SECTION
+================================ */
+
 export interface FormSection {
   id: string;
+
   title: string;
 
   description?: string;
@@ -46,26 +100,16 @@ export interface FormSection {
 
   fields: FormField[];
 }
-export interface FormField {
-  name: string;
-  label: string;
-  type: FieldType;
 
-  required?: boolean;
-  placeholder?: string;
-
-  options?: FieldOption[];
-
-  multiple?: boolean;
-
-  accept?: string;
-
-  defaultValue?: any;
-}
+/* ================================
+MODULE CONFIG
+================================ */
 
 export interface ModuleConfig {
   id: string;
+
   title: string;
+
   description?: string;
 
   actions?: any;
@@ -84,7 +128,6 @@ export interface ModuleConfig {
 
   calendar?: any;
 
-  /** 🔹 ADD THIS */
   form?: {
     add?: FormSection[];
     edit?: FormSection[];
