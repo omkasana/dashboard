@@ -17,6 +17,9 @@ interface Props {
   data: any[];
   moduleId: string;
   density?: "comfortable" | "compact";
+
+  selected: number[];
+  setSelected: React.Dispatch<React.SetStateAction<number[]>>;
 }
 
 export default function DataGrid({
@@ -24,9 +27,9 @@ export default function DataGrid({
   data,
   moduleId,
   density = "comfortable",
+  selected,
+  setSelected,
 }: Props) {
-  const [selected, setSelected] = useState<number[]>([]);
-
   const rowHeight = density === "compact" ? "h-10" : "h-12";
 
   function renderCell(column: Column, value: any) {

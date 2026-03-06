@@ -1,11 +1,14 @@
 "use client";
 
+import { useState } from "react";
+
 import CalendarView from "../List/View/CalendarVIew";
 import DataGrid from "../List/View/DataGrid/DataGrid";
 import GridEngine from "../List/View/GridEngine";
 import KanbanEngine from "../List/View/KanbanEngine";
 import ListEngine from "../List/View/ListEngine";
 import TableEngine from "../List/View/TableEngine";
+import BulkActionsBar from "../List/BulkActionsBar";
 
 interface Props {
   view: string;
@@ -14,34 +17,41 @@ interface Props {
 }
 
 export default function ViewRenderer({ view, config, data }: Props) {
-  switch (view) {
-    case "table":
-      if (!config.table?.enabled) return null;
-      return (
+  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+
+  return (
+    <>
+      {/* BULK ACTION BAR */}
+      <BulkActionsBar
+        selectedIds={selectedIds.map(String)}
+        onClear={() => setSelectedIds([])}
+      />
+
+      {view === "table" && config.table?.enabled && (
         <DataGrid
           density="comfortable"
           columns={config.table.columns}
           data={data}
           moduleId={config.id}
+          selected={selectedIds}
+          setSelected={setSelectedIds}
         />
-      );
+      )}
 
-    case "grid":
-      if (!config.grid?.enabled) return null;
-      return (
+      {view === "grid" && config.grid?.enabled && (
         <GridEngine
           density="compact"
           layout={config.grid.layout}
           data={data}
           moduleId={config.id}
         />
-      );
+      )}
 
-    case "list":
-      return <ListEngine density="compact" data={data} moduleId={config.id} />;
+      {view === "list" && (
+        <ListEngine density="compact" data={data} moduleId={config.id} />
+      )}
 
-    case "kanban":
-      return (
+      {view === "kanban" && (
         <KanbanEngine
           density="compact"
           data={data}
@@ -50,19 +60,16 @@ export default function ViewRenderer({ view, config, data }: Props) {
           columns={config.kanban!.columns}
           card={config.kanban!.card}
         />
-      );
-    case "calendar":
-      if (!config.calendar?.enabled) return null;
-      return (
+      )}
+
+      {view === "calendar" && config.calendar?.enabled && (
         <CalendarView
           data={data}
           moduleId={config.id}
           dateField={config.calendar.dateField}
           layout={config.calendar.layout}
         />
-      );
-
-    default:
-      return null;
-  }
+      )}
+    </>
+  );
 }

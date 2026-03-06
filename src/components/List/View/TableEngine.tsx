@@ -16,8 +16,7 @@ export default function TableEngine({
   density,
   moduleId,
 }: Props) {
-  const padding =
-    density === "compact" ? "py-2" : "py-4";
+  const padding = density === "compact" ? "py-2" : "py-4";
 
   return (
     <div
@@ -65,7 +64,7 @@ export default function TableEngine({
                 className={cn(
                   "transition-all duration-200",
                   "hover:bg-white/5",
-                  index % 2 === 0 && "bg-white/[0.02]"
+                  index % 2 === 0 && "bg-white/[0.02]",
                 )}
               >
                 {columns.map((col) => (
@@ -73,7 +72,7 @@ export default function TableEngine({
                     key={col.key}
                     className={cn(
                       "px-6 whitespace-nowrap text-foreground/90",
-                      padding
+                      padding,
                     )}
                   >
                     {row[col.key]}
@@ -81,10 +80,7 @@ export default function TableEngine({
                 ))}
 
                 <td className="px-4">
-                  <ActionMenu
-                    id={row.id}
-                    moduleId={moduleId}
-                  />
+                  <ActionMenu id={row.id} moduleId={moduleId} />
                 </td>
               </tr>
             ))}
