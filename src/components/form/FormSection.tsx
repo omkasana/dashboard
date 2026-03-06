@@ -4,7 +4,7 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import FieldRenderer from "./FieldRenderer";
 
-export default function FormSection({ section }: any) {
+export default function FormSection({ section, errors }: any) {
   const [open, setOpen] = useState(true);
 
   return (
@@ -16,17 +16,15 @@ export default function FormSection({ section }: any) {
       bg-white/60
       dark:bg-white/5
       shadow-sm
-      transition-all duration-300
       p-6
+      transition-all
       "
     >
-      {/* Header */}
-
       <div
         className="flex items-center justify-between mb-6 cursor-pointer"
         onClick={() => setOpen(!open)}
       >
-        <h3 className="text-lg font-semibold tracking-tight text-title">
+        <h3 className="text-lg font-semibold tracking-tight">
           {section.title}
         </h3>
 
@@ -44,7 +42,11 @@ export default function FormSection({ section }: any) {
           }}
         >
           {section.fields.map((field: any) => (
-            <FieldRenderer key={field.name} field={field} />
+            <FieldRenderer
+              key={field.name}
+              field={field}
+              error={errors[field.name]}
+            />
           ))}
         </div>
       )}

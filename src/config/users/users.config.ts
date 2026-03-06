@@ -146,6 +146,7 @@ export const usersConfig: ModuleConfig = {
             type: "text",
             required: true,
             placeholder: "Enter full name",
+            minLength: 3,
           },
 
           {
@@ -159,6 +160,7 @@ export const usersConfig: ModuleConfig = {
             name: "phone",
             label: "Phone Number",
             type: "phone",
+            required: false,
           },
 
           {
@@ -167,6 +169,7 @@ export const usersConfig: ModuleConfig = {
             type: "file",
             accept: "image/*",
             multiple: true,
+            required: false,
           },
         ],
       },
@@ -182,6 +185,7 @@ export const usersConfig: ModuleConfig = {
             name: "role",
             label: "Role",
             type: "search-select",
+            required: true,
             options: [
               { label: "Operative", value: "Operative" },
               { label: "CEO", value: "CEO" },
@@ -193,6 +197,7 @@ export const usersConfig: ModuleConfig = {
             name: "status",
             label: "Status",
             type: "radio",
+            required: true,
             options: [
               { label: "Active", value: "Active" },
               { label: "Inactive", value: "Inactive" },
@@ -203,12 +208,14 @@ export const usersConfig: ModuleConfig = {
             name: "department",
             label: "Department",
             type: "text",
+            required: false,
           },
 
           {
             name: "region",
             label: "Region",
             type: "select",
+            required: true,
             options: [
               { label: "India", value: "India" },
               { label: "US", value: "US" },
@@ -221,6 +228,8 @@ export const usersConfig: ModuleConfig = {
             name: "accountValue",
             label: "Account Value",
             type: "decimal",
+            required: false,
+            min: 0,
           },
         ],
       },
@@ -236,23 +245,26 @@ export const usersConfig: ModuleConfig = {
             name: "tags",
             label: "Tags",
             type: "tags",
+            required: false,
           },
 
           {
             name: "bio",
             label: "Bio",
             type: "textarea",
+            required: false,
+            maxLength: 500,
           },
 
           {
             name: "createdAt",
             label: "Created At",
             type: "date",
+            required: false,
           },
         ],
       },
     ],
   },
-
   data: userData,
 };

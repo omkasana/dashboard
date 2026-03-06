@@ -7,20 +7,20 @@ import FieldWrapper from "../FieldWrapper";
 
 interface Props {
   field: FormField;
+  error?: string;
 }
 
-export default function DateField({ field }: Props) {
+export default function DateField({ field, error }: Props) {
   const type = field.type === "datetime" ? "datetime-local" : field.type;
 
   return (
-    <FieldWrapper label={field.label}>
+    <FieldWrapper label={field.label} required={field.required} error={error}>
       <input
         type={type}
         name={field.name}
-        className={inputClass}
-        style={glassInput}
-        required={field.required}
         defaultValue={field.defaultValue}
+        className={`${inputClass} ${error ? "border-red-500" : ""}`}
+        style={glassInput}
       />
     </FieldWrapper>
   );

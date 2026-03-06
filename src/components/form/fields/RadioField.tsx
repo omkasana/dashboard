@@ -1,22 +1,29 @@
 "use client";
 
 import { FormField } from "@/types/module";
+import FieldWrapper from "../FieldWrapper";
 
-export default function RadioField({ field }: { field: FormField }) {
+interface Props {
+  field: FormField;
+  error?: string;
+}
+
+export default function RadioField({ field, error }: Props) {
   return (
-    <div className="flex flex-col gap-2">
-      <label className="text-sm font-medium text-muted-foreground">
-        {field.label}
-      </label>
-
+    <FieldWrapper label={field.label} required={field.required} error={error}>
       <div className="flex gap-4">
         {field.options?.map((opt) => (
           <label key={opt.value} className="flex items-center gap-2">
-            <input type="radio" name={field.name} value={opt.value} />
-            <span>{opt.label}</span>
+            <input
+              type="radio"
+              name={field.name}
+              value={opt.value}
+              className="accent-primary"
+            />
+            {opt.label}
           </label>
         ))}
       </div>
-    </div>
+    </FieldWrapper>
   );
 }

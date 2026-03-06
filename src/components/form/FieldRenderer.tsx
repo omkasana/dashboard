@@ -17,48 +17,49 @@ import BooleanField from "./fields/BooleanField";
 
 interface Props {
   field: FormField;
+  error?: string;
 }
 
-export default function FieldRenderer({ field }: Props) {
+export default function FieldRenderer({ field, error }: Props) {
   switch (field.type) {
     case "text":
     case "number":
     case "decimal":
-      return <TextField field={field} />;
+      return <TextField field={field} error={error} />;
 
     case "email":
-      return <EmailField field={field} />;
+      return <EmailField field={field} error={error} />;
 
     case "phone":
-      return <PhoneField field={field} />;
+      return <PhoneField field={field} error={error} />;
 
     case "select":
     case "multiselect":
     case "search-select":
-      return <SelectField field={field} />;
+      return <SelectField field={field} error={error} />;
 
     case "radio":
-      return <RadioField field={field} />;
+      return <RadioField field={field} error={error} />;
 
     case "checkbox":
-      return <CheckboxField field={field} />;
+      return <CheckboxField field={field} error={error} />;
 
     case "boolean":
-      return <BooleanField field={field} />;
+      return <BooleanField field={field} error={error} />;
 
     case "textarea":
-      return <TextAreaField field={field} />;
+      return <TextAreaField field={field} error={error} />;
 
     case "tags":
-      return <TagsField field={field} />;
+      return <TagsField field={field} error={error} />;
 
     case "file":
-      return <FileUploadField field={field} />;
+      return <FileUploadField field={field} error={error} />;
 
     case "date":
     case "time":
     case "datetime":
-      return <DateField field={field} />;
+      return <DateField field={field} error={error} />;
 
     default:
       return null;

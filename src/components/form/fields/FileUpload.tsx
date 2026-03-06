@@ -8,6 +8,7 @@ import FieldWrapper from "../FieldWrapper";
 
 interface Props {
   field: FormField;
+  error?: string;
 }
 
 interface FileItem {
@@ -15,10 +16,11 @@ interface FileItem {
   preview?: string;
 }
 
-export default function FileUploadField({ field }: Props) {
+export default function FileUploadField({ field, error }: Props) {
   const [files, setFiles] = useState<FileItem[]>([]);
 
   /* cleanup previews */
+
   useEffect(() => {
     return () => {
       files.forEach((f) => {
@@ -45,6 +47,7 @@ export default function FileUploadField({ field }: Props) {
   const removeFile = (index: number) => {
     setFiles((prev) => {
       const item = prev[index];
+
       if (item.preview) URL.revokeObjectURL(item.preview);
 
       return prev.filter((_, i) => i !== index);
@@ -53,40 +56,51 @@ export default function FileUploadField({ field }: Props) {
 
   return (
     <FieldWrapper label={field.label}>
-      {/* Upload Input */}
+      <div className="flex flex-col gap-2">
+        {/* Upload Input */}
 
-      <input
-        type="file"
-        name={field.name}
-        accept={field.accept}
-        multiple
-        onChange={handleChange}
-        className={inputClass}
-        style={{
-          ...glassInput,
-          padding: "10px",
-        }}
-      />
+        <input
+          type="file"
+          accept={field.accept}
+          multiple
+          onChange={handleChange}
+          className={`${inputClass} ${error ? "border-red-500" : ""}`}
+          style={{
+            ...glassInput,
+            padding: "10px",
+          }}
+        />
 
-      {/* Preview Strip */}
+        {/* Hidden inputs so FormData works */}
 
-      {files.length > 0 && (
-        <div className="mt-4">
-          <p className="text-xs text-muted-foreground mb-2">Uploaded files</p>
+        {files.map((item, i) => (
+          <input
+            key={i}
+            type="hidden"
+            name={field.name}
+            value={item.file.name}
+          />
+        ))}
 
-          <div
-            className="
+        {/* Preview Strip */}
+
+        {files.length > 0 && (
+          <div className="mt-2">
+            <p className="text-xs text-muted-foreground mb-2">Uploaded files</p>
+
+            <div
+              className="
               flex gap-3
               overflow-x-auto
               pb-2
               scrollbar-thin
               scrollbar-thumb-muted
             "
-          >
-            {files.map((item, index) => (
-              <div
-                key={index}
-                className="
+            >
+              {files.map((item, index) => (
+                <div
+                  key={index}
+                  className="
                   relative
                   flex-shrink-0
                   w-24 h-24
@@ -96,23 +110,23 @@ export default function FileUploadField({ field }: Props) {
                   bg-background
                   shadow-sm
                 "
-              >
-                {item.preview ? (
-                  <img
-                    src={item.preview}
-                    alt="preview"
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="flex items-center justify-center h-full text-xs text-muted-foreground text-center px-2">
-                    {item.file.name}
-                  </div>
-                )}
+                >
+                  {item.preview ? (
+                    <img
+                      src={item.preview}
+                      alt="preview"
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center h-full text-xs text-muted-foreground text-center px-2">
+                      {item.file.name}
+                    </div>
+                  )}
 
-                <button
-                  type="button"
-                  onClick={() => removeFile(index)}
-                  className="
+                  <button
+                    type="button"
+                    onClick={() => removeFile(index)}
+                    className="
                     absolute top-1 right-1
                     w-5 h-5
                     flex items-center justify-center
@@ -122,14 +136,19 @@ export default function FileUploadField({ field }: Props) {
                     text-xs
                     hover:bg-black
                   "
-                >
-                  ×
-                </button>
-              </div>
-            ))}
+                  >
+                    ×
+                  </button>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )}
+
+        {/* Error message */}
+
+        {error && <span className="text-xs text-red-500">{error}</span>}
+      </div>
     </FieldWrapper>
   );
 }
