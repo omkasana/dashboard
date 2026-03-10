@@ -20,6 +20,20 @@ export default function ActionMenu({ id, moduleId }: Props) {
 
   /* ================= TOGGLE ================= */
 
+  useEffect(() => {
+    if (!open) return;
+
+    const closeOnScroll = () => {
+      setOpen(false);
+    };
+
+    window.addEventListener("scroll", closeOnScroll, true);
+
+    return () => {
+      window.removeEventListener("scroll", closeOnScroll, true);
+    };
+  }, [open]);
+
   const MENU_WIDTH = 180;
   const MENU_HEIGHT = 130;
 

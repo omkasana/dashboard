@@ -56,7 +56,7 @@ export interface ViewField {
   suffix?: string;
   dateFormat?: string;
   badgeColors?: Record<string, string>;
-  span?: number; // how many columns this field takes inside a section
+  span?: number;
 }
 
 /* ================================
@@ -64,10 +64,10 @@ export interface ViewField {
 ================================ */
 export interface ViewSection {
   id: string;
-  title: string;
+  title?: string;
   description?: string;
-  colSpan?: number; // how many grid columns this section spans
-  columns?: number; // internal field columns inside this section (default 2)
+  colSpan?: number;
+  columns?: number;
   fields: string[];
 }
 
@@ -76,37 +76,38 @@ export interface ViewSection {
 ================================ */
 export interface GridLayoutConfig {
   type: "grid";
-  columns: number; // total grid columns e.g. 3
+  columns: number;
   sections: ViewSection[];
 }
 
 export interface CardsLayoutConfig {
   type: "cards";
-  columns?: number; // cards per row (default 3)
+  columns?: number;
   fields: string[];
 }
 
 export interface SidebarLayoutConfig {
   type: "sidebar";
-  sidePosition?: "left" | "right"; // default "right"
-  sideWidth?: string; // e.g. "280px" default "260px"
-  mainSections: ViewSection[]; // sections in main area
-  sideSections: ViewSection[]; // sections in sidebar
+  sidePosition?: "left" | "right";
+  sideWidth?: string;
+  mainSections: ViewSection[];
+  sideSections: ViewSection[];
 }
 
 export interface CompactLayoutConfig {
   type: "compact";
-  columns?: number; // 1 or 2 column rows (default 1)
+  columns?: number;
   fields: string[];
 }
 
 export interface ProfileLayoutConfig {
   type: "profile";
-  coverField?: string; // field key for cover image
-  avatarField?: string; // field key for avatar
-  titleField?: string; // field key for title/name
-  subtitleField?: string; // field key for subtitle
-  badgeFields?: string[]; // field keys shown as badges in header
+  columns?: number; // outer grid columns — default 3
+  coverField?: string;
+  avatarField?: string;
+  titleField?: string;
+  subtitleField?: string;
+  badgeFields?: string[];
   sections: ViewSection[];
 }
 
@@ -208,15 +209,4 @@ export interface ModuleConfig {
   };
   view?: ViewConfig;
   data?: any[];
-}
-
-export interface ProfileLayoutConfig {
-  type: "profile";
-  columns?: number; // ✅ outer grid columns — default 3
-  coverField?: string;
-  avatarField?: string;
-  titleField?: string;
-  subtitleField?: string;
-  badgeFields?: string[];
-  sections: ViewSection[];
 }

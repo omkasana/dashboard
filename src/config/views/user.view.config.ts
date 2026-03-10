@@ -20,7 +20,7 @@ export const usersViewConfig: ViewConfig = {
       key: "status",
       label: "Status",
       type: "status",
-      badgeColors: { Active: "green", Inactive: "red", pending: "yellow" },
+      badgeColors: { Active: "green", Inactive: "red", Pending: "yellow" },
     },
     {
       key: "riskLevel",
@@ -73,8 +73,6 @@ export const usersViewConfig: ViewConfig = {
   ],
 
   layouts: {
-    // ─── Profile Layout ───────────────────────────────────────────
-
     profile: {
       type: "profile",
       columns: 3,
@@ -86,10 +84,10 @@ export const usersViewConfig: ViewConfig = {
       sections: [
         {
           id: "contact",
-          title: "Contact",
+          title: "Contact Info",
           colSpan: 2,
           columns: 2,
-          fields: ["email", "phone", "region", "source"],
+          fields: ["email", "phone", "region", "department"],
         },
         {
           id: "account",
@@ -97,6 +95,20 @@ export const usersViewConfig: ViewConfig = {
           colSpan: 1,
           columns: 1,
           fields: ["status", "planType", "tier", "isVerified"],
+        },
+        {
+          id: "organization",
+          title: "Organization",
+          colSpan: 2,
+          columns: 2,
+          fields: ["role", "source", "riskLevel", "accountValue"],
+        },
+        {
+          id: "activity",
+          title: "Activity",
+          colSpan: 1,
+          columns: 1,
+          fields: ["createdAt", "lastLogin"],
         },
       ],
     },

@@ -18,7 +18,7 @@ export function ProfileLayout({
   data,
 }: ProfileLayoutProps) {
   const fieldMap = Object.fromEntries(viewConfig.fields.map((f) => [f.key, f]));
-  const outerCols = config.columns ?? 3; // ✅ from config
+  const outerCols = config.columns ?? 3;
 
   const avatarField = config.avatarField ? fieldMap[config.avatarField] : null;
   const titleField = config.titleField ? fieldMap[config.titleField] : null;
@@ -104,109 +104,172 @@ export function ProfileLayout({
         </div>
       </div>
 
-      {/* ── Sections Grid ── */}
-      {/*
-        Responsive strategy:
-        - mobile:  always 1 column, colSpan ignored
-        - sm:      min(outerCols, 2) columns
-        - lg+:     outerCols from config, colSpan applied
-      */}
+      {/* ── Sections Grid ──
+          mobile:  1 col  (ignore colSpan)
+          sm:      min(outerCols, 2) cols
+          lg+:     outerCols from config, colSpan respected
+      ── */}
+      <SectionsGrid outerCols={outerCols}>
+        {config.sections.map((section) => (
+          <SectionCard
+            key={section.id}
+            section={section}
+            fieldMap={fieldMap}
+            data={data}
+            outerCols={outerCols}
+          />
+        ))}
+      </SectionsGrid>
+    </div>
+  );
+}
+
+/* ================================
+   SECTIONS GRID WRAPPER
+   Uses a ResizeObserver to swap
+   inline gridTemplateColumns so it
+   works without Tailwind dynamic classes
+================================ */
+import { useEffect, useRef } from "react";
+
+function SectionsGrid({
+  outerCols,
+  children,
+}: {
+  outerCols: number;
+  children: React.ReactNode;
+}) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+
+    const update = () => {
+      const w = el.offsetWidth;
+      let cols = 1;
+      if (w >= 1024) cols = outerCols;
+      else if (w >= 640) cols = Math.min(outerCols, 2);
+      else cols = 1;
+      el.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [outerCols]);
+
+  return (
+    <div
+      ref={ref}
+      className="grid gap-3 md:gap-4"
+      style={{ gridTemplateColumns: "repeat(1, minmax(0, 1fr))" }}
+    >
+      {children}
+    </div>
+  );
+}
+
+/* ================================
+   SECTION CARD
+================================ */
+import { ViewSection, ViewField } from "@/types/module";
+
+function SectionCard({
+  section,
+  fieldMap,
+  data,
+  outerCols,
+}: {
+  section: ViewSection;
+  fieldMap: Record<string, ViewField>;
+  data: Record<string, unknown>;
+  outerCols: number;
+}) {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const fieldsRef = useRef<HTMLDivElement>(null);
+  const colSpan = section.colSpan ?? 1;
+  const innerCols = section.columns ?? 2;
+
+  // Apply colSpan on the card when parent is wide enough
+  useEffect(() => {
+    const parent = cardRef.current?.parentElement;
+    if (!parent) return;
+
+    const update = () => {
+      const w = parent.offsetWidth;
+      if (!cardRef.current) return;
+      if (w >= 1024) {
+        cardRef.current.style.gridColumn = `span ${colSpan}`;
+      } else {
+        cardRef.current.style.gridColumn = "span 1";
+      }
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(parent);
+    return () => ro.disconnect();
+  }, [colSpan]);
+
+  // Apply innerCols on the fields grid responsively
+  useEffect(() => {
+    const el = fieldsRef.current;
+    if (!el) return;
+
+    const update = () => {
+      const w = el.offsetWidth;
+      const cols = w >= 480 ? innerCols : 1;
+      el.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
+    };
+
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, [innerCols]);
+
+  return (
+    <div ref={cardRef} className="min-w-0" style={{ ...sectionCardStyle }}>
+      <h3 style={sectionHeaderStyle}>{section.title}</h3>
+
+      {section.description && (
+        <p
+          className="text-xs mb-3"
+          style={{
+            color: "var(--muted-foreground)",
+            overflowWrap: "break-word",
+          }}
+        >
+          {section.description}
+        </p>
+      )}
+
+      {/* Fields grid */}
       <div
-        className="grid gap-3 md:gap-4"
-        style={{
-          // mobile: 1 col always
-          gridTemplateColumns: "repeat(1, minmax(0, 1fr))",
-        }}
+        ref={fieldsRef}
+        className="grid gap-x-4 gap-y-4"
+        style={{ gridTemplateColumns: "repeat(1, minmax(0, 1fr))" }}
       >
-        {/* Responsive override via a style tag scoped to this instance */}
-        <style>{`
-          @media (min-width: 640px) {
-            .profile-sections-grid {
-              grid-template-columns: repeat(${Math.min(outerCols, 2)}, minmax(0, 1fr));
-            }
-          }
-          @media (min-width: 1024px) {
-            .profile-sections-grid {
-              grid-template-columns: repeat(${outerCols}, minmax(0, 1fr));
-            }
-          }
-        `}</style>
-
-        {/* Re-render with className so style tag above applies */}
-        <div
-          className="profile-sections-grid contents"
-          style={{ display: "contents" }}
-        />
-
-        {config.sections.map((section) => {
-          const colSpan = section.colSpan ?? 1;
-          const innerCols = section.columns ?? 2;
+        {section.fields.map((key) => {
+          const field = fieldMap[key];
+          if (!field) return null;
+          const fieldSpan = field.span ?? 1;
 
           return (
             <div
-              key={section.id}
+              key={key}
               className="min-w-0"
               style={{
-                ...sectionCardStyle,
-                // mobile: full width, sm+: respect colSpan
-                gridColumn: "span 1",
+                gridColumn: `span ${fieldSpan}`,
+                overflowWrap: "break-word",
+                wordBreak: "break-word",
+                minWidth: 0,
               }}
             >
-              <h3 style={sectionHeaderStyle}>{section.title}</h3>
-
-              {section.description && (
-                <p
-                  className="text-xs mb-3"
-                  style={{
-                    color: "var(--muted-foreground)",
-                    overflowWrap: "break-word",
-                  }}
-                >
-                  {section.description}
-                </p>
-              )}
-
-              {/* ✅ Fields grid — 1 col mobile, innerCols from config on sm+ */}
-              <div
-                className="grid gap-x-4 gap-y-4"
-                style={{ gridTemplateColumns: "repeat(1, minmax(0, 1fr))" }}
-              >
-                <style>{`
-                  @media (min-width: 640px) {
-                    .section-fields-${section.id} {
-                      grid-template-columns: repeat(${innerCols}, minmax(0, 1fr));
-                    }
-                  }
-                `}</style>
-
-                <div
-                  className={`section-fields-${section.id} contents`}
-                  style={{ display: "contents" }}
-                />
-
-                {section.fields.map((key) => {
-                  const field = fieldMap[key];
-                  if (!field) return null;
-                  const fieldSpan = field.span ?? 1;
-
-                  return (
-                    <div
-                      key={key}
-                      className="min-w-0"
-                      style={{
-                        // ✅ field.span from config
-                        gridColumn: `span ${fieldSpan}`,
-                        overflowWrap: "break-word",
-                        wordBreak: "break-word",
-                        minWidth: 0,
-                      }}
-                    >
-                      <p style={fieldLabelStyle}>{field.label}</p>
-                      <FieldRenderer field={field} value={data[key]} />
-                    </div>
-                  );
-                })}
-              </div>
+              <p style={fieldLabelStyle}>{field.label}</p>
+              <FieldRenderer field={field} value={data[key]} />
             </div>
           );
         })}
