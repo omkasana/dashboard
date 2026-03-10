@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/UI/Button";
+import { TrashIcon } from "@heroicons/react/24/outline";
+import { Download, X } from "lucide-react";
 import ExportDialog from "./ExportDialog";
 
 interface Props {
@@ -20,37 +21,87 @@ export default function BulkActionsBar({ selectedIds, data, onClear }: Props) {
   return (
     <>
       <div
-        className="
-        flex items-center justify-between
-        px-4 py-2 mb-3
-        rounded-xl
-        bg-primary/10
-        border border-primary/20
-      "
+        className="flex items-center justify-between px-4 py-2 mb-3 rounded-xl"
+        style={{
+          border: "1px solid var(--border)",
+          background: "color-mix(in srgb, var(--muted) 60%, transparent)",
+          backdropFilter: "blur(8px)",
+        }}
       >
-        <span className="text-sm font-medium">
+        <span
+          className="text-sm font-medium"
+          style={{ color: "var(--foreground)" }}
+        >
           {selectedIds.length} selected
         </span>
 
-        <div className="flex gap-2">
+        {/* ACTION GROUP */}
+        <div
+          className="flex items-center gap-1 p-1 rounded-2xl border border-white/10"
+          style={{ background: "var(--muted)" }}
+        >
           {/* EXPORT */}
-          <Button size="sm" onClick={() => setShowExport(true)}>
-            Export
-          </Button>
+          <button
+            onClick={() => setShowExport(true)}
+            className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
+            style={{ color: "var(--muted-foreground)" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "var(--foreground)";
+              e.currentTarget.style.background =
+                "color-mix(in srgb, var(--muted) 80%, transparent)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "var(--muted-foreground)";
+              e.currentTarget.style.background = "transparent";
+            }}
+          >
+            <Download size={15} />
+            <span className="hidden md:inline">Export</span>
+          </button>
 
           {/* DELETE */}
-          <Button size="sm" variant="destructive">
-            Delete
-          </Button>
+          <button
+            onClick={() => alert("delete")}
+            className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
+            style={{
+              color: "var(--brand-danger)",
+              background:
+                "color-mix(in srgb, var(--brand-danger) 10%, transparent)",
+            }}
+            onMouseEnter={(e) =>
+              (e.currentTarget.style.background =
+                "color-mix(in srgb, var(--brand-danger) 18%, transparent)")
+            }
+            onMouseLeave={(e) =>
+              (e.currentTarget.style.background =
+                "color-mix(in srgb, var(--brand-danger) 10%, transparent)")
+            }
+          >
+            <TrashIcon className="w-4 h-4" />
+            <span className="hidden md:inline">Delete</span>
+          </button>
 
           {/* CLEAR */}
-          <Button size="sm" variant="ghost" onClick={onClear}>
-            Clear
-          </Button>
+          <button
+            onClick={onClear}
+            className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
+            style={{ color: "var(--muted-foreground)" }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "var(--foreground)";
+              e.currentTarget.style.background =
+                "color-mix(in srgb, var(--muted) 80%, transparent)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "var(--muted-foreground)";
+              e.currentTarget.style.background = "transparent";
+            }}
+          >
+            <X size={15} />
+            <span className="hidden md:inline">Clear</span>
+          </button>
         </div>
       </div>
 
-      {/* EXPORT DIALOG */}
       {showExport && (
         <ExportDialog
           data={selectedData}
