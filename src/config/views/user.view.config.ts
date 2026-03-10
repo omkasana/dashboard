@@ -75,7 +75,17 @@ export const usersViewConfig: ViewConfig = {
   layouts: {
     profile: {
       type: "profile",
-      columns: 3,
+
+      // ── Tweak these to change layout ──
+      columns: 3, // outer cols on desktop
+      sectionGap: "0.75rem", // gap between section cards
+      fieldGap: "0.75rem 1.5rem", // row-gap col-gap inside sections
+      sectionPadding: "1rem", // padding inside each card
+      mobileBreakpoint: 768, // px — when outer grid kicks in
+      fieldBreakpoint: 480, // px — when inner cols kick in
+      maxFieldColsMobile: 2, // max inner cols below mobileBreakpoint
+      avatarSize: "64px", // avatar diameter
+
       avatarField: "avatar",
       titleField: "name",
       subtitleField: "email",
@@ -85,23 +95,23 @@ export const usersViewConfig: ViewConfig = {
         {
           id: "contact",
           title: "Contact Info",
-          colSpan: 2,
-          columns: 2,
-          fields: ["email", "phone", "region", "department"],
+          colSpan: 2, // spans 2 of 3 outer cols
+          columns: 2, // 2 fields per row
+          fields: [
+            "email",
+            "phone",
+            "region",
+            "department",
+            "source",
+            "riskLevel",
+          ],
         },
         {
           id: "account",
           title: "Account",
-          colSpan: 1,
-          columns: 1,
-          fields: ["status", "planType", "tier", "isVerified"],
-        },
-        {
-          id: "organization",
-          title: "Organization",
-          colSpan: 2,
-          columns: 2,
-          fields: ["role", "source", "riskLevel", "accountValue"],
+          colSpan: 1, // spans 1 of 3 outer cols
+          columns: 1, // stacked
+          fields: ["status", "planType", "tier", "isVerified", "accountValue"],
         },
         {
           id: "activity",
@@ -109,6 +119,13 @@ export const usersViewConfig: ViewConfig = {
           colSpan: 1,
           columns: 1,
           fields: ["createdAt", "lastLogin"],
+        },
+        {
+          id: "organization",
+          title: "Organization",
+          colSpan: 2,
+          columns: 2,
+          fields: ["role", "department", "region", "riskLevel"],
         },
       ],
     },

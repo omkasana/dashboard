@@ -1,10 +1,8 @@
+"use client";
+
 import { ProfileLayoutConfig, ViewConfig } from "@/types/module";
 import { FieldRenderer } from "../FieldRenderer";
-import {
-  sectionCardStyle,
-  sectionHeaderStyle,
-  fieldLabelStyle,
-} from "../styles";
+import { sectionHeaderStyle, fieldLabelStyle } from "../styles";
 
 interface ProfileLayoutProps {
   config: ProfileLayoutConfig;
@@ -18,7 +16,16 @@ export function ProfileLayout({
   data,
 }: ProfileLayoutProps) {
   const fieldMap = Object.fromEntries(viewConfig.fields.map((f) => [f.key, f]));
+
+  // ── Config values with defaults ──
   const outerCols = config.columns ?? 3;
+  const mobileBreak = config.mobileBreakpoint ?? 768;
+  const fieldBreak = config.fieldBreakpoint ?? 480;
+  const sectionGap = config.sectionGap ?? "0.75rem";
+  const fieldGap = config.fieldGap ?? "0.625rem 1.25rem";
+  const sectionPad = config.sectionPadding ?? "1rem";
+  const avatarSize = config.avatarSize ?? "64px";
+  const mobileColsCap = config.maxFieldColsMobile ?? 2;
 
   const avatarField = config.avatarField ? fieldMap[config.avatarField] : null;
   const titleField = config.titleField ? fieldMap[config.titleField] : null;
@@ -26,22 +33,86 @@ export function ProfileLayout({
     ? fieldMap[config.subtitleField]
     : null;
 
+  // Unique ID per layout instance to avoid CSS class collisions
+  const uid = config.avatarField ?? "pf";
+
   return (
-    <div className="flex flex-col gap-3 md:gap-4">
+    <div className="flex flex-col gap-3">
+      {/* ── Scoped styles — 100% config driven ── */}
+      <style>{`
+        .${uid}-pf-grid {
+          display: grid;
+          gap: ${sectionGap};
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+        }
+        @media (min-width: ${mobileBreak}px) {
+          .${uid}-pf-grid {
+            grid-template-columns: repeat(${outerCols}, minmax(0, 1fr));
+          }
+        }
+
+        ${config.sections
+          .map(
+            (s) => `
+          .${uid}-pf-section-${s.id} {
+            grid-column: span 1;
+          }
+          @media (min-width: ${mobileBreak}px) {
+            .${uid}-pf-section-${s.id} {
+              grid-column: span ${Math.min(s.colSpan ?? 1, outerCols)};
+            }
+          }
+          .${uid}-pf-fields-${s.id} {
+            display: grid;
+            gap: ${fieldGap};
+            grid-template-columns: repeat(1, minmax(0, 1fr));
+          }
+          @media (min-width: ${fieldBreak}px) {
+            .${uid}-pf-fields-${s.id} {
+              grid-template-columns: repeat(${Math.min(s.columns ?? 2, mobileColsCap)}, minmax(0, 1fr));
+            }
+          }
+          @media (min-width: ${mobileBreak}px) {
+            .${uid}-pf-fields-${s.id} {
+              grid-template-columns: repeat(${s.columns ?? 2}, minmax(0, 1fr));
+            }
+          }
+        `,
+          )
+          .join("")}
+
+        ${viewConfig.fields
+          .filter((f) => f.span && f.span > 1)
+          .map(
+            (f) => `
+            @media (min-width: ${fieldBreak}px) {
+              .${uid}-pf-field-${f.key} {
+                grid-column: span ${f.span};
+              }
+            }
+          `,
+          )
+          .join("")}
+      `}</style>
+
       {/* ── Profile Header ── */}
       <div
-        className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5 p-4 sm:p-6 rounded-xl"
+        className="flex flex-col sm:flex-row items-start gap-4 rounded-xl"
         style={{
           background: "color-mix(in srgb, var(--muted) 60%, transparent)",
           border: "1px solid var(--border)",
+          padding: sectionPad,
         }}
       >
         {/* Avatar */}
         {avatarField && (
           <div
-            className="shrink-0 w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden"
+            className="shrink-0 rounded-full overflow-hidden"
             style={{
-              border: "3px solid var(--border)",
+              width: avatarSize,
+              height: avatarSize,
+              minWidth: avatarSize,
+              border: "2px solid var(--border)",
               background: "var(--muted)",
             }}
           >
@@ -49,12 +120,20 @@ export function ProfileLayout({
               <img
                 src={String(data[avatarField.key])}
                 alt="avatar"
-                className="w-full h-full object-cover"
+                style={{ width: "100%", height: "100%", objectFit: "cover" }}
               />
             ) : (
               <div
-                className="w-full h-full flex items-center justify-center text-2xl font-bold"
-                style={{ color: "var(--muted-foreground)" }}
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: `calc(${avatarSize} * 0.35)`,
+                  fontWeight: 700,
+                  color: "var(--muted-foreground)",
+                }}
               >
                 {String(
                   data[config.titleField ?? "name"] ?? "?",
@@ -68,11 +147,11 @@ export function ProfileLayout({
         <div className="flex-1 min-w-0 w-full">
           {titleField && (
             <h2
-              className="text-lg sm:text-xl font-semibold"
+              className="font-semibold leading-tight"
               style={{
                 color: "var(--foreground)",
+                fontSize: "clamp(0.95rem, 2vw, 1.15rem)",
                 overflowWrap: "break-word",
-                wordBreak: "break-word",
               }}
             >
               {String(data[titleField.key] ?? "")}
@@ -83,7 +162,6 @@ export function ProfileLayout({
               className="text-sm mt-0.5"
               style={{
                 color: "var(--muted-foreground)",
-                overflowWrap: "break-word",
                 wordBreak: "break-all",
               }}
             >
@@ -91,7 +169,7 @@ export function ProfileLayout({
             </p>
           )}
           {config.badgeFields && config.badgeFields.length > 0 && (
-            <div className="flex flex-wrap gap-2 mt-3">
+            <div className="flex flex-wrap gap-1.5 mt-2">
               {config.badgeFields.map((key) => {
                 const field = fieldMap[key];
                 if (!field) return null;
@@ -104,175 +182,57 @@ export function ProfileLayout({
         </div>
       </div>
 
-      {/* ── Sections Grid ──
-          mobile:  1 col  (ignore colSpan)
-          sm:      min(outerCols, 2) cols
-          lg+:     outerCols from config, colSpan respected
-      ── */}
-      <SectionsGrid outerCols={outerCols}>
+      {/* ── Sections Grid ── */}
+      <div className={`${uid}-pf-grid`}>
         {config.sections.map((section) => (
-          <SectionCard
+          <div
             key={section.id}
-            section={section}
-            fieldMap={fieldMap}
-            data={data}
-            outerCols={outerCols}
-          />
-        ))}
-      </SectionsGrid>
-    </div>
-  );
-}
+            className={`${uid}-pf-section-${section.id} min-w-0`}
+            style={{
+              background: "color-mix(in srgb, var(--muted) 60%, transparent)",
+              border: "1px solid var(--border)",
+              borderRadius: "0.75rem",
+              backdropFilter: "blur(12px)",
+              padding: sectionPad,
+            }}
+          >
+            {section.title && (
+              <h3 style={sectionHeaderStyle}>{section.title}</h3>
+            )}
+            {section.description && (
+              <p
+                className="text-xs mb-2"
+                style={{
+                  color: "var(--muted-foreground)",
+                  overflowWrap: "break-word",
+                }}
+              >
+                {section.description}
+              </p>
+            )}
 
-/* ================================
-   SECTIONS GRID WRAPPER
-   Uses a ResizeObserver to swap
-   inline gridTemplateColumns so it
-   works without Tailwind dynamic classes
-================================ */
-import { useEffect, useRef } from "react";
-
-function SectionsGrid({
-  outerCols,
-  children,
-}: {
-  outerCols: number;
-  children: React.ReactNode;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const update = () => {
-      const w = el.offsetWidth;
-      let cols = 1;
-      if (w >= 1024) cols = outerCols;
-      else if (w >= 640) cols = Math.min(outerCols, 2);
-      else cols = 1;
-      el.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
-    };
-
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [outerCols]);
-
-  return (
-    <div
-      ref={ref}
-      className="grid gap-3 md:gap-4"
-      style={{ gridTemplateColumns: "repeat(1, minmax(0, 1fr))" }}
-    >
-      {children}
-    </div>
-  );
-}
-
-/* ================================
-   SECTION CARD
-================================ */
-import { ViewSection, ViewField } from "@/types/module";
-
-function SectionCard({
-  section,
-  fieldMap,
-  data,
-  outerCols,
-}: {
-  section: ViewSection;
-  fieldMap: Record<string, ViewField>;
-  data: Record<string, unknown>;
-  outerCols: number;
-}) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const fieldsRef = useRef<HTMLDivElement>(null);
-  const colSpan = section.colSpan ?? 1;
-  const innerCols = section.columns ?? 2;
-
-  // Apply colSpan on the card when parent is wide enough
-  useEffect(() => {
-    const parent = cardRef.current?.parentElement;
-    if (!parent) return;
-
-    const update = () => {
-      const w = parent.offsetWidth;
-      if (!cardRef.current) return;
-      if (w >= 1024) {
-        cardRef.current.style.gridColumn = `span ${colSpan}`;
-      } else {
-        cardRef.current.style.gridColumn = "span 1";
-      }
-    };
-
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(parent);
-    return () => ro.disconnect();
-  }, [colSpan]);
-
-  // Apply innerCols on the fields grid responsively
-  useEffect(() => {
-    const el = fieldsRef.current;
-    if (!el) return;
-
-    const update = () => {
-      const w = el.offsetWidth;
-      const cols = w >= 480 ? innerCols : 1;
-      el.style.gridTemplateColumns = `repeat(${cols}, minmax(0, 1fr))`;
-    };
-
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, [innerCols]);
-
-  return (
-    <div ref={cardRef} className="min-w-0" style={{ ...sectionCardStyle }}>
-      <h3 style={sectionHeaderStyle}>{section.title}</h3>
-
-      {section.description && (
-        <p
-          className="text-xs mb-3"
-          style={{
-            color: "var(--muted-foreground)",
-            overflowWrap: "break-word",
-          }}
-        >
-          {section.description}
-        </p>
-      )}
-
-      {/* Fields grid */}
-      <div
-        ref={fieldsRef}
-        className="grid gap-x-4 gap-y-4"
-        style={{ gridTemplateColumns: "repeat(1, minmax(0, 1fr))" }}
-      >
-        {section.fields.map((key) => {
-          const field = fieldMap[key];
-          if (!field) return null;
-          const fieldSpan = field.span ?? 1;
-
-          return (
-            <div
-              key={key}
-              className="min-w-0"
-              style={{
-                gridColumn: `span ${fieldSpan}`,
-                overflowWrap: "break-word",
-                wordBreak: "break-word",
-                minWidth: 0,
-              }}
-            >
-              <p style={fieldLabelStyle}>{field.label}</p>
-              <FieldRenderer field={field} value={data[key]} />
+            <div className={`${uid}-pf-fields-${section.id}`}>
+              {section.fields.map((key) => {
+                const field = fieldMap[key];
+                if (!field) return null;
+                return (
+                  <div
+                    key={key}
+                    className={`${uid}-pf-field-${key} min-w-0`}
+                    style={{
+                      overflowWrap: "break-word",
+                      wordBreak: "break-word",
+                      minWidth: 0,
+                    }}
+                  >
+                    <p style={fieldLabelStyle}>{field.label}</p>
+                    <FieldRenderer field={field} value={data[key]} />
+                  </div>
+                );
+              })}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </div>
   );

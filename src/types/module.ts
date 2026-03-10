@@ -102,12 +102,26 @@ export interface CompactLayoutConfig {
 
 export interface ProfileLayoutConfig {
   type: "profile";
-  columns?: number; // outer grid columns — default 3
-  coverField?: string;
+
+  // Outer grid
+  columns?: number; // desktop outer cols — default 3
+  sectionGap?: string; // gap between sections — default "0.75rem"
+  mobileBreakpoint?: number; // px when outer grid activates — default 768
+  maxFieldColsMobile?: number; // max inner cols on tablet — default 2
+  fieldBreakpoint?: number; // px when inner cols activate — default 480
+
+  // Section cards
+  sectionPadding?: string; // card padding — default "1rem"
+  fieldGap?: string; // gap inside fields grid — default "0.625rem 1.25rem"
+
+  // Header
   avatarField?: string;
+  avatarSize?: string; // css size e.g. "64px" — default "64px"
   titleField?: string;
   subtitleField?: string;
   badgeFields?: string[];
+  coverField?: string;
+
   sections: ViewSection[];
 }
 
