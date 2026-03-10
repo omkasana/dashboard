@@ -1,10 +1,13 @@
 import { userData } from "@/dummy/user.data";
 import type { ModuleConfig } from "@/types/module";
+import { usersViewConfig } from "@/config/views/user.view.config";
 
 export const usersConfig: ModuleConfig = {
   id: "users",
   title: "Users",
   description: "Manage system users",
+
+  view: usersViewConfig,
 
   actions: {
     add: true,
@@ -290,7 +293,7 @@ export const usersConfig: ModuleConfig = {
           {
             name: "createdAt",
             label: "Created At",
-            type: "time",
+            type: "datetime",
             required: false,
             info: "Date when the user record was created.",
           },

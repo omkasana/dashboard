@@ -118,7 +118,12 @@ export interface ModuleConfig {
 
   filters?: any;
 
-  views?: any;
+  /* list views */
+  views?: {
+    enabled?: boolean;
+    defaultView?: ViewType;
+    available?: ViewType[];
+  };
 
   table?: any;
 
@@ -128,10 +133,44 @@ export interface ModuleConfig {
 
   calendar?: any;
 
+  /* form engine */
   form?: {
     add?: FormSection[];
     edit?: FormSection[];
   };
 
+  /* detail record page */
+  view?: ViewConfig;
+
   data?: any[];
+}
+
+//more types for view detail page vgeifevws
+export interface ViewSection {
+  id: string;
+  title?: string;
+  fields: string[];
+  colSpan?: number;
+}
+
+export interface ViewLayout {
+  type: "grid" | "cards" | "sidebar" | "compact";
+  columns?: number;
+  sections?: ViewSection[];
+  fields?: string[];
+  main?: string[];
+  side?: string[];
+}
+
+export interface ViewToolbar {
+  search?: boolean;
+  export?: boolean;
+  layoutSwitch?: boolean;
+  actions?: ("edit" | "delete")[];
+}
+
+export interface ViewConfig {
+  defaultLayout: string;
+  layouts: Record<string, ViewLayout>;
+  toolbar?: ViewToolbar;
 }

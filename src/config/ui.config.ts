@@ -2,7 +2,7 @@ export type ThemeMode = "light" | "dark";
 export type SidebarPosition = "left" | "right" | "top" | "bottom";
 
 export const uiConfig = {
-  themeMode: "light" as ThemeMode,
+  themeMode: "dark" as ThemeMode,
   sidebarPosition: "left" as SidebarPosition,
 
   sidebar: {

@@ -191,15 +191,15 @@ export default function DateField({
             {open && (
               <div
                 className="
-absolute mt-2
-w-[320px]
-rounded-xl
-border border-border/40
-bg-background/95
-backdrop-blur-xl
-shadow-xl
-p-3
-z-999
+                    absolute mt-2
+                    w-[320px]
+                    rounded-xl
+                    border border-border/40
+                    bg-background/95
+                    backdrop-blur-xl
+                    shadow-xl
+                    p-3
+                    z-999
 "
               >
                 {/* header */}
@@ -269,13 +269,13 @@ z-999
                         type="button"
                         onClick={() => selectDate(d)}
                         className={`
-h-8 w-8
-text-xs
-rounded-md
-transition
-hover:bg-primary/10
-${active ? "bg-primary text-white" : ""}
-${highlighted ? "ring-2 ring-primary" : ""}
+                            h-8 w-8
+                            text-xs
+                            rounded-md
+                            transition
+                            hover:bg-primary/10
+                            ${active ? "bg-primary text-white" : ""}
+                            ${highlighted ? "ring-2 ring-primary" : ""}
 `}
                       >
                         {d.getDate()}
