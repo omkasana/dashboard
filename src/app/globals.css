@@ -198,3 +198,11 @@
 .animate-glow-drift {
   animation: glow-drift 12s ease-in-out infinite;
 }
+
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}

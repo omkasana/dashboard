@@ -59,7 +59,14 @@ export default function GlobalSearch() {
           onFocus={() => setFocused(true)}
           onBlur={() => setTimeout(() => setFocused(false), 150)}
           placeholder="Search anything..."
-          className="w-full bg-transparent outline-none text-sm"
+          className="
+    w-full
+    bg-transparent
+    outline-none
+    text-sm
+    text-foreground
+    placeholder:text-muted-foreground
+  "
         />
       </div>
 

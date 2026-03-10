@@ -108,7 +108,7 @@ export default function DataGrid({
         <table className="min-w-full text-sm">
           <thead>
             <tr>
-              <th className="sticky top-0 z-30 w-14 p-4 text-center border-r border-[var(--border)] bg-[var(--table-header-bg)]">
+              <th className="sticky top-0 left-0 z-40 w-14 p-4 text-center border-r border-[var(--border)] bg-[var(--table-header-bg)]">
                 <input
                   type="checkbox"
                   checked={selected.length === data.length && data.length > 0}
@@ -121,7 +121,6 @@ export default function DataGrid({
                   }
                 />
               </th>
-
               {columns.map((col) => (
                 <th
                   key={col.key}

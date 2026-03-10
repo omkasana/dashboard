@@ -209,3 +209,14 @@ export interface ModuleConfig {
   view?: ViewConfig;
   data?: any[];
 }
+
+export interface ProfileLayoutConfig {
+  type: "profile";
+  columns?: number; // ✅ outer grid columns — default 3
+  coverField?: string;
+  avatarField?: string;
+  titleField?: string;
+  subtitleField?: string;
+  badgeFields?: string[];
+  sections: ViewSection[];
+}

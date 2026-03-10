@@ -20,17 +20,34 @@ export default function ActionMenu({ id, moduleId }: Props) {
 
   /* ================= TOGGLE ================= */
 
+  const MENU_WIDTH = 180;
+  const MENU_HEIGHT = 130;
+
   const toggle = (e: React.MouseEvent) => {
     e.stopPropagation();
     if (!btnRef.current) return;
 
     const rect = btnRef.current.getBoundingClientRect();
 
-    setCoords({
-      top: rect.top + window.scrollY,
-      left: rect.right - 160,
-    });
+    let top = rect.bottom + 6;
+    let left = rect.right - MENU_WIDTH;
 
+    // OPEN ABOVE if not enough space below
+    if (window.innerHeight - rect.bottom < MENU_HEIGHT) {
+      top = rect.top - MENU_HEIGHT - 6;
+    }
+
+    // Prevent overflow right
+    if (left + MENU_WIDTH > window.innerWidth) {
+      left = window.innerWidth - MENU_WIDTH - 10;
+    }
+
+    // Prevent overflow left
+    if (left < 10) {
+      left = 10;
+    }
+
+    setCoords({ top, left });
     setOpen((prev) => !prev);
   };
 
