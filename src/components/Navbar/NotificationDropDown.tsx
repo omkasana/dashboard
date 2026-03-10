@@ -149,36 +149,6 @@ export function NotificationsDropdown() {
                     Dismiss
                   </span>
                 </div>
-
-                {/* DELETE */}
-                <div className="relative group/action">
-                  <button
-                    className="
-                p-1.5 rounded-md
-                bg-red-500/10 text-red-600
-                hover:bg-red-500/20
-                transition
-                "
-                  >
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </button>
-
-                  <span
-                    className="
-                pointer-events-none
-                absolute -bottom-7 left-1/2 -translate-x-1/2
-                whitespace-nowrap text-xs px-2 py-1 rounded-md
-                bg-white/80 dark:bg-zinc-900/90
-                backdrop-blur-md
-                border border-white/40 dark:border-white/10
-                shadow-md
-                opacity-0 group-hover/action:opacity-100
-                transition
-                "
-                  >
-                    Delete
-                  </span>
-                </div>
               </div>
             </div>
           ))}
