@@ -43,3 +43,7 @@ export const userData = Array.from({ length: 1000 }, (_, i) => {
     lastLogin: lastLoginDate.toISOString(),
   };
 });
+
+export function getUserById(id: string) {
+  return userData.find((u) => u.id === Number(id)) ?? null;
+}

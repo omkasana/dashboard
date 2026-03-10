@@ -1,7 +1,6 @@
 /* ================================
-FIELD TYPES
+   FIELD TYPES (Form Engine)
 ================================ */
-
 export type FieldType =
   | "text"
   | "number"
@@ -23,9 +22,113 @@ export type FieldType =
   | "datetime";
 
 /* ================================
-VIEW TYPES
+   VIEW FIELD TYPES (Record Engine)
 ================================ */
+export type ViewFieldType =
+  | "text"
+  | "email"
+  | "phone"
+  | "url"
+  | "textarea"
+  | "number"
+  | "decimal"
+  | "currency"
+  | "date"
+  | "time"
+  | "datetime"
+  | "status"
+  | "badge"
+  | "boolean"
+  | "tags"
+  | "multiselect"
+  | "avatar"
+  | "image"
+  | "file";
 
+/* ================================
+   VIEW FIELD SCHEMA
+================================ */
+export interface ViewField {
+  key: string;
+  label: string;
+  type: ViewFieldType;
+  prefix?: string;
+  suffix?: string;
+  dateFormat?: string;
+  badgeColors?: Record<string, string>;
+  span?: number; // how many columns this field takes inside a section
+}
+
+/* ================================
+   VIEW SECTIONS
+================================ */
+export interface ViewSection {
+  id: string;
+  title: string;
+  description?: string;
+  colSpan?: number; // how many grid columns this section spans
+  columns?: number; // internal field columns inside this section (default 2)
+  fields: string[];
+}
+
+/* ================================
+   VIEW LAYOUT CONFIGS
+================================ */
+export interface GridLayoutConfig {
+  type: "grid";
+  columns: number; // total grid columns e.g. 3
+  sections: ViewSection[];
+}
+
+export interface CardsLayoutConfig {
+  type: "cards";
+  columns?: number; // cards per row (default 3)
+  fields: string[];
+}
+
+export interface SidebarLayoutConfig {
+  type: "sidebar";
+  sidePosition?: "left" | "right"; // default "right"
+  sideWidth?: string; // e.g. "280px" default "260px"
+  mainSections: ViewSection[]; // sections in main area
+  sideSections: ViewSection[]; // sections in sidebar
+}
+
+export interface CompactLayoutConfig {
+  type: "compact";
+  columns?: number; // 1 or 2 column rows (default 1)
+  fields: string[];
+}
+
+export interface ProfileLayoutConfig {
+  type: "profile";
+  coverField?: string; // field key for cover image
+  avatarField?: string; // field key for avatar
+  titleField?: string; // field key for title/name
+  subtitleField?: string; // field key for subtitle
+  badgeFields?: string[]; // field keys shown as badges in header
+  sections: ViewSection[];
+}
+
+export type LayoutConfig =
+  | GridLayoutConfig
+  | CardsLayoutConfig
+  | SidebarLayoutConfig
+  | CompactLayoutConfig
+  | ProfileLayoutConfig;
+
+/* ================================
+   VIEW CONFIG
+================================ */
+export interface ViewConfig {
+  defaultLayout: string;
+  fields: ViewField[];
+  layouts: Record<string, LayoutConfig>;
+}
+
+/* ================================
+   VIEW TYPES (List Engine)
+================================ */
 export type ViewType =
   | "table"
   | "list"
@@ -38,139 +141,71 @@ export type ViewType =
   | "gallery";
 
 /* ================================
-FIELD OPTIONS
+   FIELD OPTIONS
 ================================ */
-
 export interface FieldOption {
   label: string;
   value: string | number;
 }
 
 /* ================================
-FORM FIELD
+   FORM FIELD
 ================================ */
-
 export interface FormField {
   name: string;
   label: string;
   type: FieldType;
-
-  /* UX */
   placeholder?: string;
   info?: string;
-
-  /* Validation */
   required?: boolean;
   errorMessage?: string;
-
   minLength?: number;
   maxLength?: number;
-
   min?: number;
   max?: number;
-
   pattern?: string;
-
-  /* Select / Options */
   options?: FieldOption[];
-
-  /* File */
   accept?: string;
   multiple?: boolean;
-
-  /* Default value */
   defaultValue?: any;
 }
 
 /* ================================
-FORM SECTION
+   FORM SECTION
 ================================ */
-
 export interface FormSection {
   id: string;
-
   title: string;
-
   description?: string;
-
   collapsible?: boolean;
   defaultOpen?: boolean;
-
   columns?: number;
-
   fields: FormField[];
 }
 
 /* ================================
-MODULE CONFIG
+   MODULE CONFIG
 ================================ */
-
 export interface ModuleConfig {
   id: string;
-
   title: string;
-
   description?: string;
-
   actions?: any;
-
   search?: any;
-
   filters?: any;
-
-  /* list views */
   views?: {
     enabled?: boolean;
     defaultView?: ViewType;
     available?: ViewType[];
   };
-
   table?: any;
-
   grid?: any;
-
   kanban?: any;
-
   calendar?: any;
-
-  /* form engine */
   form?: {
     add?: FormSection[];
     edit?: FormSection[];
   };
-
-  /* detail record page */
   view?: ViewConfig;
-
   data?: any[];
-}
-
-//more types for view detail page vgeifevws
-export interface ViewSection {
-  id: string;
-  title?: string;
-  fields: string[];
-  colSpan?: number;
-}
-
-export interface ViewLayout {
-  type: "grid" | "cards" | "sidebar" | "compact";
-  columns?: number;
-  sections?: ViewSection[];
-  fields?: string[];
-  main?: string[];
-  side?: string[];
-}
-
-export interface ViewToolbar {
-  search?: boolean;
-  export?: boolean;
-  layoutSwitch?: boolean;
-  actions?: ("edit" | "delete")[];
-}
-
-export interface ViewConfig {
-  defaultLayout: string;
-  layouts: Record<string, ViewLayout>;
-  toolbar?: ViewToolbar;
 }
