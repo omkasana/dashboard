@@ -1,17 +1,15 @@
 "use client";
 
 import { useState, useEffect, useRef, KeyboardEvent } from "react";
-import { Calendar, ChevronLeft, ChevronRight } from "lucide-react";
-
+import { createPortal } from "react-dom";
 import FieldWrapper from "../FieldWrapper";
-
-import { inputClass } from "@/lib/inputStyle";
-import { glassInput } from "@/lib/formStyle";
 import { FieldComponentProps } from "@/types/formFieldProps.ts";
+import { fieldConfig as fc } from "@/lib/fieldConfig";
 
-const days = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+// ─── Constants ────────────────────────────────────────────────────────────────
 
-const months = [
+const DAYS = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const MONTHS = [
   "January",
   "February",
   "March",
@@ -25,8 +23,242 @@ const months = [
   "November",
   "December",
 ];
+const YEARS = Array.from({ length: 100 }, (_, i) => 1950 + i);
 
-const years = Array.from({ length: 80 }, (_, i) => 1980 + i);
+// ─── Icons ────────────────────────────────────────────────────────────────────
+
+function CalendarIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-4 h-4 flex-shrink-0"
+    >
+      <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
+      <line x1="16" y1="2" x2="16" y2="6" />
+      <line x1="8" y1="2" x2="8" y2="6" />
+      <line x1="3" y1="10" x2="21" y2="10" />
+    </svg>
+  );
+}
+
+function ClockIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={1.8}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-4 h-4 flex-shrink-0"
+    >
+      <circle cx="12" cy="12" r="10" />
+      <polyline points="12 6 12 12 16 14" />
+    </svg>
+  );
+}
+
+function ChevronLeft() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-4 h-4"
+    >
+      <polyline points="15 18 9 12 15 6" />
+    </svg>
+  );
+}
+
+function ChevronRight() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-4 h-4"
+    >
+      <polyline points="9 18 15 12 9 6" />
+    </svg>
+  );
+}
+
+function XIcon() {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth={2.2}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      className="w-3.5 h-3.5"
+    >
+      <line x1="18" y1="6" x2="6" y2="18" />
+      <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+  );
+}
+
+// ─── Time Picker sub-component ────────────────────────────────────────────────
+
+interface TimePickerProps {
+  hour: number;
+  minute: number;
+  ampm: string;
+  setHour: (h: number) => void;
+  setMinute: (m: number) => void;
+  setAmpm: (a: string) => void;
+}
+
+function TimePicker({
+  hour,
+  minute,
+  ampm,
+  setHour,
+  setMinute,
+  setAmpm,
+}: TimePickerProps) {
+  const segClass = `
+    flex items-center justify-center
+    w-8 h-8 rounded-lg text-sm font-mono font-medium
+    border border-border bg-muted/60
+    text-foreground select-none cursor-pointer
+    transition-colors hover:bg-muted active:scale-95
+  `;
+
+  const bump =
+    (val: number, max: number, min: number, set: (n: number) => void) =>
+    (delta: number) =>
+      set(((val - min + delta + (max - min + 1)) % (max - min + 1)) + min);
+
+  return (
+    <div
+      className="flex items-center justify-center gap-2 pt-3 mt-3
+      border-t border-border"
+    >
+      <span className={`${fc.prefixIdle}`}>
+        <ClockIcon />
+      </span>
+
+      {/* Hour */}
+      <div className="flex flex-col items-center gap-0.5">
+        <button
+          type="button"
+          onClick={() => bump(hour, 12, 1, setHour)(1)}
+          className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-3 h-3"
+          >
+            <polyline points="18 15 12 9 6 15" />
+          </svg>
+        </button>
+        <span className={segClass}>{String(hour).padStart(2, "0")}</span>
+        <button
+          type="button"
+          onClick={() => bump(hour, 12, 1, setHour)(-1)}
+          className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-3 h-3"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+      </div>
+
+      <span className="text-lg font-mono text-muted-foreground mb-0.5 select-none">
+        :
+      </span>
+
+      {/* Minute */}
+      <div className="flex flex-col items-center gap-0.5">
+        <button
+          type="button"
+          onClick={() => bump(minute, 59, 0, setMinute)(1)}
+          className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-3 h-3"
+          >
+            <polyline points="18 15 12 9 6 15" />
+          </svg>
+        </button>
+        <span className={segClass}>{String(minute).padStart(2, "0")}</span>
+        <button
+          type="button"
+          onClick={() => bump(minute, 59, 0, setMinute)(-1)}
+          className="text-muted-foreground hover:text-foreground transition-colors p-0.5"
+        >
+          <svg
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="w-3 h-3"
+          >
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </button>
+      </div>
+
+      {/* AM / PM toggle */}
+      <div className="flex flex-col gap-0.5 ml-1">
+        {["AM", "PM"].map((a) => (
+          <button
+            key={a}
+            type="button"
+            onClick={() => setAmpm(a)}
+            className={`px-2 py-1 rounded-lg text-[11px] font-semibold
+              transition-all duration-150 border
+              ${
+                ampm === a
+                  ? "bg-primary text-primary-foreground border-primary"
+                  : "bg-muted border-border text-muted-foreground hover:text-foreground"
+              }`}
+          >
+            {a}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ─── Main ─────────────────────────────────────────────────────────────────────
 
 export default function DateField({
   field,
@@ -34,96 +266,224 @@ export default function DateField({
   value,
   onChange,
 }: FieldComponentProps) {
-  const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   const isDate = field.type === "date";
   const isTime = field.type === "time";
   const isDateTime = field.type === "datetime";
 
-  const [open, setOpen] = useState(false);
-  const [highlight, setHighlight] = useState<number | null>(null);
-
   const today = new Date();
+  const [open, setOpen] = useState(false);
+  const [rect, setRect] = useState<DOMRect | null>(null);
+  const [highlight, setHighlight] = useState<number | null>(null);
+  const [focused, setFocused] = useState(false);
 
   const [month, setMonth] = useState(today.getMonth());
   const [year, setYear] = useState(today.getFullYear());
+  const [hour, setHour] = useState(12);
+  const [minute, setMinute] = useState(0);
+  const [ampm, setAmpm] = useState<"AM" | "PM">("PM");
 
-  const [hour, setHour] = useState(6);
-  const [minute, setMinute] = useState(30);
-  const [ampm, setAmpm] = useState("PM");
+  const selected = value ? new Date(value as string) : null;
 
-  const selected = value ? new Date(value) : null;
+  // Sync calendar view to selected value
+  useEffect(() => {
+    if (selected) {
+      setMonth(selected.getMonth());
+      setYear(selected.getFullYear());
+    }
+  }, [value]);
 
+  // Build calendar grid
   const firstDay = new Date(year, month, 1).getDay();
   const totalDays = new Date(year, month + 1, 0).getDate();
+  const dates: (Date | null)[] = [
+    ...Array(firstDay).fill(null),
+    ...Array.from(
+      { length: totalDays },
+      (_, i) => new Date(year, month, i + 1),
+    ),
+  ];
 
-  const dates: (Date | null)[] = [];
-
-  for (let i = 0; i < firstDay; i++) dates.push(null);
-  for (let i = 1; i <= totalDays; i++) dates.push(new Date(year, month, i));
-
-  /* convert custom time */
-
+  // 24h time from 12h picker
   const getTime = () => {
     let h = hour;
-
     if (ampm === "PM" && h !== 12) h += 12;
     if (ampm === "AM" && h === 12) h = 0;
-
     return { h, m: minute };
   };
 
-  /* select date */
-
   const selectDate = (d: Date) => {
+    const copy = new Date(d);
     if (isDate) {
-      onChange?.(field.name, d.toISOString().split("T")[0]);
-    }
-
-    if (isDateTime) {
+      onChange?.(field.name, copy.toISOString().split("T")[0]);
+      setOpen(false);
+    } else if (isDateTime) {
       const { h, m } = getTime();
-
-      d.setHours(h);
-      d.setMinutes(m);
-
-      onChange?.(field.name, d.toISOString());
+      copy.setHours(h, m, 0, 0);
+      onChange?.(field.name, copy.toISOString());
+      // Don't close — let user adjust time too
     }
+  };
 
+  const confirmDateTime = () => {
+    if (selected) {
+      const { h, m } = getTime();
+      const copy = new Date(selected);
+      copy.setHours(h, m, 0, 0);
+      onChange?.(field.name, copy.toISOString());
+    }
     setOpen(false);
   };
 
-  /* close on outside click */
+  const clear = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    onChange?.(field.name, "");
+  };
 
+  // Open / position
+  const openDropdown = () => {
+    if (!triggerRef.current) return;
+    setRect(triggerRef.current.getBoundingClientRect());
+    setOpen(true);
+  };
+
+  // Reposition on scroll / resize
   useEffect(() => {
-    const close = (e: MouseEvent) => {
-      if (!ref.current?.contains(e.target as Node)) {
-        setOpen(false);
-      }
+    if (!open) return;
+    const update = () => {
+      if (triggerRef.current)
+        setRect(triggerRef.current.getBoundingClientRect());
     };
+    window.addEventListener("scroll", update, true);
+    window.addEventListener("resize", update);
+    return () => {
+      window.removeEventListener("scroll", update, true);
+      window.removeEventListener("resize", update);
+    };
+  }, [open]);
 
-    document.addEventListener("mousedown", close);
-
-    return () => document.removeEventListener("mousedown", close);
+  // Outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      const t = e.target as Node;
+      if (!triggerRef.current?.contains(t) && !dropdownRef.current?.contains(t))
+        setOpen(false);
+    };
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
   }, []);
 
-  /* keyboard navigation */
-
-  const handleKey = (e: KeyboardEvent) => {
-    if (!open) return;
-
-    if (e.key === "Escape") setOpen(false);
-
-    if (e.key === "ArrowRight") setHighlight((h) => (h ?? 0) + 1);
-    if (e.key === "ArrowLeft") setHighlight((h) => (h ?? 0) - 1);
-    if (e.key === "ArrowDown") setHighlight((h) => (h ?? 0) + 7);
-    if (e.key === "ArrowUp") setHighlight((h) => (h ?? 0) - 7);
-
+  // Keyboard nav
+  const handleKey = (e: KeyboardEvent<HTMLDivElement>) => {
+    if (!open) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openDropdown();
+      }
+      return;
+    }
+    if (e.key === "Escape") {
+      setOpen(false);
+      return;
+    }
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      setHighlight((h) => Math.min((h ?? -1) + 1, dates.length - 1));
+    }
+    if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      setHighlight((h) => Math.max((h ?? 1) - 1, 0));
+    }
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setHighlight((h) => Math.min((h ?? -7) + 7, dates.length - 1));
+    }
+    if (e.key === "ArrowUp") {
+      e.preventDefault();
+      setHighlight((h) => Math.max((h ?? 7) - 7, 0));
+    }
     if (e.key === "Enter" && highlight !== null) {
       const d = dates[highlight];
       if (d) selectDate(d);
     }
   };
 
+  // Display text
+  const displayValue = (() => {
+    if (!selected) return null;
+    if (isDate)
+      return selected.toLocaleDateString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      });
+    if (isDateTime)
+      return selected.toLocaleString("en-IN", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+    return null;
+  })();
+
+  const borderCls = error
+    ? fc.error.border
+    : open || focused
+      ? fc.focus
+      : fc.idle;
+
+  // ── Time-only field ──────────────────────────────────────────────────────────
+  if (isTime) {
+    const commitTime = () => {
+      const { h, m } = getTime();
+      onChange?.(
+        field.name,
+        `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`,
+      );
+    };
+    return (
+      <FieldWrapper
+        label={field.label}
+        required={field.required}
+        info={field.info}
+        error={error}
+      >
+        <div
+          className={`flex items-center rounded-xl overflow-hidden
+          transition-all duration-200 ${fc.base} ${borderCls}`}
+        >
+          <span className={`pl-3 pr-2 shrink-0 ${fc.prefixIdle}`}>
+            <ClockIcon />
+          </span>
+          <div className="flex-1 flex items-center gap-1.5 py-2 px-1">
+            <TimePicker
+              hour={hour}
+              minute={minute}
+              ampm={ampm}
+              setHour={(h) => {
+                setHour(h);
+                commitTime();
+              }}
+              setMinute={(m) => {
+                setMinute(m);
+                commitTime();
+              }}
+              setAmpm={(a) => {
+                setAmpm(a as "AM" | "PM");
+                commitTime();
+              }}
+            />
+          </div>
+        </div>
+      </FieldWrapper>
+    );
+  }
+
+  // ── Date / DateTime field ────────────────────────────────────────────────────
   return (
     <FieldWrapper
       label={field.label}
@@ -131,199 +491,238 @@ export default function DateField({
       info={field.info}
       error={error}
     >
-      <div ref={ref} className="relative" onKeyDown={handleKey} tabIndex={0}>
-        {/* TIME ONLY */}
+      <div
+        ref={triggerRef}
+        tabIndex={0}
+        onKeyDown={handleKey}
+        onFocus={() => setFocused(true)}
+        onBlur={() => setFocused(false)}
+      >
+        {/* Trigger button */}
+        <div
+          onClick={() => (open ? setOpen(false) : openDropdown())}
+          className={`
+            flex items-center gap-2 px-3 py-2.5 sm:py-3
+            rounded-xl cursor-pointer select-none
+            transition-all duration-200
+            ${fc.base} ${borderCls}
+          `}
+        >
+          <span
+            className={`shrink-0 transition-colors ${open ? fc.prefixFocused : fc.prefixIdle}`}
+          >
+            <CalendarIcon />
+          </span>
 
-        {isTime && (
-          <div className="flex items-center gap-2">
-            <select
-              value={hour}
-              onChange={(e) => setHour(Number(e.target.value))}
-              className="px-2 py-1 rounded-md bg-background/60 border border-border/40 text-xs"
-            >
-              {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                <option key={h}>{h}</option>
-              ))}
-            </select>
+          <span
+            className={`flex-1 text-sm ${displayValue ? fc.inputText : fc.inputPlaceholder}`}
+          >
+            {displayValue ??
+              field.placeholder ??
+              (isDateTime ? "Select date & time" : "Select date")}
+          </span>
 
-            <span>:</span>
-
-            <select
-              value={minute}
-              onChange={(e) => setMinute(Number(e.target.value))}
-              className="px-2 py-1 rounded-md bg-background/60 border border-border/40 text-xs"
-            >
-              {Array.from({ length: 60 }, (_, i) => i).map((m) => (
-                <option key={m}>{m.toString().padStart(2, "0")}</option>
-              ))}
-            </select>
-
-            <select
-              value={ampm}
-              onChange={(e) => setAmpm(e.target.value)}
-              className="px-2 py-1 rounded-md bg-background/60 border border-border/40 text-xs"
-            >
-              <option>AM</option>
-              <option>PM</option>
-            </select>
-          </div>
-        )}
-
-        {/* DATE + DATETIME */}
-
-        {!isTime && (
-          <>
+          {selected && (
             <button
               type="button"
-              onClick={() => setOpen(!open)}
-              className={`${inputClass} flex items-center justify-between`}
-              style={glassInput}
+              onClick={clear}
+              className={`shrink-0 transition-colors ${fc.prefixIdle} hover:text-foreground`}
             >
-              {selected ? (
-                selected.toLocaleDateString()
-              ) : (
-                <span className="text-muted-foreground">Select date</span>
-              )}
-
-              <Calendar size={16} />
+              <XIcon />
             </button>
+          )}
+        </div>
 
-            {open && (
-              <div
-                className="
-                    absolute mt-2
-                    w-[320px]
-                    rounded-xl
-                    border border-border/40
-                    bg-background/95
-                    backdrop-blur-xl
-                    shadow-xl
-                    p-3
-                    z-999
-"
-              >
-                {/* header */}
+        {/* Portal dropdown */}
+        {open &&
+          rect &&
+          createPortal(
+            <div
+              ref={dropdownRef}
+              style={{
+                position: "fixed",
+                top: rect.bottom + 6,
+                left: rect.left,
+                width: Math.max(rect.width, 300),
+                zIndex: 9999,
+              }}
+              className={`
+              rounded-xl border shadow-xl shadow-black/10
+              backdrop-blur-xl p-3
+              bg-popover border-border
+            `}
+            >
+              {/* ── Month / Year header ── */}
+              <div className="flex items-center gap-1.5 mb-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (month === 0) {
+                      setMonth(11);
+                      setYear((y) => y - 1);
+                    } else setMonth((m) => m - 1);
+                  }}
+                  className={`flex items-center justify-center w-7 h-7 rounded-lg
+                  border border-border transition-colors
+                  ${fc.prefixIdle} hover:text-foreground hover:bg-muted`}
+                >
+                  <ChevronLeft />
+                </button>
 
-                <div className="flex items-center gap-2 mb-3">
-                  <button
-                    type="button"
-                    onClick={() => setMonth((m) => (m === 0 ? 11 : m - 1))}
-                  >
-                    <ChevronLeft size={16} />
-                  </button>
-
+                {/* Month select */}
+                <div className="relative flex-1">
                   <select
                     value={month}
                     onChange={(e) => setMonth(Number(e.target.value))}
-                    className="text-xs bg-transparent"
+                    className="w-full appearance-none bg-muted/60 border border-border
+                    rounded-lg px-2 py-1 text-xs font-medium text-foreground
+                    focus:outline-none cursor-pointer"
                   >
-                    {months.map((m, i) => (
+                    {MONTHS.map((m, i) => (
                       <option key={i} value={i}>
                         {m}
                       </option>
                     ))}
                   </select>
+                </div>
 
+                {/* Year select */}
+                <div className="relative w-20">
                   <select
                     value={year}
                     onChange={(e) => setYear(Number(e.target.value))}
-                    className="text-xs bg-transparent"
+                    className="w-full appearance-none bg-muted/60 border border-border
+                    rounded-lg px-2 py-1 text-xs font-medium text-foreground
+                    focus:outline-none cursor-pointer"
                   >
-                    {years.map((y) => (
-                      <option key={y}>{y}</option>
+                    {YEARS.map((y) => (
+                      <option key={y} value={y}>
+                        {y}
+                      </option>
                     ))}
                   </select>
+                </div>
 
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (month === 11) {
+                      setMonth(0);
+                      setYear((y) => y + 1);
+                    } else setMonth((m) => m + 1);
+                  }}
+                  className={`flex items-center justify-center w-7 h-7 rounded-lg
+                  border border-border transition-colors
+                  ${fc.prefixIdle} hover:text-foreground hover:bg-muted`}
+                >
+                  <ChevronRight />
+                </button>
+              </div>
+
+              {/* ── Weekday labels ── */}
+              <div className="grid grid-cols-7 mb-1">
+                {DAYS.map((d) => (
+                  <div
+                    key={d}
+                    className="text-center text-[11px] font-medium
+                  text-muted-foreground py-1"
+                  >
+                    {d}
+                  </div>
+                ))}
+              </div>
+
+              {/* ── Date grid ── */}
+              <div className="grid grid-cols-7 gap-0.5">
+                {dates.map((d, i) => {
+                  if (!d) return <div key={i} />;
+
+                  const isToday = d.toDateString() === today.toDateString();
+                  const isSelected =
+                    selected && d.toDateString() === selected.toDateString();
+                  const isHL = highlight === i;
+
+                  return (
+                    <button
+                      key={i}
+                      type="button"
+                      onMouseEnter={() => setHighlight(i)}
+                      onClick={() => selectDate(d)}
+                      className={`
+                      relative h-8 w-full flex items-center justify-center
+                      text-xs rounded-lg transition-all duration-100
+                      ${
+                        isSelected
+                          ? "bg-primary text-primary-foreground font-semibold"
+                          : isHL
+                            ? "bg-muted text-foreground"
+                            : "hover:bg-muted text-foreground"
+                      }
+                    `}
+                    >
+                      {d.getDate()}
+                      {/* Today dot */}
+                      {isToday && !isSelected && (
+                        <span
+                          className="absolute bottom-1 left-1/2 -translate-x-1/2
+                        w-1 h-1 rounded-full bg-primary"
+                        />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* ── Time picker (datetime) ── */}
+              {isDateTime && (
+                <TimePicker
+                  hour={hour}
+                  minute={minute}
+                  ampm={ampm}
+                  setHour={setHour}
+                  setMinute={setMinute}
+                  setAmpm={(a) => setAmpm(a as "AM" | "PM")}
+                />
+              )}
+
+              {/* ── Footer ── */}
+              <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const t = new Date();
+                    setMonth(t.getMonth());
+                    setYear(t.getFullYear());
+                    selectDate(t);
+                  }}
+                  className="text-xs text-primary hover:underline font-medium"
+                >
+                  Today
+                </button>
+
+                {isDateTime ? (
                   <button
                     type="button"
-                    onClick={() => setMonth((m) => (m === 11 ? 0 : m + 1))}
+                    onClick={confirmDateTime}
+                    className="text-xs px-3 py-1.5 rounded-lg font-medium
+                    bg-primary text-primary-foreground
+                    hover:opacity-90 transition-opacity"
                   >
-                    <ChevronRight size={16} />
+                    Confirm
                   </button>
-                </div>
-
-                {/* weekdays */}
-
-                <div className="grid grid-cols-7 text-xs text-muted-foreground mb-2">
-                  {days.map((d) => (
-                    <div key={d} className="text-center">
-                      {d}
-                    </div>
-                  ))}
-                </div>
-
-                {/* dates */}
-
-                <div className="grid grid-cols-7 gap-1">
-                  {dates.map((d, i) => {
-                    if (!d) return <div key={i} />;
-
-                    const active =
-                      selected && d.toDateString() === selected.toDateString();
-
-                    const highlighted = highlight === i;
-
-                    return (
-                      <button
-                        key={i}
-                        type="button"
-                        onClick={() => selectDate(d)}
-                        className={`
-                            h-8 w-8
-                            text-xs
-                            rounded-md
-                            transition
-                            hover:bg-primary/10
-                            ${active ? "bg-primary text-white" : ""}
-                            ${highlighted ? "ring-2 ring-primary" : ""}
-`}
-                      >
-                        {d.getDate()}
-                      </button>
-                    );
-                  })}
-                </div>
-
-                {/* time selector */}
-
-                {isDateTime && (
-                  <div className="flex items-center gap-2 mt-3">
-                    <select
-                      value={hour}
-                      onChange={(e) => setHour(Number(e.target.value))}
-                      className="px-2 py-1 rounded-md bg-background/60 border border-border/40 text-xs"
-                    >
-                      {Array.from({ length: 12 }, (_, i) => i + 1).map((h) => (
-                        <option key={h}>{h}</option>
-                      ))}
-                    </select>
-
-                    <span>:</span>
-
-                    <select
-                      value={minute}
-                      onChange={(e) => setMinute(Number(e.target.value))}
-                      className="px-2 py-1 rounded-md bg-background/60 border border-border/40 text-xs"
-                    >
-                      {Array.from({ length: 60 }, (_, i) => i).map((m) => (
-                        <option key={m}>{m.toString().padStart(2, "0")}</option>
-                      ))}
-                    </select>
-
-                    <select
-                      value={ampm}
-                      onChange={(e) => setAmpm(e.target.value)}
-                      className="px-2 py-1 rounded-md bg-background/60 border border-border/40 text-xs"
-                    >
-                      <option>AM</option>
-                      <option>PM</option>
-                    </select>
-                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => setOpen(false)}
+                    className={`text-xs ${fc.dropdown.clearBtn}`}
+                  >
+                    Close
+                  </button>
                 )}
               </div>
-            )}
-          </>
-        )}
+            </div>,
+            document.body,
+          )}
       </div>
     </FieldWrapper>
   );

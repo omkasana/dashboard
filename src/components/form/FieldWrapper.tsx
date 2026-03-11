@@ -33,7 +33,7 @@ export default function FieldWrapper({
   };
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 w-full min-w-0">
       {label && (
         <div className="flex items-center gap-2">
           <label className="text-sm font-medium text-foreground/80">

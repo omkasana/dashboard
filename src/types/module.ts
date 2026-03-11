@@ -6,7 +6,10 @@ export type FieldType =
   | "number"
   | "decimal"
   | "email"
+  | "password"
   | "phone"
+  | "url"
+  | "slug"
   | "radio"
   | "checkbox"
   | "boolean"
@@ -16,13 +19,31 @@ export type FieldType =
   | "tags"
   | "textarea"
   | "editor"
+  | "markdown"
+  | "code"
   | "file"
+  | "image"
+  | "avatar"
   | "date"
   | "time"
   | "datetime"
+  | "range"
+  | "slider"
+  | "rating"
+  | "currency"
+  | "color"
+  | "relation"
+  | "lookup"
+  | "json"
+  | "key-value"
+  | "map"
+  | "location"
   | "object"
   | "array"
-  |"email-builder";
+  | "divider"
+  | "heading"
+  | "html"
+  | "email-builder";
 
 /* ================================
    VIEW FIELD TYPES (Record Engine)
@@ -162,6 +183,7 @@ export type ViewType =
    FIELD OPTIONS
 ================================ */
 export interface FieldOption {
+  description?: any;
   label: string;
   value: string | number;
 }
@@ -170,6 +192,19 @@ export interface FieldOption {
    FORM FIELD
 ================================ */
 export interface FormField {
+  offLabel?: string;
+  onLabel?: string;
+  level?: 1 | 2 | 3 | 4;
+  description?: any;
+  step?: number;
+  prefix?: string;
+  suffix?: string; // ← fix here
+  showLabels?: boolean;
+  layout?: "row" | "col";
+  maxTags?: number;
+  rows?: number;
+  autoComplete?: string;
+
   name: string;
   label: string;
   type: FieldType;
@@ -195,16 +230,10 @@ export interface FormField {
 
   defaultValue?: any;
 
-  /* =========================
-     NESTED / ARRAY SUPPORT
-  ========================= */
-
-  fields?: FormField[];      // for object & array
-
-  minItems?: number;         // for array
+  fields?: FormField[];
+  minItems?: number;
   maxItems?: number;
-
-  columns?: number;          // nested layout
+  columns?: number;
 }
 
 /* ================================

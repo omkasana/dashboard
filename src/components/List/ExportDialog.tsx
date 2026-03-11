@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/button";
 import { exportData, type ExportFormat } from "@/lib/exportUtils";
+import { Button } from "../UI/Button";
 
 const POPULAR_FORMATS: { id: ExportFormat; label: string }[] = [
   { id: "json", label: "JSON" },

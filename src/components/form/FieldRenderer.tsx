@@ -10,7 +10,6 @@ import TextAreaField from "./fields/TextAreaField";
 import TagsField from "./fields/TagsField";
 import FileUploadField from "./fields/FileUploadField";
 import DateField from "./fields/DateField";
-
 import RadioField from "./fields/RadioField";
 import CheckboxField from "./fields/CheckboxField";
 import BooleanField from "./fields/BooleanField";
@@ -18,6 +17,40 @@ import ArrayField from "./fields/ArrayField";
 import ObjectField from "./fields/ObjectField";
 
 import EmailBuilderField from "./fields/EmailBuilder";
+import NumberField from "./fields/NumberField";
+import DecimalField from "./fields/DecimalField";
+import PasswordField from "./fields/PasswordField";
+import UrlField from "./fields/UrlField";
+import RangeField from "./fields/RangeField";
+import ColorField from "./fields/ColorField";
+import DividerField from "./fields/DividerField";
+import HeadingField from "./fields/HeadingField";
+
+const fieldMap: Record<string, any> = {
+  text: TextField,
+  number: NumberField,
+  decimal: DecimalField,
+  password: PasswordField,
+  url: UrlField,
+  textarea: TextAreaField,
+  select: SelectField,
+  checkbox: CheckboxField,
+  file: FileUploadField,
+  image: FileUploadField,
+  date: DateField,
+  range: RangeField,
+  color: ColorField,
+  divider: DividerField,
+  heading: HeadingField,
+  "email-builder": EmailBuilderField,
+  radio: RadioField,
+  boolean: BooleanField,
+  tags: TagsField,
+  object: ObjectField,
+  array: ArrayField,
+  email: EmailField,
+  phone: PhoneField,
+};
 
 interface Props {
   field: FormField;
@@ -32,152 +65,13 @@ export default function FieldRenderer({
   value,
   onChange,
 }: Props) {
-  switch (field.type) {
-    case "text":
-    case "number":
-    case "decimal":
-      return (
-        <TextField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
+  const Component = fieldMap[field.type];
 
-    case "email":
-      return (
-        <EmailField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "phone":
-      return (
-        <PhoneField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "select":
-    case "multiselect":
-    case "search-select":
-      return (
-        <SelectField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "radio":
-      return (
-        <RadioField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "checkbox":
-      return (
-        <CheckboxField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "boolean":
-      return (
-        <BooleanField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "textarea":
-      return (
-        <TextAreaField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "tags":
-      return (
-        <TagsField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "file":
-      return (
-        <FileUploadField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "date":
-    case "time":
-    case "datetime":
-      return (
-        <DateField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-    case "array":
-      return (
-        <ArrayField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-
-    case "object":
-      return (
-        <ObjectField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-      
-case "email-builder":
-      return (
-        <EmailBuilderField
-          field={field}
-          error={error}
-          value={value}
-          onChange={onChange}
-        />
-      );
-    default:
-      return null;
+  if (!Component) {
+    return <div>Unsupported field: {field.type}</div>;
   }
+
+  return (
+    <Component field={field} error={error} value={value} onChange={onChange} />
+  );
 }

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Button } from "@/components/UI/Button";
+import { Button } from "@/components/UI/button";
 
 interface Props {
   model: string;

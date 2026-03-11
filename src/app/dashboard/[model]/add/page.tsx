@@ -1,4 +1,4 @@
-import FormEngine from "@/components/form/FormEngine";
+import FormEngine from "@/components/Form/FormEngine";
 import { modulesRegistry } from "@/config/modules.registry";
 
 export default async function AddPage({ params }: any) {
