@@ -106,7 +106,7 @@ export default function TagsField({
         onClick={() => inputRef.current?.focus()}
         className={`
           flex flex-wrap items-center gap-1.5
-          min-h-[42px] sm:min-h-[46px]
+          min-h-10.5 sm:min-h-11.5
           px-2.5 py-2 rounded-xl cursor-text
           transition-all duration-200
           ${fc.base} ${borderCls}
@@ -128,7 +128,7 @@ export default function TagsField({
               rounded-md text-xs font-medium shrink-0
               bg-primary/10 text-primary
               border border-primary/20
-              max-w-[160px]"
+              max-w-40"
           >
             <span className="truncate">{tag}</span>
             <button
@@ -137,7 +137,7 @@ export default function TagsField({
                 e.stopPropagation();
                 removeTag(tag);
               }}
-              className="flex-shrink-0 opacity-50 hover:opacity-100
+              className="shrink-0 opacity-50 hover:opacity-100
                 transition-opacity rounded-sm p-0.5"
             >
               <XIcon />
@@ -161,7 +161,7 @@ export default function TagsField({
             placeholder={
               tags.length === 0 ? (field.placeholder ?? "Add tags…") : ""
             }
-            className={`flex-1 min-w-[80px] bg-transparent outline-none
+            className={`flex-1 min-w-20 bg-transparent outline-none
               text-sm py-0.5
               ${fc.inputText} ${fc.inputPlaceholder}
               ${duplicate ? "text-destructive" : ""}`}

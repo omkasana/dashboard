@@ -40,7 +40,7 @@ export default function BooleanField({
         </div>
 
         {/* Right: status label + toggle */}
-        <div className="flex items-center gap-2.5 flex-shrink-0">
+        <div className="flex items-center gap-2.5 shrink-0">
           <span
             className={`text-[11px] font-medium transition-colors duration-200
             ${enabled ? "text-primary" : fc.counter.normal}`}
@@ -58,7 +58,7 @@ export default function BooleanField({
             aria-label={field.label}
             onClick={() => onChange?.(field.name, !enabled)}
             className={`
-              relative inline-flex h-6 w-11 flex-shrink-0 items-center
+              relative inline-flex h-6 w-11 shrink-0 items-center
               rounded-full border transition-all duration-300 focus:outline-none
               focus-visible:ring-2 focus-visible:ring-primary/40
               ${

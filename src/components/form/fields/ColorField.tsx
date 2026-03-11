@@ -191,7 +191,7 @@ export default function ColorField({
       >
         {/* Swatch */}
         <span
-          className="w-7 h-7 rounded-lg flex-shrink-0 border border-black/10 shadow-sm
+          className="w-7 h-7 rounded-lg shrink-0 border border-black/10 shadow-sm
             transition-all duration-200"
           style={{ background: currentHex }}
         />
@@ -326,7 +326,7 @@ export default function ColorField({
               />
               {isValidHex(hexInput) && (
                 <span
-                  className="w-5 h-5 rounded-md flex-shrink-0 border border-black/10"
+                  className="w-5 h-5 rounded-md shrink-0 border border-black/10"
                   style={{ background: hexInput }}
                 />
               )}

@@ -52,7 +52,7 @@ export default function RadioField({
               {/* Custom radio circle */}
               <span
                 className={`
-                flex-shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center
+                shrink-0 w-4 h-4 rounded-full border-2 flex items-center justify-center
                 transition-all duration-200
                 ${
                   isActive

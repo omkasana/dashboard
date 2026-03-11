@@ -36,7 +36,7 @@ function EyeIcon() {
       strokeWidth={1.8}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="w-[18px] h-[18px]"
+      className="w-4.5 h-4.5"
     >
       <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z" />
       <circle cx="12" cy="12" r="3" />
@@ -53,7 +53,7 @@ function EyeOffIcon() {
       strokeWidth={1.8}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="w-[18px] h-[18px]"
+      className="w-4.5 h-4.5"
     >
       <path d="M17.94 17.94A10.94 10.94 0 0 1 12 19c-7 0-11-7-11-7a18.45 18.45 0 0 1 5.06-5.94" />
       <path d="M9.9 4.24A9.12 9.12 0 0 1 12 5c7 0 11 7 11 7a18.5 18.5 0 0 1-2.16 3.19" />
@@ -195,7 +195,7 @@ export default function PasswordField({
                 {([1, 2, 3, 4] as StrengthLevel[]).map((seg) => (
                   <div
                     key={seg}
-                    className={`relative flex-1 h-[3px] rounded-full overflow-hidden ${fc.strengthTrack}`}
+                    className={`relative flex-1 h-0.75 rounded-full overflow-hidden ${fc.strengthTrack}`}
                   >
                     <div
                       className={`absolute inset-0 rounded-full transition-all duration-500
@@ -217,7 +217,7 @@ export default function PasswordField({
                     transition-colors duration-200 ${met ? fc.ruleActive : fc.ruleInactive}`}
                   >
                     <span
-                      className={`w-1.5 h-1.5 rounded-full flex-shrink-0 ${met ? fc.ruleDot : fc.ruleDotOff}`}
+                      className={`w-1.5 h-1.5 rounded-full shrink-0 ${met ? fc.ruleDot : fc.ruleDotOff}`}
                     />
                     {label}
                   </span>

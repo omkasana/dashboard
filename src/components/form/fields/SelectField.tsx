@@ -15,7 +15,7 @@ function ChevronIcon({ open }: { open: boolean }) {
       strokeWidth={2}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className={`w-4 h-4 flex-shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+      className={`w-4 h-4 shrink-0 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
     >
       <polyline points="6 9 12 15 18 9" />
     </svg>
@@ -48,7 +48,7 @@ function SearchIcon() {
       strokeWidth={1.8}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="w-3.5 h-3.5 flex-shrink-0"
+      className="w-3.5 h-3.5 shrink-0"
     >
       <circle cx="11" cy="11" r="8" />
       <line x1="21" y1="21" x2="16.65" y2="16.65" />
@@ -65,7 +65,7 @@ function CheckMark() {
       strokeWidth={2.5}
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="w-3.5 h-3.5 flex-shrink-0"
+      className="w-3.5 h-3.5 shrink-0"
     >
       <polyline points="20 6 9 17 4 12" />
     </svg>
@@ -204,7 +204,7 @@ export default function SelectField({
         onKeyDown={handleKey}
         onFocus={() => setFocused(true)}
         onBlur={() => setFocused(false)}
-        className={`flex items-center justify-between gap-2 min-h-[42px] sm:min-h-[46px]
+        className={`flex items-center justify-between gap-2 min-h-10.5 sm:min-h-11.5
           px-3 rounded-xl cursor-pointer select-none focus:outline-none
           transition-all duration-200 ${fc.base} ${borderCls}`}
       >
@@ -223,7 +223,7 @@ export default function SelectField({
                     <span
                       key={val}
                       className={`inline-flex items-center gap-1 pl-2 pr-1 py-0.5
-                      rounded-md text-xs font-medium max-w-[140px] ${fc.dropdown.tagBg}`}
+                      rounded-md text-xs font-medium max-w-35 ${fc.dropdown.tagBg}`}
                     >
                       <span className="truncate">{label}</span>
                       <button
@@ -235,7 +235,7 @@ export default function SelectField({
                             selected.filter((v) => v !== val),
                           );
                         }}
-                        className={`flex-shrink-0 transition-colors rounded-sm p-0.5 ${fc.dropdown.tagRemove}`}
+                        className={`shrink-0 transition-colors rounded-sm p-0.5 ${fc.dropdown.tagRemove}`}
                       >
                         <XIcon size={10} />
                       </button>
@@ -244,7 +244,7 @@ export default function SelectField({
                 })}
                 {selected.length > 4 && (
                   <span
-                    className={`text-xs flex-shrink-0 ${fc.dropdown.footerText}`}
+                    className={`text-xs shrink-0 ${fc.dropdown.footerText}`}
                   >
                     +{selected.length - 4} more
                   </span>
@@ -260,7 +260,7 @@ export default function SelectField({
           )}
         </div>
 
-        <div className="flex items-center gap-1.5 flex-shrink-0">
+        <div className="flex items-center gap-1.5 shrink-0">
           {selected.length > 0 && (
             <>
               <button
@@ -323,7 +323,7 @@ export default function SelectField({
                     <button
                       type="button"
                       onClick={() => setQuery("")}
-                      className={`flex-shrink-0 ${fc.dropdown.clearBtn}`}
+                      className={`shrink-0 ${fc.dropdown.clearBtn}`}
                     >
                       <XIcon size={12} />
                     </button>

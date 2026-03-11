@@ -166,7 +166,7 @@ export default function FileUploadField({
         >
           {/* Icon */}
           <span
-            className={`flex-shrink-0 transition-colors duration-200
+            className={`shrink-0 transition-colors duration-200
             ${dragging ? "text-primary" : fc.prefixIdle}`}
           >
             <UploadIcon />
@@ -189,7 +189,7 @@ export default function FileUploadField({
           {/* File count badge if files exist */}
           {files.length > 0 && !dragging && (
             <span
-              className="flex-shrink-0 px-2 py-0.5 rounded-full
+              className="shrink-0 px-2 py-0.5 rounded-full
               bg-primary/10 border border-primary/20
               text-[10px] font-semibold text-primary"
             >

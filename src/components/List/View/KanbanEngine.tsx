@@ -54,10 +54,8 @@ export default function KanbanEngine({
 
     setItems((prev) =>
       prev.map((item) =>
-        item.id === draggingId
-          ? { ...item, [groupBy]: columnKey }
-          : item
-      )
+        item.id === draggingId ? { ...item, [groupBy]: columnKey } : item,
+      ),
     );
 
     setDraggingId(null);
@@ -68,7 +66,7 @@ export default function KanbanEngine({
     <div
       className={cn(
         "flex gap-8 overflow-x-auto pb-10 px-2 scroll-smooth transition-all duration-500",
-        mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+        mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4",
       )}
       style={{
         scrollPaddingLeft: "2rem",
@@ -77,7 +75,7 @@ export default function KanbanEngine({
     >
       {columns.map((column) => {
         const columnItems = items.filter(
-          (item) => item[groupBy] === column.key
+          (item) => item[groupBy] === column.key,
         );
 
         const totalValue = useMemo(() => {
@@ -85,7 +83,7 @@ export default function KanbanEngine({
           const highlightKey = card.highlight;
           return columnItems.reduce(
             (sum, item) => sum + Number(item[highlightKey] || 0),
-            0
+            0,
           );
         }, [columnItems, card.highlight]);
 
@@ -94,7 +92,7 @@ export default function KanbanEngine({
             key={column.key}
             className="
               min-w-[320px]
-              flex-shrink-0
+              shrink-0
               flex flex-col
               max-h-[78vh]
               rounded-2xl
@@ -172,8 +170,8 @@ export default function KanbanEngine({
                     className={cn(
                       padding,
                       "group relative rounded-xl border border-border bg-background shadow-sm transition-all duration-200",
-                      "hover:shadow-md hover:-translate-y-[2px] hover:border-primary/40",
-                      draggingId === item.id && "opacity-40 scale-95"
+                      "hover:shadow-md hover:-translate-y-0.5 hover:border-primary/40",
+                      draggingId === item.id && "opacity-40 scale-95",
                     )}
                   >
                     {/* Drag Overlay */}
@@ -199,10 +197,7 @@ export default function KanbanEngine({
                         <button className="p-1 rounded hover:bg-muted transition">
                           <Eye size={14} />
                         </button>
-                        <ActionMenu
-                          id={item.id}
-                          moduleId={moduleId}
-                        />
+                        <ActionMenu id={item.id} moduleId={moduleId} />
                       </div>
                     </div>
 
@@ -219,10 +214,7 @@ export default function KanbanEngine({
                     {/* VALUE */}
                     {card.highlight && (
                       <div className="text-base font-semibold text-foreground mb-2">
-                        ₹{" "}
-                        {Number(
-                          item[card.highlight]
-                        ).toLocaleString("en-IN")}
+                        ₹ {Number(item[card.highlight]).toLocaleString("en-IN")}
                       </div>
                     )}
 
@@ -243,7 +235,7 @@ export default function KanbanEngine({
       })}
 
       {/* Right Spacer Prevents Edge Cut */}
-      <div className="w-2 flex-shrink-0" />
+      <div className="w-2 shrink-0" />
     </div>
   );
 }
