@@ -90,6 +90,7 @@ export default function FormEngine({ schema }: Props) {
               section={section}
               errors={errors}
               values={values}
+              formValues={values}
               onChange={handleChange}
             />
           ))}

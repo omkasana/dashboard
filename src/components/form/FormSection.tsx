@@ -8,6 +8,7 @@ interface Props {
   section: any;
   errors: Record<string, string>;
   values: Record<string, any>;
+  formValues: Record<string, any>;
   onChange: (name: string, value: any) => void;
 }
 
@@ -15,6 +16,7 @@ export default function FormSection({
   section,
   errors,
   values,
+  formValues,
   onChange,
 }: Props) {
   const [open, setOpen] = useState(true);
@@ -68,17 +70,18 @@ export default function FormSection({
           }`}
         >
           {section.fields.map((field: any) => (
-              <div
-    key={field.name}
-    className={`${spanMap[field.span] || "md:col-span-1"}`}
-  >
-            <FieldRenderer
+            <div
               key={field.name}
-              field={field}
-              error={errors[field.name]}
-              value={values[field.name]}
-              onChange={onChange}
-            />
+              className={`${spanMap[field.span] || "md:col-span-1"}`}
+            >
+              <FieldRenderer
+                key={field.name}
+                field={field}
+                error={errors[field.name]}
+                value={values[field.name]}
+                formValues={formValues}
+                onChange={onChange}
+              />
             </div>
           ))}
         </div>

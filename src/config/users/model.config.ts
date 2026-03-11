@@ -82,7 +82,7 @@ export const modelsConfig: ModuleConfig = {
             name: "fields",
             label: "Fields",
             type: "array",
-            span: 1,
+            span: 2,
             minItems: 1,
 
             fields: [
@@ -90,6 +90,7 @@ export const modelsConfig: ModuleConfig = {
                 name: "name",
                 label: "Field Name",
                 type: "text",
+                span: 1,
                 required: true,
               },
               {
@@ -97,6 +98,7 @@ export const modelsConfig: ModuleConfig = {
                 label: "Field Type",
                 type: "select",
                 required: true,
+                span: 1,
 
                 options: [
                   { label: "Text", value: "text" },
@@ -114,12 +116,14 @@ export const modelsConfig: ModuleConfig = {
               {
                 name: "required",
                 label: "Required",
+                span: 1,
                 type: "boolean",
               },
 
               {
                 name: "unique",
                 label: "Unique",
+                span: 1,
                 type: "boolean",
               },
 
@@ -127,12 +131,14 @@ export const modelsConfig: ModuleConfig = {
                 name: "defaultValue",
                 label: "Default Value",
                 type: "text",
+                span: 1,
               },
 
               {
                 name: "relation",
                 label: "Relation Model",
                 type: "text",
+                span: 1,
                 info: "If type is relation, specify target model",
               },
             ],
