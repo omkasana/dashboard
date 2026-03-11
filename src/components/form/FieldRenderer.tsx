@@ -17,6 +17,8 @@ import BooleanField from "./fields/BooleanField";
 import ArrayField from "./fields/ArrayField";
 import ObjectField from "./fields/ObjectField";
 
+import EmailBuilderField from "./fields/EmailBuilder";
+
 interface Props {
   field: FormField;
   error?: string;
@@ -165,7 +167,16 @@ export default function FieldRenderer({
           onChange={onChange}
         />
       );
-
+      
+case "email-builder":
+      return (
+        <EmailBuilderField
+          field={field}
+          error={error}
+          value={value}
+          onChange={onChange}
+        />
+      );
     default:
       return null;
   }

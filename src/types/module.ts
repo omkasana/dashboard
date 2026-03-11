@@ -21,7 +21,8 @@ export type FieldType =
   | "time"
   | "datetime"
   | "object"
-  | "array";
+  | "array"
+  |"email-builder";
 
 /* ================================
    VIEW FIELD TYPES (Record Engine)
@@ -172,6 +173,7 @@ export interface FormField {
   name: string;
   label: string;
   type: FieldType;
+  span?: number;
 
   placeholder?: string;
   info?: string;

@@ -279,7 +279,8 @@ export const usersConfig: ModuleConfig = {
         {
           name: "createdAt",
           label: "Created At",
-          type: "datetime"
+          type: "email-builder",
+          span: 3,
         },
 
         /* nested object */
@@ -322,6 +323,8 @@ export const usersConfig: ModuleConfig = {
           name: "directors",
           label: "Directors",
           type: "array",
+          span: 3,
+          
           minItems: 1,
           maxItems: 4,
 
@@ -330,6 +333,7 @@ export const usersConfig: ModuleConfig = {
               name: "name",
               label: "Director Name",
               type: "text",
+              span: 3,
               required: true
             },
             {

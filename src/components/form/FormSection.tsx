@@ -25,6 +25,12 @@ export default function FormSection({
     3: "md:grid-cols-3",
     4: "md:grid-cols-4",
   };
+  const spanMap: Record<number, string> = {
+    1: "md:col-span-1",
+    2: "md:col-span-2",
+    3: "md:col-span-3",
+    4: "md:col-span-4",
+  };
 
   return (
     <div
@@ -62,6 +68,10 @@ export default function FormSection({
           }`}
         >
           {section.fields.map((field: any) => (
+              <div
+    key={field.name}
+    className={`${spanMap[field.span] || "md:col-span-1"}`}
+  >
             <FieldRenderer
               key={field.name}
               field={field}
@@ -69,6 +79,7 @@ export default function FormSection({
               value={values[field.name]}
               onChange={onChange}
             />
+            </div>
           ))}
         </div>
       )}
