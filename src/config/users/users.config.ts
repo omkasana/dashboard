@@ -136,171 +136,256 @@ export const usersConfig: ModuleConfig = {
   */
 
   form: {
-    add: [
-      {
-        id: "basic",
-        title: "Basic Information",
-        columns: 3,
+  add: [
 
-        fields: [
-          {
-            name: "name",
-            label: "Full Name",
-            type: "text",
-            required: true,
-            placeholder: "Enter full name",
-            minLength: 3,
-            info: "Enter the user's legal full name.",
-            errorMessage: "Name must be at least 3 characters long",
-          },
+    /* =========================
+       BASIC
+    ========================= */
+    {
+      id: "basic",
+      title: "Basic Information",
+      columns: 3,
+      fields: [
+        {
+          name: "name",
+          label: "Full Name",
+          type: "text",
+          required: true,
+          placeholder: "Enter full name",
+          minLength: 3,
+          info: "Enter the user's legal full name.",
+          errorMessage: "Name must be at least 3 characters long"
+        },
+        {
+          name: "email",
+          label: "Email Address",
+          type: "email",
+          required: true,
+          info: "Used for login and system notifications.",
+          errorMessage: "Please enter a valid email address"
+        },
+        {
+          name: "phone",
+          label: "Phone Number",
+          type: "phone",
+          info: "Include country code when entering phone number."
+        },
+        {
+          name: "avatar",
+          label: "Avatar",
+          type: "file",
+          accept: "image/*",
+          multiple: true,
+          info: "Upload profile image (PNG or JPG recommended)."
+        }
+      ]
+    },
 
-          {
-            name: "email",
-            label: "Email Address",
-            type: "email",
-            required: true,
-            info: "Used for login and system notifications.",
-            errorMessage: "Please enter a valid email address",
-          },
+    /* =========================
+       ACCOUNT
+    ========================= */
+    {
+      id: "account",
+      title: "Account Details",
+      columns: 3,
+      collapsible: true,
 
-          {
-            name: "phone",
-            label: "Phone Number",
-            type: "phone",
-            required: false,
-            info: "Include country code when entering phone number.",
-          },
+      fields: [
+        {
+          name: "role",
+          label: "Role",
+          type: "search-select",
+          required: true,
+          errorMessage: "Please select a role",
+          options: [
+            { label: "Operative", value: "Operative" },
+            { label: "CEO", value: "CEO" },
+            { label: "Chairman", value: "Chairman" },
+            { label: "Managing Director", value: "Managing Director" },
+            { label: "Chief Technology Officer", value: "CTO" },
+            { label: "Chief Financial Officer", value: "CFO" },
+            { label: "Chief Operating Officer", value: "COO" },
+            { label: "Vice President", value: "Vice President" },
+            { label: "Director", value: "Director" },
+            { label: "Senior Manager", value: "Senior Manager" },
+            { label: "Manager", value: "Manager" },
+            { label: "Team Lead", value: "Team Lead" },
+            { label: "Senior Analyst", value: "Senior Analyst" },
+            { label: "Analyst", value: "Analyst" },
+            { label: "Associate", value: "Associate" },
+            { label: "Intern", value: "Intern" }
+          ]
+        },
+        {
+          name: "status",
+          label: "Status",
+          type: "radio",
+          required: true,
+          errorMessage: "Please choose a status",
+          options: [
+            { label: "Active", value: "Active" },
+            { label: "Inactive", value: "Inactive" }
+          ]
+        },
+        {
+          name: "department",
+          label: "Department",
+          type: "text"
+        },
+        {
+          name: "region",
+          label: "Region",
+          type: "select",
+          required: true,
+          errorMessage: "Region selection is required",
+          options: [
+            { label: "India", value: "India" },
+            { label: "US", value: "US" },
+            { label: "Europe", value: "Europe" },
+            { label: "APAC", value: "APAC" }
+          ]
+        },
+        {
+          name: "accountValue",
+          label: "Account Value",
+          type: "decimal",
+          min: 0,
+          errorMessage: "Account value cannot be negative"
+        }
+      ]
+    },
 
-          {
-            name: "avatar",
-            label: "Avatar",
-            type: "file",
-            accept: "image/*",
-            multiple: true,
-            required: false,
-            info: "Upload profile image (PNG or JPG recommended).",
-          },
-        ],
-      },
+    /* =========================
+       ADDITIONAL
+    ========================= */
+    {
+      id: "additional",
+      title: "Additional Info",
+      columns: 3,
+      collapsible: true,
 
-      {
-        id: "account",
-        title: "Account Details",
+      fields: [
+        {
+          name: "tags",
+          label: "Tags",
+          type: "tags"
+        },
+        {
+          name: "bio",
+          label: "Bio",
+          type: "textarea",
+          maxLength: 500
+        },
+        {
+          name: "createdAt",
+          label: "Created At",
+          type: "datetime"
+        },
 
-        columns: 3,
-        collapsible: true,
+        /* nested object */
 
-        fields: [
-          {
-            name: "role",
-            label: "Role",
-            type: "search-select",
-            required: true,
-            info: "Defines the user's system permissions.",
-            errorMessage: "Please select a role",
-            options: [
-              { label: "Operative", value: "Operative" },
-              { label: "CEO", value: "CEO" },
-              { label: "Chairman", value: "Chairman" },
-              { label: "Managing Director", value: "Managing Director" },
-              { label: "Chief Technology Officer", value: "CTO" },
-              { label: "Chief Financial Officer", value: "CFO" },
-              { label: "Chief Operating Officer", value: "COO" },
-              { label: "Vice President", value: "Vice President" },
-              { label: "Director", value: "Director" },
-              { label: "Senior Manager", value: "Senior Manager" },
-              { label: "Manager", value: "Manager" },
-              { label: "Team Lead", value: "Team Lead" },
-              { label: "Senior Analyst", value: "Senior Analyst" },
-              { label: "Analyst", value: "Analyst" },
-              { label: "Associate", value: "Associate" },
-              { label: "Intern", value: "Intern" },
-            ],
-          },
+        {
+          name: "address",
+          label: "Address",
+          type: "object",
+          columns: 3,
 
-          {
-            name: "status",
-            label: "Status",
-            type: "radio",
-            required: true,
-            info: "Inactive users cannot access the system.",
-            errorMessage: "Please choose a status",
-            options: [
-              { label: "Active", value: "Active" },
-              { label: "Inactive", value: "Inactive" },
-            ],
-          },
+          fields: [
+            {
+              name: "street",
+              label: "Street",
+              type: "text",
+              accept: "image/*",
+              
+              required: true
+            },
+            {
+              name: "city",
+              label: "City",
+              type: "text"
+            },
+            {
+              name: "country",
+              label: "Country",
+              type: "select",
+              options: [
+                { label: "India", value: "india" },
+                { label: "US", value: "us" }
+              ]
+            }
+          ]
+        },
 
-          {
-            name: "department",
-            label: "Department",
-            type: "text",
-            required: false,
-            info: "Optional department assignment.",
-          },
+        /* array */
 
-          {
-            name: "region",
-            label: "Region",
-            type: "select",
-            required: true,
-            info: "Primary operational region.",
-            errorMessage: "Region selection is required",
-            options: [
-              { label: "India", value: "India" },
-              { label: "US", value: "US" },
-              { label: "Europe", value: "Europe" },
-              { label: "APAC", value: "APAC" },
-            ],
-          },
+        {
+          name: "directors",
+          label: "Directors",
+          type: "array",
+          minItems: 1,
+          maxItems: 4,
 
-          {
-            name: "accountValue",
-            label: "Account Value",
-            type: "decimal",
-            required: false,
-            min: 0,
-            info: "Total account portfolio value.",
-            errorMessage: "Account value cannot be negative",
-          },
-        ],
-      },
+          fields: [
+            {
+              name: "name",
+              label: "Director Name",
+              type: "text",
+              required: true
+            },
+            {
+              name: "email",
+              label: "Director Email",
+              type: "email"
+            }
+          ]
+        }
+      ]
+    },
 
-      {
-        id: "additional",
-        title: "Additional Info",
-        columns: 3,
-        collapsible: true,
+    /* =========================
+       COMPANY
+    ========================= */
 
-        fields: [
-          {
-            name: "tags",
-            label: "Tags",
-            type: "tags",
-            required: false,
-            info: "Add keywords for grouping or filtering users.",
-          },
+    {
+      id: "company",
+      title: "Company Info",
+      columns: 2,
 
-          {
-            name: "bio",
-            label: "Bio",
-            type: "textarea",
-            required: false,
-            maxLength: 500,
-            info: "Short description about the user (max 500 characters).",
-          },
+      fields: [
+        {
+          name: "companyName",
+          label: "Company Name",
+          type: "text",
+          required: true
+        },
 
-          {
-            name: "createdAt",
-            label: "Created At",
-            type: "datetime",
-            required: false,
-            info: "Date when the user record was created.",
-          },
-        ],
-      },
-    ],
-  },
+        {
+          name: "companyAddress",
+          label: "Address",
+          type: "object",
 
+          fields: [
+            { name: "street", label: "Street", type: "text" },
+            { name: "city", label: "City", type: "text" },
+            { name: "country", label: "Country", type: "text" }
+          ]
+        },
+
+        {
+          name: "companyDirectors",
+          label: "Directors",
+          type: "array",
+
+          fields: [
+            { name: "name", label: "Name", type: "text" },
+            { name: "email", label: "Email", type: "email" }
+          ]
+        }
+      ]
+    }
+
+  ]
+}
+,
   data: userData,
 };

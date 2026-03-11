@@ -12,7 +12,7 @@ import {
 import Link from "next/link";
 
 import { useTheme } from "@/hooks/useTheme";
-import { Avatar, AvatarFallback, AvatarImage } from "../UI/Avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
 
 export function ProfileDropdown() {
   const { theme, toggleTheme } = useTheme();

@@ -8,12 +8,14 @@ import PhoneField from "./fields/PhoneField";
 import SelectField from "./fields/SelectField";
 import TextAreaField from "./fields/TextAreaField";
 import TagsField from "./fields/TagsField";
-import FileUploadField from "./fields/FileUpload";
+import FileUploadField from "./fields/FileUploadField";
 import DateField from "./fields/DateField";
 
 import RadioField from "./fields/RadioField";
 import CheckboxField from "./fields/CheckboxField";
 import BooleanField from "./fields/BooleanField";
+import ArrayField from "./fields/ArrayField";
+import ObjectField from "./fields/ObjectField";
 
 interface Props {
   field: FormField;
@@ -138,6 +140,25 @@ export default function FieldRenderer({
     case "datetime":
       return (
         <DateField
+          field={field}
+          error={error}
+          value={value}
+          onChange={onChange}
+        />
+      );
+    case "array":
+      return (
+        <ArrayField
+          field={field}
+          error={error}
+          value={value}
+          onChange={onChange}
+        />
+      );
+
+    case "object":
+      return (
+        <ObjectField
           field={field}
           error={error}
           value={value}

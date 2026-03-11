@@ -1,7 +1,10 @@
 "use client";
 
-import FileUploadField from "@/components/Form/fields/FileUpload";
+
 import { FormField } from "@/types/module";
+import FileUploadField from "../form/fields/FileUploadField";
+
+
 
 export default function ProfileMedia() {
   const field: FormField = {

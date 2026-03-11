@@ -19,7 +19,9 @@ export type FieldType =
   | "file"
   | "date"
   | "time"
-  | "datetime";
+  | "datetime"
+  | "object"
+  | "array";
 
 /* ================================
    VIEW FIELD TYPES (Record Engine)
@@ -170,19 +172,37 @@ export interface FormField {
   name: string;
   label: string;
   type: FieldType;
+
   placeholder?: string;
   info?: string;
   required?: boolean;
   errorMessage?: string;
+
   minLength?: number;
   maxLength?: number;
+
   min?: number;
   max?: number;
+
   pattern?: string;
+
   options?: FieldOption[];
+
   accept?: string;
   multiple?: boolean;
+
   defaultValue?: any;
+
+  /* =========================
+     NESTED / ARRAY SUPPORT
+  ========================= */
+
+  fields?: FormField[];      // for object & array
+
+  minItems?: number;         // for array
+  maxItems?: number;
+
+  columns?: number;          // nested layout
 }
 
 /* ================================

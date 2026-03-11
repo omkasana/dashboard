@@ -96,7 +96,7 @@ export const usersViewConfig: ViewConfig = {
           id: "contact",
           title: "Contact Info",
           colSpan: 2, // spans 2 of 3 outer cols
-          columns: 2, // 2 fields per row
+          columns: 3, // 2 fields per row
           fields: [
             "email",
             "phone",
@@ -110,21 +110,21 @@ export const usersViewConfig: ViewConfig = {
           id: "account",
           title: "Account",
           colSpan: 1, // spans 1 of 3 outer cols
-          columns: 1, // stacked
+          columns: 3, // stacked
           fields: ["status", "planType", "tier", "isVerified", "accountValue"],
         },
         {
           id: "activity",
           title: "Activity",
           colSpan: 1,
-          columns: 1,
+          columns: 2,
           fields: ["createdAt", "lastLogin"],
         },
         {
           id: "organization",
           title: "Organization",
           colSpan: 2,
-          columns: 2,
+          columns: 4,
           fields: ["role", "department", "region", "riskLevel"],
         },
       ],
