@@ -27,7 +27,8 @@ export const modelsConfig: ModuleConfig = {
     columns: [
       { key: "name", label: "Model Name", type: "text", strong: true },
       { key: "slug", label: "Table Name", type: "text" },
-      { key: "fieldsCount", label: "Fields", type: "number" },
+      { key: "description", label: "Description", type: "text" },
+      { key: "fields", label: "Fields", type: "array" },
       { key: "createdAt", label: "Created", type: "date" },
     ],
   },

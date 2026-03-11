@@ -62,7 +62,7 @@ export default function FormEngine({ schema }: Props) {
     try {
       setLoading(true);
 
-      const res = await fetch("/api/users", {
+      const res = await fetch("http://localhost:4000/api/models", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

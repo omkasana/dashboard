@@ -32,6 +32,16 @@ export default function DataGrid({
 }: Props) {
   const rowHeight = density === "compact" ? "h-10" : "h-12";
 
+  function safeValue(value: any) {
+    if (value === null || value === undefined) return "-";
+
+    if (Array.isArray(value)) return value.length;
+
+    if (typeof value === "object") return JSON.stringify(value);
+
+    return value;
+  }
+
   function renderCell(column: Column, value: any) {
     switch (column.type) {
       case "number":
@@ -50,7 +60,7 @@ export default function DataGrid({
 
       case "date":
         return value ? (
-          <span className="text-[var(--muted-foreground)]">
+          <span className="text-foreground">
             {new Date(value).toLocaleDateString("en-IN")}
           </span>
         ) : (
@@ -63,24 +73,8 @@ export default function DataGrid({
             className={cn(
               "px-2.5 py-1 rounded-full text-xs font-semibold",
               value === "Active"
-                ? "bg-[color-mix(in_srgb,var(--brand-success)_15%,transparent)] text-[var(--brand-success)]"
-                : "bg-[color-mix(in_srgb,var(--brand-neutral)_15%,transparent)] text-[var(--brand-neutral)]",
-            )}
-          >
-            {value}
-          </span>
-        );
-
-      case "risk":
-        return (
-          <span
-            className={cn(
-              "px-2.5 py-1 rounded-full text-xs font-semibold",
-              value === "High"
-                ? "bg-[color-mix(in_srgb,var(--brand-danger)_15%,transparent)] text-(--brand-danger)"
-                : value === "Medium"
-                  ? "bg-[color-mix(in_srgb,var(--brand-warning)_15%,transparent)] text-(--brand-warning)"
-                  : "bg-[color-mix(in_srgb,var(--brand-success)_15%,transparent)] text-(--brand-success)",
+                ? "bg-[color-mix(in_srgb,var(--brand-success)_15%,transparent)] text-brand-success"
+                : "bg-[color-mix(in_srgb,var(--brand-neutral)_15%,transparent)] text-brand-neutral",
             )}
           >
             {value}
@@ -96,19 +90,19 @@ export default function DataGrid({
                 : "text-foreground",
             )}
           >
-            {value}
+            {safeValue(value)}
           </span>
         );
     }
   }
 
   return (
-    <div className="rounded-xl border bg-[var(--background)] border-[var(--border)] shadow-sm overflow-hidden">
+    <div className="rounded-xl border bg-background border-border shadow-sm overflow-hidden">
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm">
           <thead>
             <tr>
-              <th className="sticky top-0 left-0 z-40 w-14 p-4 text-center border-r border-[var(--border)] bg-[var(--table-header-bg)]">
+              <th className="sticky top-0 left-0 z-40 w-14 p-4 text-center border-r border-border bg-background">
                 <input
                   type="checkbox"
                   checked={selected.length === data.length && data.length > 0}
@@ -116,37 +110,22 @@ export default function DataGrid({
                     setSelected(
                       selected.length === data.length
                         ? []
-                        : data.map((d) => d.id),
+                        : data.map((d) => d.id ?? d._id),
                     )
                   }
                 />
               </th>
+
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="
-                sticky top-0 z-30
-                px-4 h-11
-                text-left uppercase text-xs tracking-wide font-semibold
-                text-[var(--muted-foreground)]
-                border-r border-[var(--border)]
-                bg-[var(--table-header-bg)]
-              "
+                  className="sticky top-0 z-30 px-4 h-11 text-left uppercase text-xs tracking-wide font-semibold text-muted-foreground border-r border-border bg-background"
                 >
                   {col.label}
                 </th>
               ))}
 
-              <th
-                className="
-              sticky top-0 right-0 z-30
-              w-20 text-center uppercase text-xs font-semibold
-              text-[var(--muted-foreground)]
-              border-l border-[var(--border)]
-              p-2
-              bg-[var(--table-header-bg)]
-            "
-              >
+              <th className="sticky top-0 right-0 z-30 w-20 text-center uppercase text-xs font-semibold text-muted-foreground border-l border-border p-2 bg-background">
                 Actions
               </th>
             </tr>
@@ -154,28 +133,30 @@ export default function DataGrid({
 
           <tbody>
             {data.map((row, index) => {
-              const isSelected = selected.includes(row.id);
+              const id = row.id ?? row._id ?? index;
+
+              const isSelected = selected.includes(id);
 
               return (
                 <tr
-                  key={row.id}
+                  key={id}
                   className={cn(
                     rowHeight,
-                    "border-b border-[var(--border)] transition",
-                    index % 2 === 0 && "bg-[var(--table-row-alt)]",
-                    "hover:bg-[var(--table-row-hover)]",
-                    isSelected && "bg-[var(--table-row-selected)]",
+                    "border-b border-border transition",
+                    index % 2 === 0 && "bg-table-row-alt",
+                    "hover:bg-table-row-hover",
+                    isSelected && "bg-table-row-selected",
                   )}
                 >
-                  <td className="text-center border-r border-[var(--border)] sticky left-0 bg-[var(--background)]">
+                  <td className="text-center border-r border-border sticky left-0 bg-background">
                     <input
                       type="checkbox"
                       checked={isSelected}
                       onChange={() =>
                         setSelected((prev) =>
-                          prev.includes(row.id)
-                            ? prev.filter((x) => x !== row.id)
-                            : [...prev, row.id],
+                          prev.includes(id)
+                            ? prev.filter((x) => x !== id)
+                            : [...prev, id],
                         )
                       }
                     />
@@ -187,8 +168,8 @@ export default function DataGrid({
                     </td>
                   ))}
 
-                  <td className="text-center border-l border-[var(--border)] sticky right-0 bg-[var(--background)]">
-                    <ActionMenu id={row.id} moduleId={moduleId} />
+                  <td className="text-center border-l border-border sticky right-0 bg-background">
+                    <ActionMenu id={id} moduleId={moduleId} />
                   </td>
                 </tr>
               );
@@ -198,7 +179,7 @@ export default function DataGrid({
               <tr>
                 <td
                   colSpan={columns.length + 2}
-                  className="text-center py-12 text-[var(--muted-foreground)]"
+                  className="text-center py-12 text-muted-foreground"
                 >
                   No records found
                 </td>

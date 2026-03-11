@@ -157,7 +157,7 @@ export default function ArrayField({
             >
               {/* Index badge */}
               <span
-                className="flex-shrink-0 w-5 h-5 rounded-md flex items-center
+                className="shrink-0 w-5 h-5 rounded-md flex items-center
                 justify-center text-[10px] font-bold
                 bg-muted border border-border text-muted-foreground"
               >
@@ -174,7 +174,7 @@ export default function ArrayField({
 
               {/* Field value dot indicators */}
               {!isOpen && hasValue && (
-                <div className="flex gap-0.5 flex-shrink-0">
+                <div className="flex gap-0.5 shrink-0">
                   {childFields
                     .slice(0, 5)
                     .map((cf) =>
@@ -195,7 +195,7 @@ export default function ArrayField({
               )}
 
               {/* Actions */}
-              <div className="flex items-center gap-1 flex-shrink-0 ml-1">
+              <div className="flex items-center gap-1 shrink-0 ml-1">
                 {/* Remove */}
                 <button
                   type="button"

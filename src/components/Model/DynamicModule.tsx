@@ -19,12 +19,34 @@ interface Props {
 export default function DynamicModule({ config }: Props) {
   const router = useRouter();
 
+  const [data, setData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
   const [showExport, setShowExport] = useState(false);
+
+  /* ================= FETCH DATA ================= */
+
+  useEffect(() => {
+    async function load() {
+      try {
+        const res = await fetch(`http://localhost:4000/api/${config.id}`);
+
+        const json = await res.json();
+
+        setData(json);
+      } catch (err) {
+        console.error("Failed to load module data", err);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    load();
+  }, [config.id]);
 
   /* ================= MODULE STATE ================= */
 
   const { searchQuery, setSearchQuery, filters, setFilters, processedData } =
-    useModuleState(config.data || []);
+    useModuleState(data);
 
   /* ================= VIEW STATE ================= */
 
@@ -34,20 +56,13 @@ export default function DynamicModule({ config }: Props) {
 
   const [showFilters, setShowFilters] = useState(false);
 
-  /* ================= SORT STATE ================= */
+  /* ================= SORT ================= */
 
   const [sortField, setSortField] = useState(
     config.table?.columns?.[0]?.key || "",
   );
 
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
-
-  /* ================= PAGINATION ================= */
-
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(10);
-
-  /* ================= SORT DATA ================= */
 
   const sortedData = useMemo(() => {
     if (!sortField) return processedData;
@@ -64,10 +79,12 @@ export default function DynamicModule({ config }: Props) {
     });
   }, [processedData, sortField, sortOrder]);
 
-  /* ================= PAGINATION DATA ================= */
+  /* ================= PAGINATION ================= */
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(10);
 
   const totalItems = sortedData.length;
-
   const totalPages = Math.max(1, Math.ceil(totalItems / pageSize));
 
   const paginatedData = useMemo(() => {
@@ -75,13 +92,11 @@ export default function DynamicModule({ config }: Props) {
     return sortedData.slice(start, start + pageSize);
   }, [sortedData, currentPage, pageSize]);
 
-  /* ================= RESET PAGE WHEN DATA CHANGES ================= */
+  /* ================= EFFECTS ================= */
 
   useEffect(() => {
     setCurrentPage(1);
   }, [searchQuery, filters, pageSize]);
-
-  /* ================= KEEP PAGE IN RANGE ================= */
 
   useEffect(() => {
     if (currentPage > totalPages) {
@@ -89,19 +104,21 @@ export default function DynamicModule({ config }: Props) {
     }
   }, [currentPage, totalPages]);
 
-  /* ================= ACTION HANDLERS ================= */
+  /* ================= ACTIONS ================= */
 
   const handleAdd = () => {
     router.push(`/dashboard/${config.id}/add`);
   };
 
-  const handleImport = (file: File) => {
-    console.log("Imported file:", file.name);
-  };
-
   const handleExport = () => {
     setShowExport(true);
   };
+
+  /* ================= LOADING ================= */
+
+  if (loading) {
+    return <div className="p-6 text-muted-foreground">Loading...</div>;
+  }
 
   /* ================= RENDER ================= */
 
@@ -112,7 +129,6 @@ export default function DynamicModule({ config }: Props) {
         title={config.title}
         description={config.description}
         onAdd={config.actions?.add ? handleAdd : undefined}
-        onImport={config.actions?.import ? handleImport : undefined}
         onExport={config.actions?.export ? handleExport : undefined}
         onSearch={config.search?.enabled ? setSearchQuery : undefined}
         onFilterToggle={
