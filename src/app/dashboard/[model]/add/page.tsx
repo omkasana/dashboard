@@ -1,5 +1,5 @@
 import FormEngine from "@/components/Form/FormEngine";
-import { modulesRegistry } from "@/config/modules.registry";
+import { modulesRegistry } from "@/config/modules";
 
 export default async function AddPage({ params }: any) {
   const { model } = await params;

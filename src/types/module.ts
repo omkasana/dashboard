@@ -204,7 +204,7 @@ export interface FormField {
   maxTags?: number;
   rows?: number;
   autoComplete?: string;
-
+  slugFrom?: string; // field name to auto-generate slug from
   name: string;
   label: string;
   type: FieldType;

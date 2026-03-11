@@ -25,12 +25,14 @@ import RangeField from "./fields/RangeField";
 import ColorField from "./fields/ColorField";
 import DividerField from "./fields/DividerField";
 import HeadingField from "./fields/HeadingField";
+import SlugField from "./fields/SlugField";
 
 const fieldMap: Record<string, any> = {
   text: TextField,
   number: NumberField,
   decimal: DecimalField,
   password: PasswordField,
+  slug: SlugField,
   url: UrlField,
   textarea: TextAreaField,
   select: SelectField,
@@ -56,6 +58,7 @@ interface Props {
   field: FormField;
   error?: string;
   value?: any;
+  formValues?: Record<string, any>;
   onChange?: (name: string, value: any) => void;
 }
 
@@ -63,6 +66,7 @@ export default function FieldRenderer({
   field,
   error,
   value,
+  formValues,
   onChange,
 }: Props) {
   const Component = fieldMap[field.type];
@@ -72,6 +76,12 @@ export default function FieldRenderer({
   }
 
   return (
-    <Component field={field} error={error} value={value} onChange={onChange} />
+    <Component
+      field={field}
+      error={error}
+      value={value}
+      onChange={onChange}
+      formValues={formValues}
+    />
   );
 }
