@@ -507,7 +507,7 @@ export const usersConfig: ModuleConfig = {
           {
             name: "testDate",
             label: "Date Field",
-            type: "date",
+            type: "datetime",
           },
 
           {

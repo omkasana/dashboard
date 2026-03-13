@@ -11,6 +11,7 @@ import ViewRenderer from "./ViewRendered";
 import { useModuleState } from "@/hooks/useModule";
 import Pagination from "../List/Pagination";
 import ExportDialog from "@/components/List/ExportDialog";
+import { fetchModuleData } from "@/lib/api";
 
 interface Props {
   config: ModuleConfig;
@@ -28,10 +29,7 @@ export default function DynamicModule({ config }: Props) {
   useEffect(() => {
     async function load() {
       try {
-        const res = await fetch(`http://localhost:4000/api/${config.id}`);
-
-        const json = await res.json();
-
+        const json = await fetchModuleData(config.id);
         setData(json);
       } catch (err) {
         console.error("Failed to load module data", err);

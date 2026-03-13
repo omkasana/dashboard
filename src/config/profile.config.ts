@@ -6,8 +6,8 @@ export type UserProfile = {
 };
 
 export const profileData: UserProfile = {
-  name: "OM GUJJAR",
-  email: "gujjar@haha.com",
-  role: "BIMBIMBAMBAM",
+  name: "GUJJAR",
+  email: "gujjar@gmail.com",
+  role: "ADMINISTRATOR",
   avatar: "/images/avatar.png",
 };
