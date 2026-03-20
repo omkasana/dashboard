@@ -1,6 +1,7 @@
 import { modulesRegistry } from "@/config/modules";
 import { getUserById } from "@/dummy/user.data";
 import { RecordEngine } from "@/components/viewpage/RecordEngine";
+import { fetchModuleData, fetchModuleDataById } from "@/lib/api";
 
 interface Props {
   params: Promise<{ model: string; id: string }>;
@@ -9,6 +10,7 @@ interface Props {
 export default async function ViewRecordPage({ params }: Props) {
   const { model, id } = await params;
 
+  console.log("Received params:", { model, id });
   const module = modulesRegistry[model];
 
   // Module not found → real 404
@@ -19,8 +21,11 @@ export default async function ViewRecordPage({ params }: Props) {
       </div>
     );
   }
+  console.log("Fetching data for model:", model, "with ID:", id);
 
-  const data = getUserById(id);
+  const data = await fetchModuleDataById(model, id); // Implement this API call to fetch a single record by ID
+
+  console.log("Fetched data:", data);
 
   // Record not found → UI state instead of 404
   if (!data) {

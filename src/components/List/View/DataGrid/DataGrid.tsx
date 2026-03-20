@@ -18,8 +18,10 @@ interface Props {
   moduleId: string;
   density?: "comfortable" | "compact";
 
-  selected: number[];
-  setSelected: React.Dispatch<React.SetStateAction<number[]>>;
+  selected: (string | number)[];
+  setSelected: React.Dispatch<React.SetStateAction<(string | number)[]>>;
+
+  onDelete?: (id: string | number) => void; // ✅ added
 }
 
 export default function DataGrid({
@@ -29,6 +31,7 @@ export default function DataGrid({
   density = "comfortable",
   selected,
   setSelected,
+  onDelete,
 }: Props) {
   const rowHeight = density === "compact" ? "h-10" : "h-12";
 
@@ -169,7 +172,11 @@ export default function DataGrid({
                   ))}
 
                   <td className="text-center border-l border-border sticky right-0 bg-background">
-                    <ActionMenu id={id} moduleId={moduleId} />
+                    <ActionMenu
+                      id={String(id)}
+                      module={moduleId}
+                      onDelete={onDelete} // ✅ pass down
+                    />
                   </td>
                 </tr>
               );

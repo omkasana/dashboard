@@ -17,14 +17,20 @@ interface Props {
 }
 
 export default function ViewRenderer({ view, config, data }: Props) {
-  const [selectedIds, setSelectedIds] = useState<number[]>([]);
+  const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
+  const [rows, setRows] = useState(data); // ✅ local state
+
+  const handleDelete = (id: string | number) => {
+    setRows((prev) => prev.filter((item) => (item.id ?? item._id) !== id));
+
+    setSelectedIds((prev) => prev.filter((x) => x !== id));
+  };
 
   return (
     <>
-      {/* BULK ACTION BAR */}
       <BulkActionsBar
         selectedIds={selectedIds.map(String)}
-        data={data}
+        data={rows}
         onClear={() => setSelectedIds([])}
       />
 
@@ -32,10 +38,11 @@ export default function ViewRenderer({ view, config, data }: Props) {
         <DataGrid
           density="comfortable"
           columns={config.table.columns}
-          data={data}
+          data={rows}
           moduleId={config.id}
           selected={selectedIds}
           setSelected={setSelectedIds}
+          onDelete={handleDelete} // ✅ added
         />
       )}
 
@@ -43,19 +50,19 @@ export default function ViewRenderer({ view, config, data }: Props) {
         <GridEngine
           density="compact"
           layout={config.grid.layout}
-          data={data}
+          data={rows}
           moduleId={config.id}
         />
       )}
 
       {view === "list" && (
-        <ListEngine density="compact" data={data} moduleId={config.id} />
+        <ListEngine density="compact" data={rows} moduleId={config.id} />
       )}
 
       {view === "kanban" && (
         <KanbanEngine
           density="compact"
-          data={data}
+          data={rows}
           moduleId={config.id}
           groupBy={config.kanban!.groupBy}
           columns={config.kanban!.columns}
@@ -65,7 +72,7 @@ export default function ViewRenderer({ view, config, data }: Props) {
 
       {view === "calendar" && config.calendar?.enabled && (
         <CalendarView
-          data={data}
+          data={rows}
           moduleId={config.id}
           dateField={config.calendar.dateField}
           layout={config.calendar.layout}

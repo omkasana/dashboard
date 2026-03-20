@@ -1,14 +1,20 @@
 import type { ModuleConfig } from "@/types/module";
+import { Users } from "lucide-react";
+import { usersViewConfig } from "./user.view.config";
 
 export const modelsConfig: ModuleConfig = {
   id: "models",
   title: "Models",
   description: "Define database tables and schema",
+  view: usersViewConfig,
 
   actions: {
     add: true,
+    export: true,
     import: false,
-    export: false,
+    viewRoute: "/dashboard/models/view/:id",
+    editRoute: "/dashboard/models/update/:id",
+    deleteEndpoint: "/models/:id",
   },
 
   search: {

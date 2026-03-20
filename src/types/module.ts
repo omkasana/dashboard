@@ -252,11 +252,22 @@ export interface FormSection {
 /* ================================
    MODULE CONFIG
 ================================ */
+
+export interface ModuleActions {
+  add?: boolean;
+  export?: boolean;
+  import?: boolean;
+  viewRoute?: string;
+  editRoute?: string;
+  deleteEndpoint?: string;
+}
+
 export interface ModuleConfig {
   id: string;
   title: string;
   description?: string;
-  actions?: any;
+
+  actions?: ModuleActions;
   search?: any;
   filters?: any;
   views?: {

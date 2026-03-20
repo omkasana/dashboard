@@ -11,7 +11,7 @@ import ViewRenderer from "./ViewRendered";
 import { useModuleState } from "@/hooks/useModule";
 import Pagination from "../List/Pagination";
 import ExportDialog from "@/components/List/ExportDialog";
-import { fetchModuleData } from "@/lib/api";
+import { deleteModel, fetchModuleData } from "@/lib/api";
 
 interface Props {
   config: ModuleConfig;
@@ -40,6 +40,19 @@ export default function DynamicModule({ config }: Props) {
 
     load();
   }, [config.id]);
+
+  // delete
+  const handleDelete = async (slug: string) => {
+    if (!confirm("Delete this model?")) return;
+
+    try {
+      await deleteModel(slug);
+
+      setData((prev) => prev.filter((m) => m.slug !== slug));
+    } catch (err) {
+      console.error("Delete failed", err);
+    }
+  };
 
   /* ================= MODULE STATE ================= */
 
@@ -111,7 +124,9 @@ export default function DynamicModule({ config }: Props) {
   const handleExport = () => {
     setShowExport(true);
   };
-
+  const handleImport = (file: File) => {
+    // Implement your import logic here
+  };
   /* ================= LOADING ================= */
 
   if (loading) {
@@ -128,6 +143,7 @@ export default function DynamicModule({ config }: Props) {
         description={config.description}
         onAdd={config.actions?.add ? handleAdd : undefined}
         onExport={config.actions?.export ? handleExport : undefined}
+        onImport={config.actions?.import ? handleImport : undefined}
         onSearch={config.search?.enabled ? setSearchQuery : undefined}
         onFilterToggle={
           config.filters?.enabled
