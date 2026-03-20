@@ -1,32 +1,48 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import FormContainer from "./FormContainer";
 import FormSection from "./FormSection";
 import { validateForm } from "@/lib/formValidator";
 import { useRouter, usePathname } from "next/navigation";
 
 interface Props {
-  schema: any[];
+  schema?: any[]; // ✅ allow undefined safely
+  endpoint: string;
+  initialValues?: Record<string, any>;
+  mode?: "create" | "update";
+  id?: string;
 }
 
-export default function FormEngine({ schema }: Props) {
-  const [values, setValues] = useState<Record<string, any>>({});
+export default function FormEngine({
+  schema = [], // ✅ fallback
+  endpoint,
+  initialValues,
+  mode = "create",
+  id,
+}: Props) {
+  const [values, setValues] = useState<Record<string, any>>(
+    initialValues || {},
+  );
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
-
-  /* handle input change */
 
   const router = useRouter();
   const pathname = usePathname();
 
+  /* sync values when editing */
+  useEffect(() => {
+    if (initialValues) {
+      setValues(initialValues);
+    }
+  }, [initialValues]);
+
+  /* handle input change */
   const handleChange = (name: string, value: any) => {
     setValues((prev) => ({
       ...prev,
       [name]: value,
     }));
-
-    /* clear error when user edits */
 
     if (errors[name]) {
       setErrors((prev) => {
@@ -37,8 +53,7 @@ export default function FormEngine({ schema }: Props) {
     }
   };
 
-  /* form submit */
-
+  /* submit */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -66,8 +81,12 @@ export default function FormEngine({ schema }: Props) {
     try {
       setLoading(true);
 
-      const res = await fetch("http://localhost:4000/api/models", {
-        method: "POST",
+      const method = mode === "update" ? "PUT" : "POST";
+
+      const url = mode === "update" && id ? `${endpoint}/${id}` : endpoint;
+
+      const res = await fetch(url, {
+        method,
         headers: {
           "Content-Type": "application/json",
         },
@@ -77,14 +96,23 @@ export default function FormEngine({ schema }: Props) {
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data?.message || "Failed to create");
+        throw new Error(data?.message || "Request failed");
       }
 
       console.log("API response:", data);
 
-      // ✅ DYNAMIC REDIRECT LOGIC
+      /* ✅ redirect back to list */
       const segments = pathname.split("/").filter(Boolean);
-      segments.pop(); // removes "add"
+
+      // remove last parts like add/update/id
+      if (["add", "create", "new"].includes(segments.at(-1)!)) {
+        segments.pop();
+      }
+
+      if (segments.at(-2) === "update") {
+        segments.pop(); // id
+        segments.pop(); // update
+      }
 
       const redirectTo = "/" + segments.join("/");
 
@@ -116,15 +144,15 @@ export default function FormEngine({ schema }: Props) {
           <button
             type="submit"
             disabled={loading}
-            className="
-            h-11 px-6 rounded-xl
-            bg-primary text-white font-medium
-            shadow-[0_8px_20px_rgba(0,0,0,0.25)]
-            hover:brightness-110 transition
-            disabled:opacity-60
-            "
+            className="h-11 px-6 rounded-xl bg-primary text-white font-medium shadow-[0_8px_20px_rgba(0,0,0,0.25)] hover:brightness-110 transition disabled:opacity-60"
           >
-            {loading ? "Saving..." : "Save"}
+            {loading
+              ? mode === "update"
+                ? "Updating..."
+                : "Saving..."
+              : mode === "update"
+                ? "Update"
+                : "Save"}
           </button>
         </div>
       </form>

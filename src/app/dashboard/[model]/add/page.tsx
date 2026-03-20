@@ -13,7 +13,10 @@ export default async function AddPage({ params }: any) {
   return (
     <div className="space-y-6">
       <h1 className="text-2xl font-semibold">Add {config.title}</h1>
-      <FormEngine schema={config.form.add} />
+      <FormEngine
+        schema={config.form.add}
+        endpoint={"http://localhost:4000/api/models"}
+      />
     </div>
   );
 }

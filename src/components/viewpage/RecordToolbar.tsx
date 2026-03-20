@@ -49,9 +49,14 @@ export function RecordToolbar({
           >
             {model}
           </span>
+
           <span>/</span>
+
           <span className="font-medium" style={{ color: "var(--foreground)" }}>
-            #{id}
+            {(data as any)?.title ||
+              (data as any)?.name ||
+              (data as any)?.label ||
+              `#${id}`}
           </span>
         </div>
 

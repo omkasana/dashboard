@@ -13,10 +13,39 @@ interface Props {
 
 export default function BulkActionsBar({ selectedIds, data, onClear }: Props) {
   const [showExport, setShowExport] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   if (!selectedIds.length) return null;
 
-  const selectedData = data.filter((d) => selectedIds.includes(String(d.id)));
+  // ✅ FIXED: use _id instead of id
+  const selectedData = data.filter((d) => selectedIds.includes(String(d._id)));
+
+  // ✅ BULK DELETE HANDLER
+  const handleBulkDelete = async () => {
+    if (!confirm(`Delete ${selectedIds.length} items?`)) return;
+
+    try {
+      setLoading(true);
+
+      await Promise.all(
+        selectedIds.map((id) =>
+          fetch(`http://localhost:4000/api/models/${id}`, {
+            method: "DELETE",
+          }),
+        ),
+      );
+
+      // clear selection
+      onClear();
+
+      // simple refresh (we can optimize later)
+      window.location.reload();
+    } catch (err) {
+      console.error("Bulk delete error:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <>
@@ -45,15 +74,6 @@ export default function BulkActionsBar({ selectedIds, data, onClear }: Props) {
             onClick={() => setShowExport(true)}
             className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
             style={{ color: "var(--muted-foreground)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "var(--foreground)";
-              e.currentTarget.style.background =
-                "color-mix(in srgb, var(--muted) 80%, transparent)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "var(--muted-foreground)";
-              e.currentTarget.style.background = "transparent";
-            }}
           >
             <Download size={15} />
             <span className="hidden md:inline">Export</span>
@@ -61,24 +81,20 @@ export default function BulkActionsBar({ selectedIds, data, onClear }: Props) {
 
           {/* DELETE */}
           <button
-            onClick={() => alert("delete")}
+            onClick={handleBulkDelete}
+            disabled={loading}
             className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
             style={{
               color: "var(--brand-danger)",
               background:
                 "color-mix(in srgb, var(--brand-danger) 10%, transparent)",
+              opacity: loading ? 0.6 : 1,
             }}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.background =
-                "color-mix(in srgb, var(--brand-danger) 18%, transparent)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.background =
-                "color-mix(in srgb, var(--brand-danger) 10%, transparent)")
-            }
           >
             <TrashIcon className="w-4 h-4" />
-            <span className="hidden md:inline">Delete</span>
+            <span className="hidden md:inline">
+              {loading ? "Deleting..." : "Delete"}
+            </span>
           </button>
 
           {/* CLEAR */}
@@ -86,15 +102,6 @@ export default function BulkActionsBar({ selectedIds, data, onClear }: Props) {
             onClick={onClear}
             className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
             style={{ color: "var(--muted-foreground)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "var(--foreground)";
-              e.currentTarget.style.background =
-                "color-mix(in srgb, var(--muted) 80%, transparent)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "var(--muted-foreground)";
-              e.currentTarget.style.background = "transparent";
-            }}
           >
             <X size={15} />
             <span className="hidden md:inline">Clear</span>
