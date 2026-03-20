@@ -4,6 +4,7 @@ import { useState } from "react";
 import FormContainer from "./FormContainer";
 import FormSection from "./FormSection";
 import { validateForm } from "@/lib/formValidator";
+import { useRouter, usePathname } from "next/navigation";
 
 interface Props {
   schema: any[];
@@ -15,6 +16,9 @@ export default function FormEngine({ schema }: Props) {
   const [loading, setLoading] = useState(false);
 
   /* handle input change */
+
+  const router = useRouter();
+  const pathname = usePathname();
 
   const handleChange = (name: string, value: any) => {
     setValues((prev) => ({
@@ -72,7 +76,19 @@ export default function FormEngine({ schema }: Props) {
 
       const data = await res.json();
 
+      if (!res.ok) {
+        throw new Error(data?.message || "Failed to create");
+      }
+
       console.log("API response:", data);
+
+      // ✅ DYNAMIC REDIRECT LOGIC
+      const segments = pathname.split("/").filter(Boolean);
+      segments.pop(); // removes "add"
+
+      const redirectTo = "/" + segments.join("/");
+
+      router.push(redirectTo);
     } catch (err) {
       console.error("Submit error", err);
     } finally {

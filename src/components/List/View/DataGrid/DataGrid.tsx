@@ -105,7 +105,7 @@ export default function DataGrid({
         <table className="min-w-full text-sm">
           <thead>
             <tr>
-              <th className="sticky top-0 left-0 z-40 w-14 p-4 text-center border-r border-border bg-background">
+              <th className="sticky top-0 left-0 z-40 w-14 p-4 text-center border-r border-b border-border bg-background">
                 <input
                   type="checkbox"
                   checked={selected.length === data.length && data.length > 0}
@@ -122,7 +122,7 @@ export default function DataGrid({
               {columns.map((col) => (
                 <th
                   key={col.key}
-                  className="sticky top-0 z-30 px-4 h-11 text-left uppercase text-xs tracking-wide font-semibold text-muted-foreground border-r border-border bg-background"
+                  className="sticky top-0 z-30 px-4 h-11 text-left uppercase text-xs tracking-wide font-semibold text-muted-foreground border-r border-b border-border bg-background"
                 >
                   {col.label}
                 </th>
@@ -166,7 +166,10 @@ export default function DataGrid({
                   </td>
 
                   {columns.map((col) => (
-                    <td key={col.key} className="px-4 whitespace-nowrap">
+                    <td
+                      key={col.key}
+                      className="px-4 border-r whitespace-nowrap"
+                    >
                       {renderCell(col, row[col.key])}
                     </td>
                   ))}
