@@ -128,7 +128,7 @@ export default function DataGrid({
                 </th>
               ))}
 
-              <th className="sticky top-0 right-0 z-30 w-20 text-center uppercase text-xs font-semibold text-muted-foreground border-l border-border p-2 bg-background">
+              <th className="sticky top-0 right-0 z-30 w-20 text-center uppercase text-xs font-semibold text-muted-foreground border-l border-b border-border p-2 bg-background">
                 Actions
               </th>
             </tr>

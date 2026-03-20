@@ -3,37 +3,44 @@
 import { useRouter, usePathname } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
-export default function BackButton() {
+interface Props {
+  variant?: "icon" | "default";
+}
+
+export default function BackButton({ variant = "default" }: Props) {
   const router = useRouter();
   const pathname = usePathname();
 
   const handleBack = () => {
     const segments = pathname.split("/").filter(Boolean);
 
-    // remove add/create/new
+    // Case 1: /update/:id
+    if (segments.includes("update")) {
+      return router.push(`/dashboard/${segments[1]}`);
+    }
+
+    // Case 2: /add
     if (["add", "create", "new"].includes(segments.at(-1)!)) {
-      segments.pop();
+      return router.push(`/dashboard/${segments[1]}`);
     }
 
-    // handle update/:id
-    if (segments.at(-2) === "update") {
-      segments.pop(); // id
-      segments.pop(); // update
+    // Case 3: /:id (view page)
+    if (segments.length >= 3) {
+      return router.push(`/dashboard/${segments[1]}`);
     }
 
-    const redirectTo = "/" + segments.join("/");
-
-    router.push(redirectTo);
+    // fallback
+    router.push("/dashboard");
   };
 
   return (
     <button
       type="button"
       onClick={handleBack}
-      className="flex items-center gap-2 text-md font-medium text-muted-foreground hover:text-foreground transition"
+      className="flex items-center gap-1 text-muted-foreground hover:text-foreground transition"
     >
       <ArrowLeft size={24} />
-      Back
+      {variant === "default" && <span>Back</span>}
     </button>
   );
 }

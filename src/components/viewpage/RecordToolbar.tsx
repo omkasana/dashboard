@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { PencilSquareIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { Download } from "lucide-react";
 import ExportDialog from "@/components/List/ExportDialog";
+import BackButton from "../UI/BackButton";
 
 interface RecordToolbarProps {
   model: string;
@@ -32,11 +33,14 @@ export function RecordToolbar({
           background: "color-mix(in srgb, var(--background) 85%, transparent)",
         }}
       >
-        {/* Breadcrumb */}
         <div
-          className="flex items-center gap-2 text-sm"
+          className="flex items-center gap-3 text-sm"
           style={{ color: "var(--muted-foreground)" }}
         >
+          {/* 🔙 Back Button (ICON ONLY) */}
+          <BackButton variant="icon" />
+
+          {/* Breadcrumb */}
           <span
             className="cursor-pointer capitalize transition-colors hover:underline"
             onClick={() => router.push(`/dashboard/${model}`)}
@@ -113,14 +117,6 @@ export function RecordToolbar({
                 background:
                   "color-mix(in srgb, var(--brand-danger) 10%, transparent)",
               }}
-              onMouseEnter={(e) =>
-                (e.currentTarget.style.background =
-                  "color-mix(in srgb, var(--brand-danger) 18%, transparent)")
-              }
-              onMouseLeave={(e) =>
-                (e.currentTarget.style.background =
-                  "color-mix(in srgb, var(--brand-danger) 10%, transparent)")
-              }
             >
               <TrashIcon className="w-4 h-4" />
               <span className="hidden md:inline">Delete</span>
@@ -133,10 +129,20 @@ export function RecordToolbar({
               >
                 Sure?
               </span>
+
               <button
-                onClick={() => {
-                  onDelete?.();
-                  setShowDeleteConfirm(false);
+                onClick={async () => {
+                  try {
+                    await fetch(`http://localhost:4000/api/${model}/${id}`, {
+                      method: "DELETE",
+                    });
+
+                    router.push(`/dashboard/${model}`);
+                  } catch (err) {
+                    console.error("Delete failed:", err);
+                  } finally {
+                    setShowDeleteConfirm(false);
+                  }
                 }}
                 className="px-3 py-1.5 text-xs rounded-lg transition-all"
                 style={{
@@ -149,6 +155,7 @@ export function RecordToolbar({
               >
                 Yes
               </button>
+
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 className="px-3 py-1.5 text-xs rounded-lg transition-all"
