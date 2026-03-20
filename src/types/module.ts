@@ -57,6 +57,7 @@ export type ViewFieldType =
   | "number"
   | "decimal"
   | "currency"
+  | "array"
   | "date"
   | "time"
   | "datetime"
@@ -76,13 +77,45 @@ export interface ViewField {
   key: string;
   label: string;
   type: ViewFieldType;
+
+  // formatting
   prefix?: string;
   suffix?: string;
   dateFormat?: string;
+
+  // visual
   badgeColors?: Record<string, string>;
   span?: number;
-}
 
+  /* ================================
+     🔥 NEW: RENDER CONFIG
+  ================================ */
+
+  // ARRAY / OBJECT support
+  item?: {
+    titleField?: string; // primary display field
+    typeField?: string; // badge on right
+
+    metaFields?: {
+      key: string;
+      type?: "text" | "boolean";
+      label?: string;
+      prefix?: string;
+      color?: string;
+    }[];
+
+    layout?: "row" | "card" | "compact"; // UI style
+  };
+
+  // OBJECT support (future)
+  fields?: ViewField[];
+
+  // visibility control
+  visible?: boolean | ((data: any) => boolean);
+
+  // custom render override (advanced)
+  render?: (value: any, data: any) => any;
+}
 /* ================================
    VIEW SECTIONS
 ================================ */

@@ -156,6 +156,79 @@ export function FieldRenderer({ field, value }: FieldRendererProps) {
         </span>
       );
 
+    case "array":
+      const items = Array.isArray(value) ? value : [];
+
+      return (
+        <div className="flex flex-col">
+          {items.length > 0 ? (
+            items.map((item: any, index: number) => {
+              const titleKey = field.item?.titleField;
+              const typeKey = field.item?.typeField;
+              const metaFields = field.item?.metaFields || [];
+
+              return (
+                <div
+                  key={index}
+                  className="
+                group flex items-center justify-between
+                px-4 py-3
+                border-b border-white/6
+                hover:bg-white/3
+                transition
+              "
+                >
+                  {/* LEFT */}
+                  <div className="flex flex-col gap-1">
+                    {/* TITLE */}
+                    {titleKey && (
+                      <span className="text-sm font-medium text-white">
+                        {String(item[titleKey] ?? "")}
+                      </span>
+                    )}
+
+                    {/* META */}
+                    <div className="flex flex-wrap gap-2 text-xs text-white/50">
+                      {metaFields.map((meta: any) => {
+                        const val = item[meta.key];
+
+                        if (val === undefined || val === null || val === false)
+                          return null;
+
+                        // Boolean meta (badge)
+                        if (meta.type === "boolean") {
+                          return (
+                            <span key={meta.key} className="text-red-400">
+                              {meta.label}
+                            </span>
+                          );
+                        }
+
+                        // Text meta
+                        return (
+                          <span key={meta.key}>
+                            {meta.prefix ? `${meta.prefix} ` : ""}
+                            {String(val)}
+                          </span>
+                        );
+                      })}
+                    </div>
+                  </div>
+
+                  {/* RIGHT TYPE */}
+                  {typeKey && item[typeKey] && (
+                    <div className="text-xs px-2.5 py-1 rounded-full bg-blue-500/10 text-blue-400 border border-blue-500/20">
+                      {item[typeKey]}
+                    </div>
+                  )}
+                </div>
+              );
+            })
+          ) : (
+            <div className="text-sm text-white/40 px-4 py-3">No items</div>
+          )}
+        </div>
+      );
     case "boolean":
       return (
         <span

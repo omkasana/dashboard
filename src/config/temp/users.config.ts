@@ -1,6 +1,6 @@
 import { userData } from "@/dummy/user.data";
 import type { ModuleConfig } from "@/types/module";
-import { usersViewConfig } from "@/config/users/user.view.config";
+import { usersViewConfig } from "./user.view.config";
 
 export const usersConfig: ModuleConfig = {
   id: "users",

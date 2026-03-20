@@ -1,12 +1,96 @@
 import type { ModuleConfig } from "@/types/module";
 import { Users } from "lucide-react";
-import { usersViewConfig } from "./user.view.config";
 
 export const modelsConfig: ModuleConfig = {
   id: "models",
   title: "Models",
   description: "Define database tables and schema",
-  view: usersViewConfig,
+  view: {
+    defaultLayout: "profile",
+
+    fields: [
+      { key: "name", label: "Model Name", type: "text" },
+      { key: "slug", label: "Table Name", type: "text" },
+      { key: "description", label: "Description", type: "text" },
+
+      {
+        key: "fields",
+        label: "Fields",
+        type: "array",
+
+        item: {
+          titleField: "name", // 🔥 primary
+          typeField: "type", // 🔥 badge (right side)
+
+          metaFields: [
+            { key: "required", type: "boolean", label: "required" },
+            { key: "unique", type: "boolean", label: "unique" },
+            { key: "defaultValue", type: "text", prefix: "default:" },
+            { key: "relation", type: "text", prefix: "→" },
+          ],
+        },
+      },
+
+      { key: "timestamps", label: "Timestamps", type: "boolean" },
+      { key: "softDeletes", label: "Soft Delete", type: "boolean" },
+
+      { key: "createdAt", label: "Created At", type: "date" },
+      { key: "updatedAt", label: "Updated At", type: "date" },
+    ],
+
+    layouts: {
+      profile: {
+        type: "profile",
+
+        columns: 3,
+        sectionGap: "0.75rem",
+        fieldGap: "0.75rem 1.5rem",
+        sectionPadding: "1rem",
+
+        mobileBreakpoint: 768,
+        fieldBreakpoint: 480,
+        maxFieldColsMobile: 2,
+
+        titleField: "name",
+        subtitleField: "description",
+        badgeFields: ["slug"],
+
+        sections: [
+          {
+            id: "basic",
+            title: "Model Information",
+            colSpan: 2,
+            columns: 2,
+            fields: ["name", "slug", "description"],
+          },
+
+          {
+            id: "structure",
+            title: "Schema Fields",
+            colSpan: 3,
+            columns: 1,
+            fields: ["fields"], // 🔥 important (array renderer)
+          },
+
+          {
+            id: "options",
+            title: "Options",
+            colSpan: 1,
+            columns: 1,
+            fields: ["timestamps", "softDeletes"],
+          },
+
+          {
+            id: "meta",
+            title: "Metadata",
+            colSpan: 2,
+            columns: 2,
+            fields: ["createdAt", "updatedAt"],
+          },
+        ],
+      },
+    },
+  },
 
   actions: {
     add: true,
