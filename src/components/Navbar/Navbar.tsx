@@ -50,7 +50,7 @@ export default function Navbar() {
       </div>
 
       {/* ================= CENTER ================= */}
-      <div className="absolute left-1/2 -translate-x-1/2 w-[520px] max-w-[60%] hidden md:block">
+      <div className="absolute left-1/2 -translate-x-1/2 w-130 max-w-[60%] hidden md:block">
         <GlobalSearch />
       </div>
 

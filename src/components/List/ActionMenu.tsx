@@ -102,7 +102,7 @@ export default function ActionMenu({ id, module, onDelete }: Props) {
               left: coords.left,
               width: MENU_WIDTH,
             }}
-            className=" bg-background border border-border rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] p-2 z-[9999] animate-in fade-in zoom-in-95 duration-150 "
+            className=" bg-background border border-border rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.25)] p-2 z-9999 animate-in fade-in zoom-in-95 duration-150 "
           >
             {" "}
             {/* VIEW */}{" "}
