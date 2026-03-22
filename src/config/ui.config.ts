@@ -1,8 +1,14 @@
 export type ThemeMode = "light" | "dark";
 export type SidebarPosition = "left" | "right" | "top" | "bottom";
 
+import type { PaletteName } from "./palettes";
+
+export const defaultTheme = {
+  mode: "dark" as ThemeMode,
+  palette: "default" as PaletteName,
+};
+
 export const uiConfig = {
-  themeMode: "dark" as ThemeMode,
   sidebarPosition: "left" as SidebarPosition,
 
   sidebar: {
@@ -17,65 +23,10 @@ export const uiConfig = {
     family: "Inter, sans-serif",
   },
 
-  light: {
-    primary: "#ff781f",
-    primaryForeground: "#ffffff",
-
-    secondary: "#f1f5f9",
-    secondaryForeground: "#0f172a",
-
-    background: "#ffffff",
-    foreground: "#0f172a",
-
-    muted: "#f3f4f6",
-    mutedForeground: "#6b7280",
-
-    border: "#e5e7eb",
-
-    table: {
-      headerBg: "#f3f4f6",
-      rowHover: "#e5e7eb",
-      rowAlternate: "#fafafa",
-      selectedRow: "#e8f0ff",
-    },
-
-    brand: {
-      success: "#22c55e",
-      warning: "#f59e0b",
-      danger: "#ef4444",
-      info: "#3b82f6",
-      neutral: "#64748b",
-    },
-  },
-
-  dark: {
-    primary: "#ff781f",
-    primaryForeground: "#000000",
-
-    secondary: "#1f2937",
-    secondaryForeground: "#f9fafb",
-
-    background: "#0f172a",
-    foreground: "#f8fafc",
-
-    muted: "#1e293b",
-    mutedForeground: "#94a3b8",
-
-    border: "#334155",
-
-    table: {
-      headerBg: "#1e293b",
-      rowHover: "#334155",
-      rowAlternate: "#172033",
-      selectedRow: "#1d2c52",
-    },
-
-    brand: {
-      success: "#22c55e",
-      warning: "#fbbf24",
-      danger: "#f87171",
-      info: "#60a5fa",
-      neutral: "#94a3b8",
+  theme: {
+    paletteSelector: {
+      enabled: true,
+      defaultView: "grid" as "grid" | "list",
     },
   },
 };
@@ -140,16 +91,10 @@ export const AddFormConfig = {
 
   glass: {
     blur: 18,
-
     backgroundLight: "rgba(255,255,255,0.65)",
     backgroundDark: "rgba(15,23,42,0.45)",
-
     border: "rgba(255,255,255,0.25)",
-
     shadow: "0 8px 30px rgba(0,0,0,0.15)",
-
-    /* ADD THIS */
-
     inputBackgroundLight: "rgba(255,255,255,0.75)",
     inputBackgroundDark: "rgba(255,255,255,0.06)",
   },

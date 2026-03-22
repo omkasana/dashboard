@@ -1,8 +1,16 @@
-import { uiConfig } from "@/config/ui.config";
+import { palettes } from "@/config/palettes";
+import { defaultTheme } from "@/config/ui.config";
 
 export function getThemeVars() {
-  const mode = uiConfig.themeMode;
-  const t = uiConfig[mode];
+  const mode =
+    (localStorage.getItem("crm-theme") as "light" | "dark") ||
+    defaultTheme.mode;
+
+  const palette =
+    (localStorage.getItem("crm-palette") as keyof typeof palettes) ||
+    defaultTheme.palette;
+
+  const t = palettes[palette][mode];
 
   return {
     "--bg": t.background,

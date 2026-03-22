@@ -1,7 +1,10 @@
 "use client";
 
 import { useEffect } from "react";
-import { uiConfig, ThemeMode } from "@/config/ui.config";
+import { palettes } from "@/config/palettes";
+import { defaultTheme, ThemeMode } from "@/config/ui.config";
+
+type PaletteName = keyof typeof palettes;
 
 export default function ThemeProvider({
   children,
@@ -9,19 +12,23 @@ export default function ThemeProvider({
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    const stored =
-      (localStorage.getItem("crm-theme") as ThemeMode) ||
-      uiConfig.themeMode;
+    const mode =
+      (localStorage.getItem("crm-theme") as ThemeMode) || defaultTheme.mode;
 
-    const theme =
-      stored === "dark" ? uiConfig.dark : uiConfig.light;
+    const palette =
+      (localStorage.getItem("crm-palette") as PaletteName) ||
+      defaultTheme.palette;
+
+    const theme = palettes[palette][mode];
 
     const root = document.documentElement;
 
+    // apply class
     root.classList.remove("light", "dark");
-    root.classList.add(stored);
+    root.classList.add(mode);
 
-    Object.entries({
+    // apply CSS variables
+    const vars: Record<string, string> = {
       "--primary": theme.primary,
       "--primary-foreground": theme.primaryForeground,
       "--background": theme.background,
@@ -42,7 +49,9 @@ export default function ThemeProvider({
       "--brand-danger": theme.brand.danger,
       "--brand-info": theme.brand.info,
       "--brand-neutral": theme.brand.neutral,
-    }).forEach(([key, value]) => {
+    };
+
+    Object.entries(vars).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });
   }, []);

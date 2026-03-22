@@ -8,6 +8,6 @@ export type UserProfile = {
 export const profileData: UserProfile = {
   name: "GUJJAR",
   email: "gujjar@gmail.com",
-  role: "ADMINISTRATOR",
+  role: "Administrator",
   avatar: "/images/avatar.png",
 };

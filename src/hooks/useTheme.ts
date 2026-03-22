@@ -1,30 +1,61 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { uiConfig, ThemeMode } from "@/config/ui.config";
+import { palettes, PaletteName } from "@/config/palettes";
+import { defaultTheme, ThemeMode } from "@/config/ui.config";
 
+/* ----------------------------------------
+   Type Guard (IMPORTANT)
+---------------------------------------- */
+function isValidPalette(value: string): value is PaletteName {
+  return value in palettes;
+}
+
+/* ----------------------------------------
+   Hook
+---------------------------------------- */
 export function useTheme() {
   const [theme, setTheme] = useState<ThemeMode>("light");
+  const [palette, setPaletteState] = useState<PaletteName>(
+    defaultTheme.palette,
+  );
 
+  /* ----------------------------------------
+     Init from localStorage
+  ---------------------------------------- */
   useEffect(() => {
-    const stored =
-      (localStorage.getItem("crm-theme") as ThemeMode) ||
-      uiConfig.themeMode;
+    const storedThemeRaw = localStorage.getItem("crm-theme");
+    const storedPaletteRaw = localStorage.getItem("crm-palette");
 
-    applyTheme(stored);
-    setTheme(stored);
+    const storedTheme: ThemeMode =
+      storedThemeRaw === "light" || storedThemeRaw === "dark"
+        ? storedThemeRaw
+        : defaultTheme.mode;
+
+    const storedPalette: PaletteName =
+      storedPaletteRaw && isValidPalette(storedPaletteRaw)
+        ? storedPaletteRaw
+        : defaultTheme.palette;
+
+    applyTheme(storedTheme, storedPalette);
+
+    setTheme(storedTheme);
+    setPaletteState(storedPalette);
   }, []);
 
-  const applyTheme = (mode: ThemeMode) => {
-    const themeConfig =
-      mode === "dark" ? uiConfig.dark : uiConfig.light;
-
+  /* ----------------------------------------
+     Apply Theme (CSS Variables)
+  ---------------------------------------- */
+  const applyTheme = (mode: ThemeMode, palette: PaletteName) => {
+    const themeConfig = palettes[palette][mode];
     const root = document.documentElement;
 
+    // set html class
     root.classList.remove("light", "dark");
     root.classList.add(mode);
 
-    Object.entries({
+    // CSS variables
+    const vars: Record<string, string> = {
       "--primary": themeConfig.primary,
       "--primary-foreground": themeConfig.primaryForeground,
       "--background": themeConfig.background,
@@ -45,19 +76,42 @@ export function useTheme() {
       "--brand-danger": themeConfig.brand.danger,
       "--brand-info": themeConfig.brand.info,
       "--brand-neutral": themeConfig.brand.neutral,
-    }).forEach(([key, value]) => {
+    };
+
+    Object.entries(vars).forEach(([key, value]) => {
       root.style.setProperty(key, value);
     });
   };
 
+  /* ----------------------------------------
+     Toggle Light/Dark
+  ---------------------------------------- */
   const toggleTheme = () => {
-    const newTheme: ThemeMode =
-      theme === "light" ? "dark" : "light";
+    const newTheme: ThemeMode = theme === "light" ? "dark" : "light";
 
-    applyTheme(newTheme);
+    applyTheme(newTheme, palette);
+
     localStorage.setItem("crm-theme", newTheme);
     setTheme(newTheme);
   };
 
-  return { theme, toggleTheme };
+  /* ----------------------------------------
+     Change Palette
+  ---------------------------------------- */
+  const changePalette = (newPalette: PaletteName) => {
+    applyTheme(theme, newPalette);
+
+    localStorage.setItem("crm-palette", newPalette);
+    setPaletteState(newPalette);
+  };
+
+  /* ----------------------------------------
+     Return API
+  ---------------------------------------- */
+  return {
+    theme,
+    palette,
+    toggleTheme,
+    changePalette,
+  };
 }
