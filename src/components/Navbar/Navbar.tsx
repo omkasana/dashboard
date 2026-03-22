@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
-import { Menu } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { useState, useEffect } from "react";
 import { usePathname } from "next/navigation";
 
@@ -19,16 +19,15 @@ export default function Navbar() {
   const pathname = usePathname();
   const isRight = uiConfig.sidebarPosition === "right";
 
-  // ✅ Close sheet on route change
+  // Close sidebar on route change
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
 
   return (
-    <header className="relative h-16 border-b bg-background flex items-center px-6">
+    <header className="h-16 border-b bg-background flex items-center px-4 md:px-6 gap-4">
       {/* ================= LEFT ================= */}
-      <div className="flex items-center gap-6 z-10">
-        {/* ✅ Hamburger — only show on left when sidebar is left */}
+      <div className="flex items-center gap-3 shrink-0">
         {!isRight && (
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
@@ -43,23 +42,37 @@ export default function Navbar() {
         )}
 
         <Link href="/dashboard">
-          <Image src="/images/logo.svg" alt="Logo" width={120} height={32} />
+          <Image src="/images/logo.svg" alt="Logo" width={110} height={28} />
         </Link>
+      </div>
 
+      {/* ================= BREADCRUMB ================= */}
+      <div className="hidden md:flex items-center min-w-0 flex-1 overflow-hidden">
         <Breadcrumb />
       </div>
 
-      {/* ================= CENTER ================= */}
-      <div className="absolute left-1/2 -translate-x-1/2 w-130 max-w-[60%] hidden md:block">
+      {/* ================= SEARCH ================= */}
+      <div className="hidden md:flex flex-1 max-w-md lg:max-w-lg">
         <GlobalSearch />
       </div>
 
       {/* ================= RIGHT ================= */}
-      <div className="ml-auto flex items-center gap-4 z-10">
+      <div className="flex items-center gap-3 ml-auto shrink-0">
+        {/* 🔍 Mobile Search */}
+        <Sheet>
+          <SheetTrigger asChild>
+            <button className="md:hidden p-2 rounded-md hover:bg-muted">
+              <Search className="h-5 w-5" />
+            </button>
+          </SheetTrigger>
+          <SheetContent side="top" className="p-4">
+            <GlobalSearch />
+          </SheetContent>
+        </Sheet>
+
         <NotificationsDropdown />
         <ProfileDropdown />
 
-        {/* ✅ Hamburger on right when sidebar position is right */}
         {isRight && (
           <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>

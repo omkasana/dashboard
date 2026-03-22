@@ -63,7 +63,7 @@ export default function Breadcrumb() {
       </span>
 
       {/* BREADCRUMB PATH */}
-      <div className="flex items-center gap-2 text-sm text-muted-foreground">
+      <div className="flex items-center gap-2 text-sm text-muted-foreground overflow-x-auto whitespace-nowrap scrollbar-hide">
         {segments.map((segment, index) => {
           path += `/${segment}`;
 
