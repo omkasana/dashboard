@@ -111,7 +111,7 @@ function NavDropdown({
         createPortal(
           <div
             ref={portalRef}
-            className="fixed z-[9999] min-w-[14rem] p-2 rounded-2xl border"
+            className="fixed z-9999 min-w-56 p-2 rounded-2xl border"
             style={{
               top: isBottom ? undefined : dropdownTop,
               bottom: isBottom ? window.innerHeight - rect.top + 8 : undefined,

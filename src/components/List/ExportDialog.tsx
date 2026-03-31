@@ -78,11 +78,11 @@ export default function ExportDialog({
         onClick={(e) => e.stopPropagation()}
         className="
   relative
-  w-[420px]
+  w-105
   p-6
   rounded-2xl
   border border-white/10
-  bg-gradient-to-b from-white/[0.08] to-white/[0.02]
+  bg-linear-to-b from-white/8 to-white/2
   backdrop-blur-sm
   shadow-[0_20px_60px_rgba(0,0,0,0.55)]
   space-y-5
@@ -90,7 +90,7 @@ export default function ExportDialog({
       >
         <div
           className="absolute inset-0 rounded-2xl pointer-events-none
-  bg-gradient-to-b from-white/[0.06] via-transparent to-transparent"
+  bg-linear-to-b from-white/6 via-transparent to-transparent"
         />
         <h3 className="text-lg font-semibold">Export Data</h3>
 
@@ -157,7 +157,7 @@ export default function ExportDialog({
       relative flex items-center justify-center
       w-5 h-5 rounded-md
       border border-white/15
-      bg-white/[0.04]
+      bg-white/4
       backdrop-blur-sm
       transition-all duration-200
       ${setDefault ? "bg-primary/20 border-primary/40" : ""}

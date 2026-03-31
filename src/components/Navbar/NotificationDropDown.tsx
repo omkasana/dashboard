@@ -28,7 +28,7 @@ export function NotificationsDropdown() {
        "
         >
           {" "}
-          <Bell className="h-[18px] w-[18px] text-foreground/80" />
+          <Bell className="h-4.5 w-4.5 text-foreground/80" />
           {unread && (
             <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-red-500 shadow" />
           )}
@@ -37,8 +37,8 @@ export function NotificationsDropdown() {
       <DropdownMenuContent
         align="end"
         className="
-    w-[380px] p-0 overflow-hidden rounded-2xl
-    bg-white/60 dark:bg-white/[0.05]
+    w-95 p-0 overflow-hidden rounded-2xl
+    bg-white/60 dark:bg-white/5
     backdrop-blur-2xl backdrop-saturate-150
     border border-white/50 dark:border-white/10
     shadow-[0_20px_60px_rgba(0,0,0,0.25)]
@@ -50,7 +50,7 @@ export function NotificationsDropdown() {
         </div>
 
         {/* list */}
-        <div className="max-h-[360px] overflow-y-auto">
+        <div className="max-h-90 overflow-y-auto">
           {notifications.map((item) => (
             <div
               key={item.id}
