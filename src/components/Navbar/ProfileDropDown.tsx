@@ -24,8 +24,9 @@ import {
 
 import Link from "next/link";
 import { useTheme } from "@/hooks/useTheme";
-import { Avatar, AvatarFallback, AvatarImage } from "../UI/Avatar";
+
 import { useState } from "react";
+import { Avatar, AvatarFallback, AvatarImage } from "../UI/avatar";
 
 export function ProfileDropdown() {
   const { theme, toggleTheme, palette, changePalette } = useTheme();

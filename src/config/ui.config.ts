@@ -12,11 +12,15 @@ export const uiConfig = {
   sidebarPosition: "left" as SidebarPosition,
 
   sidebar: {
-    accordion: true,
-    autoNavigateFirstChild: false,
     collapsible: true,
-    defaultCollapsed: false,
+    defaultCollapsed: true,
     persistState: true,
+
+    // 🔥 FINAL CONTROL
+    subMenu: "nested" as "nested" | "flyout",
+    // future ready
+    collapseWidth: 72,
+    expandWidth: 256,
   },
 
   font: {

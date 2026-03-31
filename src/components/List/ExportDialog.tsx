@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { exportData, type ExportFormat } from "@/lib/exportUtils";
-import { Button } from "../UI/Button";
+import { Button } from "../UI/button";
 
 const POPULAR_FORMATS: { id: ExportFormat; label: string }[] = [
   { id: "json", label: "JSON" },
