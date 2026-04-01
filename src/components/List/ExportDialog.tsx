@@ -34,84 +34,69 @@ export default function ExportDialog({
 
   useEffect(() => {
     const saved = localStorage.getItem("export-format") as ExportFormat | null;
-
-    if (saved) {
-      setFormat(saved);
-    }
+    if (saved) setFormat(saved);
   }, []);
 
   const handleExport = () => {
-    if (setDefault) {
-      localStorage.setItem("export-format", format);
-    }
-
-    exportData({
-      data,
-      format,
-      filename,
-    });
-
+    if (setDefault) localStorage.setItem("export-format", format);
+    exportData({ data, format, filename });
     onClose();
   };
 
   useEffect(() => {
-    const handleEsc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        onClose();
-      }
-    };
-
-    window.addEventListener("keydown", handleEsc);
-
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     return () => {
-      window.removeEventListener("keydown", handleEsc);
+      document.body.style.overflow = prev;
     };
+  }, []);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => window.removeEventListener("keydown", handleEsc);
   }, [onClose]);
 
   return (
     <div
       onClick={onClose}
-      className="fixed inset-0 z-50 flex items-center justify-center
-      bg-black/25 backdrop-blur-sm"
+      className="fixed inset-0 z-50 flex items-end sm:items-center justify-center
+        bg-black/40 backdrop-blur-[2px] px-3 sm:px-0 pb-3 sm:pb-0"
     >
       <div
         onClick={(e) => e.stopPropagation()}
         className="
-  relative
-  w-105
-  p-6
-  rounded-2xl
-  border border-white/10
-  bg-linear-to-b from-white/8 to-white/2
-  backdrop-blur-sm
-  shadow-[0_20px_60px_rgba(0,0,0,0.55)]
-  space-y-5
-"
+          relative
+          w-full sm:w-95 sm:max-w-[calc(100vw-2rem)]
+          overflow-hidden
+          p-4 sm:p-5
+          rounded-2xl
+          border border-border/60
+          bg-background
+          shadow-[0_-4px_32px_rgba(0,0,0,0.14)] sm:shadow-[0_20px_60px_rgba(0,0,0,0.2)]
+          space-y-4
+        "
       >
-        <div
-          className="absolute inset-0 rounded-2xl pointer-events-none
-  bg-linear-to-b from-white/6 via-transparent to-transparent"
-        />
-        <h3 className="text-lg font-semibold">Export Data</h3>
+        <h3 className="text-sm font-semibold text-foreground">Export Data</h3>
 
         {/* Popular formats */}
-
-        <div className="space-y-3">
-          <p className="text-xs uppercase tracking-wider text-muted-foreground">
+        <div className="space-y-2">
+          <p className="text-[10px] uppercase tracking-wider text-muted-foreground">
             Popular formats
           </p>
-
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-1.5">
             {POPULAR_FORMATS.map((f) => (
               <button
                 key={f.id}
                 onClick={() => setFormat(f.id)}
-                className={`rounded-lg border px-3 py-2 text-sm transition
-                ${
-                  format === f.id
-                    ? "border-primary bg-primary/10"
-                    : "border-white/10 hover:bg-white/5"
-                }`}
+                className={`rounded-lg border px-2.5 py-2 text-xs font-medium transition-colors
+                  ${
+                    format === f.id
+                      ? "border-primary bg-primary/10 text-primary"
+                      : "border-border text-foreground hover:bg-accent hover:text-accent-foreground"
+                  }`}
               >
                 {f.label}
               </button>
@@ -120,27 +105,25 @@ export default function ExportDialog({
         </div>
 
         {/* Advanced formats */}
-
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           <button
             onClick={() => setShowMore(!showMore)}
-            className="text-xs text-muted-foreground hover:text-foreground"
+            className="text-[11px] text-muted-foreground hover:text-foreground transition-colors"
           >
-            {showMore ? "Hide advanced formats" : "More formats"}
+            {showMore ? "Hide advanced formats ↑" : "More formats ↓"}
           </button>
-
           {showMore && (
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-1.5">
               {OTHER_FORMATS.map((f) => (
                 <button
                   key={f.id}
                   onClick={() => setFormat(f.id)}
-                  className={`rounded-lg border px-3 py-2 text-sm transition
-                  ${
-                    format === f.id
-                      ? "border-primary bg-primary/10"
-                      : "border-white/10 hover:bg-white/5"
-                  }`}
+                  className={`rounded-lg border px-2.5 py-2 text-xs font-medium transition-colors
+                    ${
+                      format === f.id
+                        ? "border-primary bg-primary/10 text-primary"
+                        : "border-border text-foreground hover:bg-accent hover:text-accent-foreground"
+                    }`}
                 >
                   {f.label}
                 </button>
@@ -149,19 +132,19 @@ export default function ExportDialog({
           )}
         </div>
 
-        {/* Default checkbox */}
-
-        <label className="flex items-center gap-3 text-sm cursor-pointer select-none">
+        {/* Remember checkbox */}
+        <label className="flex items-center gap-2.5 text-xs cursor-pointer select-none">
           <span
             className={`
-      relative flex items-center justify-center
-      w-5 h-5 rounded-md
-      border border-white/15
-      bg-white/4
-      backdrop-blur-sm
-      transition-all duration-200
-      ${setDefault ? "bg-primary/20 border-primary/40" : ""}
-    `}
+              relative flex items-center justify-center
+              w-4 h-4 rounded shrink-0
+              border transition-all duration-200
+              ${
+                setDefault
+                  ? "bg-primary/15 border-primary/50"
+                  : "bg-background border-border"
+              }
+            `}
           >
             <input
               type="checkbox"
@@ -169,10 +152,9 @@ export default function ExportDialog({
               onChange={() => setSetDefault(!setDefault)}
               className="absolute inset-0 opacity-0 cursor-pointer"
             />
-
             {setDefault && (
               <svg
-                className="w-3.5 h-3.5 text-primary"
+                className="w-3 h-3 text-primary"
                 viewBox="0 0 20 20"
                 fill="currentColor"
               >
@@ -184,18 +166,17 @@ export default function ExportDialog({
               </svg>
             )}
           </span>
-
           <span className="text-muted-foreground">Remember this format</span>
         </label>
 
         {/* Actions */}
-
-        <div className="flex justify-end gap-3 pt-2">
-          <Button variant="ghost" onClick={onClose}>
+        <div className="flex justify-end gap-2 pt-0.5">
+          <Button variant="ghost" size="sm" onClick={onClose}>
             Cancel
           </Button>
-
-          <Button onClick={handleExport}>Export</Button>
+          <Button size="sm" onClick={handleExport}>
+            Export
+          </Button>
         </div>
       </div>
     </div>

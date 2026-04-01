@@ -41,13 +41,11 @@ export default function DynamicModule({ config }: Props) {
     load();
   }, [config.id]);
 
-  // delete
   const handleDelete = async (slug: string) => {
     if (!confirm("Delete this model?")) return;
 
     try {
       await deleteModel(slug);
-
       setData((prev) => prev.filter((m) => m.slug !== slug));
     } catch (err) {
       console.error("Delete failed", err);
@@ -124,9 +122,11 @@ export default function DynamicModule({ config }: Props) {
   const handleExport = () => {
     setShowExport(true);
   };
+
   const handleImport = (file: File) => {
-    // Implement your import logic here
+    // TODO: implement
   };
+
   /* ================= LOADING ================= */
 
   if (loading) {
@@ -136,59 +136,63 @@ export default function DynamicModule({ config }: Props) {
   /* ================= RENDER ================= */
 
   return (
-    <div className="p-4 space-y-8">
-      <ListHeader
-        module={config.id}
-        title={config.title}
-        description={config.description}
-        onAdd={config.actions?.add ? handleAdd : undefined}
-        onExport={config.actions?.export ? handleExport : undefined}
-        onImport={config.actions?.import ? handleImport : undefined}
-        onSearch={config.search?.enabled ? setSearchQuery : undefined}
-        onFilterToggle={
-          config.filters?.enabled
-            ? () => setShowFilters((prev) => !prev)
-            : undefined
-        }
-        currentView={view}
-        availableViews={config.views?.available}
-        onViewChange={config.views?.enabled ? setView : undefined}
-      />
-
-      {showFilters && config.filters?.enabled && (
-        <FilterPanel
-          fields={config.filters.fields}
-          columns={config.table.columns}
-          filters={filters}
-          setFilters={setFilters}
-          sortField={sortField}
-          setSortField={setSortField}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          onReset={() => setFilters({})}
+    <div className="p-4">
+      {/* 🔹 Main content with spacing */}
+      <div className="space-y-8">
+        <ListHeader
+          module={config.id}
+          title={config.title}
+          description={config.description}
+          onAdd={config.actions?.add ? handleAdd : undefined}
+          onExport={config.actions?.export ? handleExport : undefined}
+          onImport={config.actions?.import ? handleImport : undefined}
+          onSearch={config.search?.enabled ? setSearchQuery : undefined}
+          onFilterToggle={
+            config.filters?.enabled
+              ? () => setShowFilters((prev) => !prev)
+              : undefined
+          }
+          currentView={view}
+          availableViews={config.views?.available}
+          onViewChange={config.views?.enabled ? setView : undefined}
         />
-      )}
 
-      <ViewRenderer
-        view={view}
-        config={config}
-        data={
-          view === "table" || view === "grid" || view === "list"
-            ? paginatedData
-            : processedData
-        }
-      />
+        {showFilters && config.filters?.enabled && (
+          <FilterPanel
+            fields={config.filters.fields}
+            columns={config.table.columns}
+            filters={filters}
+            setFilters={setFilters}
+            sortField={sortField}
+            setSortField={setSortField}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            onReset={() => setFilters({})}
+          />
+        )}
 
-      {showExport && (
-        <ExportDialog
-          data={processedData}
-          filename={config.id}
-          onClose={() => setShowExport(false)}
+        <ViewRenderer
+          view={view}
+          config={config}
+          data={
+            view === "table" || view === "grid" || view === "list"
+              ? paginatedData
+              : processedData
+          }
         />
-      )}
 
+        {showExport && (
+          <ExportDialog
+            data={processedData}
+            filename={config.id}
+            onClose={() => setShowExport(false)}
+          />
+        )}
+      </div>
+
+      {/* 🔹 Sticky pagination (isolated from spacing) */}
       {(view === "table" || view === "grid" || view === "list") && (
-        <div className="sticky bottom-0 bg-background/80 backdrop-blur-xl py-2">
+        <div className="sticky bottom-0 mt-6 bg-background/80 backdrop-blur-xl py-2">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}

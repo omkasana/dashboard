@@ -9,7 +9,7 @@ export const defaultTheme = {
 };
 
 export const uiConfig = {
-  sidebarPosition: "top" as SidebarPosition,
+  sidebarPosition: "left" as SidebarPosition,
 
   sidebar: {
     collapsible: true,
@@ -19,7 +19,7 @@ export const uiConfig = {
     // 🔥 FINAL CONTROL
     subMenu: "nested" as "nested" | "flyout",
 
-    togglePosition: "sidebar", // or "sidebar"
+    togglePosition: "navbar", // or "sidebar"
 
     // future ready bimbimbambam
     collapseWidth: 72,
