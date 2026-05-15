@@ -7,163 +7,158 @@ import { Download } from "lucide-react";
 import ExportDialog from "@/components/List/ExportDialog";
 import BackButton from "../UI/BackButton";
 
-interface RecordToolbarProps {
+/* ================= TYPES ================= */
+
+interface RecordToolbarProps<T = object> {
   model: string;
   id: string;
-  onDelete?: () => void;
-  data?: Record<string, unknown>;
+  onDelete?: () => Promise<void> | void;
+  data?: T;
 }
 
-export function RecordToolbar({
+/* ================= COMPONENT ================= */
+
+export function RecordToolbar<T extends object>({
   model,
   id,
   onDelete,
-  data = {},
-}: RecordToolbarProps) {
+  data,
+}: RecordToolbarProps<T>) {
   const router = useRouter();
+
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [showExport, setShowExport] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  /* ================= HELPERS ================= */
+
+  const getTitle = () => {
+    if (!data) return `#${id}`;
+
+    const record = data as Record<string, unknown>;
+
+    if ("title" in record && record.title) return String(record.title);
+
+    if ("name" in record && record.name) return String(record.name);
+
+    if ("label" in record && record.label) return String(record.label);
+
+    return `#${id}`;
+  };
+
+  const handleDelete = async () => {
+    try {
+      setLoading(true);
+
+      if (onDelete) {
+        await onDelete();
+      } else {
+        await fetch(`/api/${model}/${id}`, {
+          method: "DELETE",
+        });
+      }
+
+      router.push(`/dashboard/${model}`);
+    } catch (err) {
+      console.error("Delete failed:", err);
+      alert("Failed to delete record");
+    } finally {
+      setLoading(false);
+      setShowDeleteConfirm(false);
+    }
+  };
+
+  /* ================= UI ================= */
 
   return (
     <>
       <div
-        className="flex items-center justify-between px-4 py-3 sticky top-0 z-20 backdrop-blur-sm"
-        style={{
-          borderBottom: "1px solid var(--border)",
-          background: "color-mix(in srgb, var(--background) 85%, transparent)",
-        }}
+        className="
+          flex items-center justify-between px-4 py-3
+          sticky top-0 z-20 backdrop-blur-sm
+          border-b border-[var(--border)]
+          bg-[color-mix(in_srgb,var(--background)_85%,transparent)]
+        "
       >
-        <div
-          className="flex items-center gap-3 text-sm"
-          style={{ color: "var(--muted-foreground)" }}
-        >
-          {/* 🔙 Back Button (ICON ONLY) */}
+        {/* ================= LEFT ================= */}
+        <div className="flex items-center gap-3 text-sm text-muted-foreground">
           <BackButton variant="icon" />
 
-          {/* Breadcrumb */}
           <span
-            className="cursor-pointer capitalize transition-colors hover:underline"
+            className="cursor-pointer capitalize hover:underline"
             onClick={() => router.push(`/dashboard/${model}`)}
-            onMouseEnter={(e) =>
-              (e.currentTarget.style.color = "var(--foreground)")
-            }
-            onMouseLeave={(e) =>
-              (e.currentTarget.style.color = "var(--muted-foreground)")
-            }
           >
             {model}
           </span>
 
           <span>/</span>
 
-          <span className="font-medium" style={{ color: "var(--foreground)" }}>
-            {(data as any)?.title ||
-              (data as any)?.name ||
-              (data as any)?.label ||
-              `#${id}`}
-          </span>
+          <span className="font-medium text-foreground">{getTitle()}</span>
         </div>
 
-        {/* Actions */}
-        <div
-          className="flex items-center gap-1 p-1 rounded-2xl border border-white/10"
-          style={{ background: "var(--muted)" }}
-        >
-          {/* Export */}
+        {/* ================= ACTIONS ================= */}
+        <div className="flex items-center gap-1 p-1 rounded-2xl border border-white/10 bg-muted">
+          {/* EXPORT */}
           <button
             onClick={() => setShowExport(true)}
-            className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
-            style={{ color: "var(--muted-foreground)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "var(--foreground)";
-              e.currentTarget.style.background =
-                "color-mix(in srgb, var(--muted) 80%, transparent)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "var(--muted-foreground)";
-              e.currentTarget.style.background = "transparent";
-            }}
+            className="
+              flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium
+              text-muted-foreground hover:text-foreground
+              hover:bg-muted/80 transition
+            "
           >
             <Download size={15} />
             <span className="hidden md:inline">Export</span>
           </button>
 
-          {/* Edit */}
+          {/* EDIT */}
           <button
             onClick={() => router.push(`/dashboard/${model}/update/${id}`)}
-            className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
-            style={{ color: "var(--muted-foreground)" }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.color = "var(--foreground)";
-              e.currentTarget.style.background =
-                "color-mix(in srgb, var(--muted) 80%, transparent)";
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.color = "var(--muted-foreground)";
-              e.currentTarget.style.background = "transparent";
-            }}
+            className="
+              flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium
+              text-muted-foreground hover:text-foreground
+              hover:bg-muted/80 transition
+            "
           >
             <PencilSquareIcon className="w-4 h-4" />
             <span className="hidden md:inline">Edit</span>
           </button>
 
-          {/* Delete */}
+          {/* DELETE */}
           {!showDeleteConfirm ? (
             <button
               onClick={() => setShowDeleteConfirm(true)}
-              className="flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium transition-all duration-200"
-              style={{
-                color: "var(--brand-danger)",
-                background:
-                  "color-mix(in srgb, var(--brand-danger) 10%, transparent)",
-              }}
+              className="
+                flex items-center gap-2 px-4 h-9 rounded-xl text-sm font-medium
+                text-red-500 bg-red-500/10 hover:bg-red-500/20 transition
+              "
             >
               <TrashIcon className="w-4 h-4" />
               <span className="hidden md:inline">Delete</span>
             </button>
           ) : (
-            <div className="flex items-center gap-1.5 px-2">
-              <span
-                className="text-xs"
-                style={{ color: "var(--muted-foreground)" }}
-              >
-                Sure?
-              </span>
+            <div className="flex items-center gap-2 px-2">
+              <span className="text-xs text-muted-foreground">Confirm?</span>
 
               <button
-                onClick={async () => {
-                  try {
-                    await fetch(`http://localhost:4000/api/${model}/${id}`, {
-                      method: "DELETE",
-                    });
-
-                    router.push(`/dashboard/${model}`);
-                  } catch (err) {
-                    console.error("Delete failed:", err);
-                  } finally {
-                    setShowDeleteConfirm(false);
-                  }
-                }}
-                className="px-3 py-1.5 text-xs rounded-lg transition-all"
-                style={{
-                  color: "var(--brand-danger)",
-                  background:
-                    "color-mix(in srgb, var(--brand-danger) 15%, transparent)",
-                  border:
-                    "1px solid color-mix(in srgb, var(--brand-danger) 30%, transparent)",
-                }}
+                onClick={handleDelete}
+                disabled={loading}
+                className="
+                  px-3 py-1.5 text-xs rounded-lg
+                  text-red-500 bg-red-500/10 border border-red-500/30
+                  hover:bg-red-500/20 transition disabled:opacity-50
+                "
               >
-                Yes
+                {loading ? "Deleting..." : "Yes"}
               </button>
 
               <button
                 onClick={() => setShowDeleteConfirm(false)}
-                className="px-3 py-1.5 text-xs rounded-lg transition-all"
-                style={{
-                  color: "var(--muted-foreground)",
-                  background: "var(--muted)",
-                  border: "1px solid var(--border)",
-                }}
+                className="
+                  px-3 py-1.5 text-xs rounded-lg
+                  text-muted-foreground bg-muted border border-border
+                  hover:bg-muted/80 transition
+                "
               >
                 No
               </button>
@@ -172,9 +167,10 @@ export function RecordToolbar({
         </div>
       </div>
 
+      {/* ================= EXPORT MODAL ================= */}
       {showExport && (
         <ExportDialog
-          data={[data]}
+          data={data ? [data] : []}
           filename={`${model}-${id}`}
           onClose={() => setShowExport(false)}
         />

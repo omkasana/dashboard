@@ -71,11 +71,14 @@ export default function ActionMenu({ id, module, onDelete }: Props) {
     if (!confirmDelete) return;
 
     try {
-      if (module == "models") deleteModel(id); // ✅ special case for models
+      if (!module) return;
 
-      onDelete?.(id); // ✅ instant UI update
+      await fetch(`/api/${module}/${id}`, {
+        method: "DELETE",
+      });
 
-      router.refresh(); // fallback
+      onDelete?.(id);
+      router.refresh();
     } catch (err) {
       console.error("Delete failed", err);
     }
