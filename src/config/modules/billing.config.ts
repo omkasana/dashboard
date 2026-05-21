@@ -1,5 +1,12 @@
 import type { ModuleConfig } from "@/types/module";
-import { CreditCard } from "lucide-react";
+import {
+  currencyOptions,
+  organizationOptions,
+} from "@/config/options/organisations";
+import { subscriptionPlan } from "../options/subscriptionPlan";
+import { billingCycle } from "../options/billingCycle";
+import { paymentMethods } from "../options/paymentMethod";
+import { paymentStatuses } from "../options/paymentStatus";
 
 export const billingConfig: ModuleConfig = {
   id: "billing",
@@ -148,8 +155,9 @@ export const billingConfig: ModuleConfig = {
           {
             name: "organization",
             label: "Organization",
-            type: "text",
+            type: "search-select",
             required: true,
+            options: organizationOptions,
           },
           {
             name: "invoiceDate",
@@ -173,21 +181,13 @@ export const billingConfig: ModuleConfig = {
             name: "plan",
             label: "Plan",
             type: "select",
-            options: [
-              { label: "Free", value: "free" },
-              { label: "Pro", value: "pro" },
-              { label: "Enterprise", value: "enterprise" },
-              { label: "Custom", value: "custom" },
-            ],
+            options: subscriptionPlan,
           },
           {
             name: "billingCycle",
             label: "Billing Cycle",
             type: "select",
-            options: [
-              { label: "Monthly", value: "monthly" },
-              { label: "Annual", value: "annual" },
-            ],
+            options: billingCycle,
           },
         ],
       },
@@ -205,34 +205,20 @@ export const billingConfig: ModuleConfig = {
           {
             name: "currency",
             label: "Currency",
-            type: "select",
-            options: [
-              { label: "USD", value: "USD" },
-              { label: "INR", value: "INR" },
-              { label: "EUR", value: "EUR" },
-            ],
+            type: "search-select",
+            options: currencyOptions,
           },
           {
             name: "paymentMethod",
             label: "Payment Method",
             type: "select",
-            options: [
-              { label: "Card", value: "card" },
-              { label: "Bank Transfer", value: "bank_transfer" },
-              { label: "UPI", value: "upi" },
-              { label: "PayPal", value: "paypal" },
-            ],
+            options: paymentMethods,
           },
           {
             name: "paymentStatus",
             label: "Payment Status",
             type: "select",
-            options: [
-              { label: "Pending", value: "pending" },
-              { label: "Paid", value: "paid" },
-              { label: "Failed", value: "failed" },
-              { label: "Refunded", value: "refunded" },
-            ],
+            options: paymentStatuses,
           },
           {
             name: "paidAt",

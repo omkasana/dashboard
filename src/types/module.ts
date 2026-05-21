@@ -17,6 +17,7 @@ export type FieldType =
   | "multiselect"
   | "search-select"
   | "tags"
+  | "permission-access"
   | "textarea"
   | "editor"
   | "markdown"
@@ -257,6 +258,7 @@ export interface FormField {
   pattern?: string;
 
   options?: FieldOption[];
+  actionOptions?: FieldOption[];
 
   accept?: string;
   multiple?: boolean;

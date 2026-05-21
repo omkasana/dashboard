@@ -101,7 +101,7 @@ export const navigationLinks = [
     id: "notifications",
     name: "Notifications",
     icon: Bell,
-    href: "/dashboard/notifications/view",
+    href: "/dashboard/notifications",
   },
 
   // 📁 FILES

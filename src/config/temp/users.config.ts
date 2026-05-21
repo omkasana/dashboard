@@ -1,6 +1,7 @@
 import { userData } from "@/dummy/user.data";
 import type { ModuleConfig } from "@/types/module";
 import { usersViewConfig } from "./user.view.config";
+import { organizationOptions } from "@/config/options/organisations";
 
 export const usersConfig: ModuleConfig = {
   id: "users",
@@ -23,6 +24,11 @@ export const usersConfig: ModuleConfig = {
   filters: {
     enabled: true,
     fields: [
+      {
+        key: "organization",
+        label: "Organization",
+        options: organizationOptions.map((option) => option.label),
+      },
       {
         key: "role",
         label: "Role",
@@ -56,6 +62,7 @@ export const usersConfig: ModuleConfig = {
     columns: [
       { key: "id", label: "ID", type: "number" },
       { key: "name", label: "Full Name", type: "text", strong: true },
+      { key: "organization", label: "Organization", type: "badge" },
       { key: "email", label: "Email Address", type: "text" },
       { key: "phone", label: "Phone Number", type: "text" },
 
@@ -190,6 +197,14 @@ export const usersConfig: ModuleConfig = {
         collapsible: true,
 
         fields: [
+          {
+            name: "organizationId",
+            label: "Organization",
+            type: "search-select",
+            required: true,
+            options: organizationOptions,
+            info: "Assign this user to an organization.",
+          },
           {
             name: "role",
             label: "Role",

@@ -11,16 +11,35 @@ import ViewRenderer from "./ViewRendered";
 import { useModuleState } from "@/hooks/useModule";
 import Pagination from "../List/Pagination";
 import ExportDialog from "@/components/List/ExportDialog";
-import { deleteModel, fetchModuleData } from "@/lib/api";
+import { fetchModuleData } from "@/lib/api";
+import UserManagementPanels from "@/components/Users/UserManagementPanels";
 
 interface Props {
   config: ModuleConfig;
 }
 
+type ModuleRow = Record<string, unknown> & {
+  id?: string | number;
+  _id?: string | number;
+  slug?: string;
+};
+
+function sortValue(value: unknown) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") return value.toLowerCase();
+  if (value instanceof Date) return value.getTime();
+  return String(value ?? "").toLowerCase();
+}
+
 export default function DynamicModule({ config }: Props) {
   const router = useRouter();
 
-  const [data, setData] = useState<any[]>([]);
+  const fallbackData = useMemo(
+    () => (Array.isArray(config.data) ? (config.data as ModuleRow[]) : []),
+    [config.data],
+  );
+
+  const [data, setData] = useState<ModuleRow[]>(fallbackData);
   const [loading, setLoading] = useState(true);
   const [showExport, setShowExport] = useState(false);
 
@@ -28,29 +47,25 @@ export default function DynamicModule({ config }: Props) {
 
   useEffect(() => {
     async function load() {
+      if (config.id === "users" && fallbackData.length > 0) {
+        setData(fallbackData);
+        setLoading(false);
+        return;
+      }
+
       try {
         const json = await fetchModuleData(config.id);
-        setData(json);
+        setData(Array.isArray(json) ? (json as ModuleRow[]) : []);
       } catch (err) {
         console.error("Failed to load module data", err);
+        setData(fallbackData);
       } finally {
         setLoading(false);
       }
     }
 
     load();
-  }, [config.id]);
-
-  const handleDelete = async (slug: string) => {
-    if (!confirm("Delete this model?")) return;
-
-    try {
-      await deleteModel(slug);
-      setData((prev) => prev.filter((m) => m.slug !== slug));
-    } catch (err) {
-      console.error("Delete failed", err);
-    }
-  };
+  }, [config.id, fallbackData]);
 
   /* ================= MODULE STATE ================= */
 
@@ -77,8 +92,8 @@ export default function DynamicModule({ config }: Props) {
     if (!sortField) return processedData;
 
     return [...processedData].sort((a, b) => {
-      const aVal = a[sortField];
-      const bVal = b[sortField];
+      const aVal = sortValue(a[sortField]);
+      const bVal = sortValue(b[sortField]);
 
       if (aVal === bVal) return 0;
 
@@ -123,7 +138,7 @@ export default function DynamicModule({ config }: Props) {
     setShowExport(true);
   };
 
-  const handleImport = (file: File) => {
+  const handleImport = () => {
     // TODO: implement
   };
 
@@ -170,6 +185,8 @@ export default function DynamicModule({ config }: Props) {
             onReset={() => setFilters({})}
           />
         )}
+
+        {config.id === "users" && <UserManagementPanels users={processedData} />}
 
         <ViewRenderer
           view={view}

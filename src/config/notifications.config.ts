@@ -1,10 +1,14 @@
-export type NotificationItem = {
-  id: string;
+interface NotificationItem {
+  id: string | number;
   title: string;
   description: string;
+  unread: boolean;
   time: string;
-  unread?: boolean;
-};
+}
+
+interface Props {
+  item: NotificationItem;
+}
 
 export const notifications: NotificationItem[] = [
   {

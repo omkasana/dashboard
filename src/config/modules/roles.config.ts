@@ -1,4 +1,6 @@
 import type { ModuleConfig } from "@/types/module";
+import { moduleAccessOptions } from "@/config/options/moduleAccess";
+import { permissionActionOptions } from "@/config/options/permissionActions";
 
 export const rolesConfig: ModuleConfig = {
   id: "roles",
@@ -171,21 +173,12 @@ export const rolesConfig: ModuleConfig = {
         title: "Permission Settings",
         fields: [
           {
-            name: "permissions.modules",
-            label: "Module Access",
-            type: "tags",
-          },
-          {
-            name: "permissions.actions",
-            label: "Allowed Actions",
-            type: "checkbox",
-            options: [
-              { label: "View", value: "view" },
-              { label: "Create", value: "create" },
-              { label: "Edit", value: "edit" },
-              { label: "Delete", value: "delete" },
-              { label: "Export", value: "export" },
-            ],
+            name: "permissions.moduleAccess",
+            label: "Module Permissions",
+            type: "permission-access",
+            span: 3,
+            options: moduleAccessOptions,
+            actionOptions: permissionActionOptions,
           },
           {
             name: "isDefault",

@@ -1,9 +1,12 @@
 "use client";
 
-import { useState, useRef, KeyboardEvent } from "react";
+import { useMemo, useState, useRef, KeyboardEvent } from "react";
 import FieldWrapper from "../FieldWrapper";
 import { FieldComponentProps } from "@/types/formFieldProps.ts";
+import type { FieldOption } from "@/types/module";
 import { fieldConfig as fc } from "@/lib/fieldConfig";
+
+const emptyOptions: FieldOption[] = [];
 
 function XIcon() {
   return (
@@ -49,10 +52,39 @@ export default function TagsField({
   const [focused, setFocused] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const tags: string[] = Array.isArray(value) ? value : [];
+  const tags = useMemo(
+    () => (Array.isArray(value) ? value.map(String) : []),
+    [value],
+  );
   const maxTags = field.maxTags as number | undefined;
   const atLimit = maxTags !== undefined && tags.length >= maxTags;
   const duplicate = input.trim() !== "" && tags.includes(input.trim());
+  const options = field.options ?? emptyOptions;
+
+  const filteredOptions = useMemo(() => {
+    const query = input.trim().toLowerCase();
+
+    return options.filter((option) => {
+      const optionValue = String(option.value);
+      const optionLabel = option.label.toLowerCase();
+
+      if (tags.includes(optionValue)) return false;
+      if (!query) return true;
+
+      return (
+        optionLabel.includes(query) ||
+        optionValue.toLowerCase().includes(query)
+      );
+    });
+  }, [input, options, tags]);
+
+  const tagLabelByValue = useMemo(
+    () =>
+      new Map(
+        options.map((option) => [String(option.value), option.label] as const),
+      ),
+    [options],
+  );
 
   const addTag = (raw = input) => {
     const tag = raw.trim();
@@ -93,6 +125,7 @@ export default function TagsField({
   };
 
   const borderCls = error ? fc.error.border : focused ? fc.focus : fc.idle;
+  const showSuggestions = focused && !atLimit && filteredOptions.length > 0;
 
   return (
     <FieldWrapper
@@ -102,70 +135,93 @@ export default function TagsField({
       error={error}
     >
       {/* ── Input container ── */}
-      <div
-        onClick={() => inputRef.current?.focus()}
-        className={`
-          flex flex-wrap items-center gap-1.5
-          min-h-10.5 sm:min-h-11.5
-          px-2.5 py-2 rounded-xl cursor-text
-          transition-all duration-200
-          ${fc.base} ${borderCls}
-        `}
-      >
-        {/* Tag prefix icon */}
-        <span
-          className={`shrink-0 transition-colors duration-200 mr-0.5
-          ${focused ? fc.prefixFocused : fc.prefixIdle}`}
+      <div className="relative">
+        <div
+          onClick={() => inputRef.current?.focus()}
+          className={`
+            flex flex-wrap items-center gap-1.5
+            min-h-10.5 sm:min-h-11.5
+            px-2.5 py-2 rounded-xl cursor-text
+            transition-all duration-200
+            ${fc.base} ${borderCls}
+          `}
         >
-          <TagIcon />
-        </span>
-
-        {/* Rendered tags inline with input */}
-        {tags.map((tag) => (
           <span
-            key={tag}
-            className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5
-              rounded-md text-xs font-medium shrink-0
-              bg-primary/10 text-primary
-              border border-primary/20
-              max-w-40"
+            className={`shrink-0 transition-colors duration-200 mr-0.5
+            ${focused ? fc.prefixFocused : fc.prefixIdle}`}
           >
-            <span className="truncate">{tag}</span>
-            <button
-              type="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                removeTag(tag);
-              }}
-              className="shrink-0 opacity-50 hover:opacity-100
-                transition-opacity rounded-sm p-0.5"
-            >
-              <XIcon />
-            </button>
+            <TagIcon />
           </span>
-        ))}
 
-        {/* Text input — hidden when at limit */}
-        {!atLimit && (
-          <input
-            ref={inputRef}
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyDown}
-            onPaste={handlePaste}
-            onFocus={() => setFocused(true)}
-            onBlur={() => {
-              setFocused(false);
-              addTag();
-            }}
-            placeholder={
-              tags.length === 0 ? (field.placeholder ?? "Add tags…") : ""
-            }
-            className={`flex-1 min-w-20 bg-transparent outline-none
-              text-sm py-0.5
-              ${fc.inputText} ${fc.inputPlaceholder}
-              ${duplicate ? "text-destructive" : ""}`}
-          />
+          {tags.map((tag) => (
+            <span
+              key={tag}
+              className="inline-flex items-center gap-1 pl-2 pr-1 py-0.5
+                rounded-md text-xs font-medium shrink-0
+                bg-primary/10 text-primary
+                border border-primary/20
+                max-w-40"
+            >
+              <span className="truncate">
+                {tagLabelByValue.get(tag) ?? tag}
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  removeTag(tag);
+                }}
+                className="shrink-0 opacity-50 hover:opacity-100
+                  transition-opacity rounded-sm p-0.5"
+              >
+                <XIcon />
+              </button>
+            </span>
+          ))}
+
+          {!atLimit && (
+            <input
+              ref={inputRef}
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyDown}
+              onPaste={handlePaste}
+              onFocus={() => setFocused(true)}
+              onBlur={() => {
+                setFocused(false);
+                addTag();
+              }}
+              placeholder={
+                tags.length === 0 ? (field.placeholder ?? "Add tags…") : ""
+              }
+              className={`flex-1 min-w-20 bg-transparent outline-none
+                text-sm py-0.5
+                ${fc.inputText} ${fc.inputPlaceholder}
+                ${duplicate ? "text-destructive" : ""}`}
+            />
+          )}
+        </div>
+
+        {showSuggestions && (
+          <div
+            className={`absolute left-0 right-0 top-full mt-1 z-50 max-h-52 overflow-y-auto
+              rounded-xl border shadow-xl shadow-black/10 ${fc.dropdown.bg} ${fc.dropdown.border}`}
+          >
+            {filteredOptions.map((option) => (
+              <button
+                key={String(option.value)}
+                type="button"
+                onMouseDown={(e) => {
+                  e.preventDefault();
+                  addTag(String(option.value));
+                }}
+                className={`block w-full px-3 py-2 text-left text-sm transition-colors
+                  ${fc.dropdown.optionHover} ${fc.dropdown.optionIdle}`}
+              >
+                {option.label}
+              </button>
+            ))}
+          </div>
         )}
       </div>
 
