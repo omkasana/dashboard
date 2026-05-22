@@ -69,7 +69,7 @@ export default function FinancePage() {
 
             <textarea
               placeholder="Credit Note Rules"
-              className="min-h-[120px] rounded-xl border p-4 md:col-span-2"
+              className="min-h-30 rounded-xl border p-4 md:col-span-2"
             />
           </div>
         </SettingsSection>

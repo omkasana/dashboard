@@ -44,7 +44,7 @@ export default function PasswordResetPage() {
 
   return (
     <main className="flex min-h-screen items-center justify-center bg-[#f8f8f8] px-4">
-      <div className="w-full max-w-[420px]">
+      <div className="w-full max-w-105">
         {/* FORGOT PASSWORD */}
         {step === "forgot-password" && (
           <div className="flex flex-col items-center text-center">
@@ -92,7 +92,7 @@ export default function PasswordResetPage() {
               Verify OTP
             </h1>
 
-            <p className="mt-3 max-w-[360px] text-[18px] leading-8 text-neutral-500">
+            <p className="mt-3 max-w-90 text-[18px] leading-8 text-neutral-500">
               We sent a 6-digit verification code to
               <span className="font-medium text-neutral-800"> {email}</span>
             </p>
@@ -164,7 +164,7 @@ export default function PasswordResetPage() {
               Set new password
             </h1>
 
-            <p className="mt-3 max-w-[360px] text-[18px] leading-8 text-neutral-500">
+            <p className="mt-3 max-w-90 text-[18px] leading-8 text-neutral-500">
               Your new password must be different to previously used passwords.
             </p>
 
@@ -266,7 +266,7 @@ export default function PasswordResetPage() {
               Password reset
             </h1>
 
-            <p className="mt-3 max-w-[360px] text-[18px] leading-8 text-neutral-500">
+            <p className="mt-3 max-w-90 text-[18px] leading-8 text-neutral-500">
               Your password has been successfully reset. Click below to log in
               magically.
             </p>

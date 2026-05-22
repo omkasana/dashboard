@@ -22,7 +22,7 @@ export function NotificationCard({ item }: Props) {
 
       border-b border-border/20
 
-      hover:bg-white/40 dark:hover:bg-white/[0.03]
+      hover:bg-white/40 dark:hover:bg-white/3
 
       transition-all duration-200
       "
@@ -32,7 +32,7 @@ export function NotificationCard({ item }: Props) {
           className="
           absolute left-0 top-4 bottom-4
 
-          w-[3px] rounded-full
+          w-0.75 rounded-full
 
           bg-primary
           "
@@ -127,11 +127,11 @@ export function NotificationCard({ item }: Props) {
 
               h-10 px-4 rounded-2xl
 
-              bg-white/60 dark:bg-white/[0.03]
+              bg-white/60 dark:bg-white/3
 
-              border border-white/50 dark:border-white/[0.06]
+              border border-white/50 dark:border-white/6
 
-              hover:bg-white dark:hover:bg-white/[0.06]
+              hover:bg-white dark:hover:bg-white/6
 
               backdrop-blur-xl
 
@@ -174,11 +174,11 @@ export function NotificationCard({ item }: Props) {
 
               h-10 w-10 rounded-2xl
 
-              bg-white/60 dark:bg-white/[0.03]
+              bg-white/60 dark:bg-white/3
 
-              border border-white/50 dark:border-white/[0.06]
+              border border-white/50 dark:border-white/6
 
-              hover:bg-white dark:hover:bg-white/[0.06]
+              hover:bg-white dark:hover:bg-white/6
 
               transition-all duration-200
               "
