@@ -50,11 +50,27 @@ export const navigationLinks = [
 
   // 👥 USERS
   {
+    id: "allusers",
+    name: "All Users",
+    icon: Users,
+    children: [
+      { id: "all-users", name: "All Users", href: "/dashboard/all-users" },
+
+      { id: "roles", name: "Roles", href: "/dashboard/roles" },
+      {
+        id: "permissions",
+        name: "Permissions",
+        href: "/dashboard/permissions",
+      },
+    ],
+  },
+  {
     id: "users",
     name: "Users",
     icon: Users,
     children: [
       { id: "all-users", name: "All Users", href: "/dashboard/users" },
+
       { id: "roles", name: "Roles", href: "/dashboard/roles" },
       {
         id: "permissions",
@@ -157,6 +173,6 @@ export const navigationLinks = [
     id: "settings",
     name: "Settings",
     icon: Settings,
-    href: "/dashboard/settings/view",
+    href: "/dashboard/settings/",
   },
 ];

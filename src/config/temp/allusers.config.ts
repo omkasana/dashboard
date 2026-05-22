@@ -3,7 +3,7 @@ import type { ModuleConfig } from "@/types/module";
 import { usersViewConfig } from "./user.view.config";
 import { organizationOptions } from "@/config/options/organisations";
 
-export const usersConfig: ModuleConfig = {
+export const allUsersConfig: ModuleConfig = {
   id: "users",
   title: "Users",
   description: "Manage system users",
@@ -60,6 +60,7 @@ export const usersConfig: ModuleConfig = {
   table: {
     enabled: true,
     columns: [
+      { key: "organization", label: "Organization", type: "badge" },
       { key: "name", label: "Full Name", type: "text", strong: true },
       { key: "id", label: "ID", type: "number" },
       { key: "email", label: "Email Address", type: "text" },
@@ -196,6 +197,14 @@ export const usersConfig: ModuleConfig = {
         collapsible: true,
 
         fields: [
+          {
+            name: "organizationId",
+            label: "Organization",
+            type: "search-select",
+            required: true,
+            options: organizationOptions,
+            info: "Assign this user to an organization.",
+          },
           {
             name: "role",
             label: "Role",

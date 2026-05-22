@@ -6,7 +6,7 @@ const regions = ["India", "US", "Europe", "APAC"];
 const sources = ["Organic", "Referral", "Ads", "Direct"];
 const tiers = ["Bronze", "Silver", "Gold", "Platinum"];
 const riskLevels = ["Low", "Medium", "High"];
-const usersPerOrganization = 50;
+const usersPerOrganization = 10;
 
 export const userData = Array.from(
   { length: organizationOptions.length * usersPerOrganization },

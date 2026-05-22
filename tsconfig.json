@@ -30,6 +30,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "src/config/ui.config"  ],
+, "src/config/ui.config", "src/config/temp/allusers.configts"  ],
   "exclude": ["node_modules"]
 }

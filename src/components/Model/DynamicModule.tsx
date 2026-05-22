@@ -12,7 +12,6 @@ import { useModuleState } from "@/hooks/useModule";
 import Pagination from "../List/Pagination";
 import ExportDialog from "@/components/List/ExportDialog";
 import { fetchModuleData } from "@/lib/api";
-import UserManagementPanels from "@/components/Users/UserManagementPanels";
 
 interface Props {
   config: ModuleConfig;
@@ -47,7 +46,10 @@ export default function DynamicModule({ config }: Props) {
 
   useEffect(() => {
     async function load() {
-      if (config.id === "users" && fallbackData.length > 0) {
+      if (
+        (config.id === "users" || config.id === "user-organizations") &&
+        fallbackData.length > 0
+      ) {
         setData(fallbackData);
         setLoading(false);
         return;
@@ -185,8 +187,6 @@ export default function DynamicModule({ config }: Props) {
             onReset={() => setFilters({})}
           />
         )}
-
-        {config.id === "users" && <UserManagementPanels users={processedData} />}
 
         <ViewRenderer
           view={view}

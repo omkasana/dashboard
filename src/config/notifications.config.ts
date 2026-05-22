@@ -1,14 +1,10 @@
-interface NotificationItem {
-  id: string | number;
+export type NotificationItem = {
+  id: string;
   title: string;
   description: string;
-  unread: boolean;
   time: string;
-}
-
-interface Props {
-  item: NotificationItem;
-}
+  unread?: boolean;
+};
 
 export const notifications: NotificationItem[] = [
   {
@@ -65,6 +61,6 @@ export const notifications: NotificationItem[] = [
     title: "Server update",
     description: "System maintenance completed.",
     time: "Yesterday",
-    unread: false,
+    unread: true,
   },
 ];
