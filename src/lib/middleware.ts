@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
 
   // CHECK IF ROUTE IS PROTECTED
   const isProtectedRoute = protectedRoutes.some((route) =>
-    pathname.startsWith(route)
+    pathname.startsWith(route),
   );
 
   // IF USER NOT LOGGED IN
@@ -22,10 +22,7 @@ export function middleware(request: NextRequest) {
   }
 
   // IF USER LOGGED IN & TRYING TO ACCESS LOGIN PAGE
-  if (
-    token &&
-    (pathname === "/sign-in" || pathname === "/sign-up")
-  ) {
+  if (token && (pathname === "/sign-in" || pathname === "/sign-up")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 

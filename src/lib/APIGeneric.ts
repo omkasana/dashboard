@@ -1,6 +1,4 @@
-export const API_BASE_URL =
-  "https://platform-backend-v8zh.onrender.com/api";
-
+export const API_BASE_URL = "https://platform-backend-v8zh.onrender.com/api";
 
 // =======================
 // GET REQUEST
@@ -8,16 +6,14 @@ export const API_BASE_URL =
 
 export const getRequest = async <T>(
   url: string,
-  params: Record<string, string | number | boolean> = {}
+  params: Record<string, string | number | boolean> = {},
 ): Promise<T> => {
   try {
     const queryString = new URLSearchParams(
-      params as Record<string, string>
+      params as Record<string, string>,
     ).toString();
 
-    const finalUrl = queryString
-      ? `${url}?${queryString}`
-      : url;
+    const finalUrl = queryString ? `${url}?${queryString}` : url;
 
     const response = await fetch(finalUrl, {
       method: "GET",
@@ -28,19 +24,15 @@ export const getRequest = async <T>(
     });
 
     if (!response.ok) {
-      throw new Error(
-        `HTTP error! status: ${response.status}`
-      );
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     return response.json();
-
   } catch (error) {
     console.error("Error fetching data:", error);
     throw error;
   }
 };
-
 
 // =======================
 // POST REQUEST
@@ -48,7 +40,7 @@ export const getRequest = async <T>(
 
 export const postRequest = async <T>(
   url: string,
-  data: unknown
+  data: unknown,
 ): Promise<T> => {
   try {
     const response = await fetch(url, {
@@ -62,28 +54,21 @@ export const postRequest = async <T>(
     });
 
     if (!response.ok) {
-      throw new Error(
-        `HTTP error! status: ${response.status}`
-      );
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     return response.json();
-
   } catch (error) {
     console.error("Error posting data:", error);
     throw error;
   }
 };
 
-
 // =======================
 // PUT REQUEST
 // =======================
 
-export const putRequest = async <T>(
-  url: string,
-  data: unknown
-): Promise<T> => {
+export const putRequest = async <T>(url: string, data: unknown): Promise<T> => {
   try {
     const response = await fetch(url, {
       method: "PUT",
@@ -96,19 +81,15 @@ export const putRequest = async <T>(
     });
 
     if (!response.ok) {
-      throw new Error(
-        `HTTP error! status: ${response.status}`
-      );
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     return response.json();
-
   } catch (error) {
     console.error("Error putting data:", error);
     throw error;
   }
 };
-
 
 // =======================
 // DELETE REQUEST
@@ -116,7 +97,7 @@ export const putRequest = async <T>(
 
 export const deleteRequest = async <T>(
   url: string,
-  data?: unknown
+  data?: unknown,
 ): Promise<T> => {
   try {
     const response = await fetch(url, {
@@ -126,19 +107,14 @@ export const deleteRequest = async <T>(
         "Content-Type": "application/json",
       },
 
-      body: data
-        ? JSON.stringify(data)
-        : undefined,
+      body: data ? JSON.stringify(data) : undefined,
     });
 
     if (!response.ok) {
-      throw new Error(
-        `HTTP error! status: ${response.status}`
-      );
+      throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     return response.json();
-
   } catch (error) {
     console.error("Error deleting data:", error);
     throw error;
