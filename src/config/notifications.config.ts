@@ -61,6 +61,6 @@ export const notifications: NotificationItem[] = [
     title: "Server update",
     description: "System maintenance completed.",
     time: "Yesterday",
-    unread: false,
+    unread: true,
   },
 ];

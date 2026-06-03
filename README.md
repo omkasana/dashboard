@@ -1,36 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# CRM Dashboard
+
+<p align="center">
+  <img src="./public/images/logo.svg" alt="CRM Dashboard Logo" width="96" />
+</p>
+
+<p align="center">
+  <strong>Modern CRM dashboard built with Next.js, TypeScript, Tailwind CSS, and reusable business modules.</strong>
+</p>
+
+<p align="center">
+  <img alt="Next.js" src="https://img.shields.io/badge/Next.js-16-black?logo=nextdotjs" />
+  <img alt="React" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=111" />
+  <img alt="TypeScript" src="https://img.shields.io/badge/TypeScript-5-3178C6?logo=typescript&logoColor=fff" />
+  <img alt="Tailwind CSS" src="https://img.shields.io/badge/Tailwind-CSS-38BDF8?logo=tailwindcss&logoColor=fff" />
+</p>
+
+## Overview
+
+This project is a CRM/ERP-style admin dashboard for managing business data, modules, forms, records, user workflows, and onboarding flows. It includes reusable list views, form engines, profile components, authentication screens, and a guided ERP onboarding experience.
+
+```mermaid
+flowchart LR
+  Auth[Auth Pages] --> Dashboard[Dashboard Shell]
+  Dashboard --> Modules[Module Configs]
+  Dashboard --> Lists[List Views]
+  Dashboard --> Forms[Dynamic Forms]
+  Dashboard --> Profiles[Profile Views]
+  Dashboard --> Onboarding[ERP Onboarding]
+  Modules --> API[API Services]
+  Lists --> API
+  Forms --> API
+```
+
+## Highlights
+
+- Next.js app router structure with TypeScript.
+- Config-driven dashboard modules.
+- Reusable form, list, navbar, sidebar, and profile components.
+- ERP onboarding flow split into focused components.
+- Tailwind-powered responsive UI.
+- API/service layer for backend integration.
+
+## Project Structure
+
+```mermaid
+mindmap
+  root((src))
+    app
+      auth
+      dashboard
+      onboarding
+    components
+      Form
+      List
+      Navbar
+      Sidebar
+      Profile
+      UI
+    config
+      modules
+    hooks
+    lib
+    service
+    types
+```
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies and start the local development server:
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the app at:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the development server |
+| `npm run build` | Build the production app |
+| `npm run start` | Run the production server |
+| `npm run lint` | Run ESLint |
 
-To learn more about Next.js, take a look at the following resources:
+## Tech Stack
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Area | Tools |
+| --- | --- |
+| Framework | Next.js, React |
+| Language | TypeScript |
+| Styling | Tailwind CSS |
+| Data/UI | TanStack Query, TanStack Table, Radix UI |
+| Forms | React Hook Form, Zod |
+| Motion | Framer Motion |
+| Icons | Lucide React |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Onboarding Flow
 
-## Deploy on Vercel
+The ERP onboarding route is organized into data, page orchestration, landing UI, builder UI, and sidebar cards.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```mermaid
+flowchart TD
+  Page[page.tsx] --> Data[onboarding-data.tsx]
+  Page --> Landing[OnboardingLanding]
+  Page --> Builder[OnboardingBuilder]
+  Landing --> LandingHeader
+  Landing --> LandingPromptPanel
+  Builder --> BuilderHeader
+  Builder --> SectionNav
+  Builder --> MessageList
+  Builder --> Composer
+  Builder --> BlueprintSidebar
+  BlueprintSidebar --> SidebarCards
+```

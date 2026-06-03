@@ -1,6 +1,6 @@
 "use client";
 
-import { Avatar } from "../UI/Avatar";
+import { Avatar } from "../UI/avatar";
 
 export default function ProfileHeader() {
   return (
@@ -23,7 +23,7 @@ export default function ProfileHeader() {
         <p className="text-sm text-muted-foreground">Full Stack Developer</p>
 
         <p className="text-xs text-muted-foreground mt-1">
-          Delhi, India • Joined Jan 2024
+          Delhi, India • Joined May 2025
         </p>
       </div>
     </div>

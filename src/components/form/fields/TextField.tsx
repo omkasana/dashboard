@@ -1,9 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import FieldWrapper from "../FieldWrapper";
+
 import { FieldComponentProps } from "@/types/formFieldProps.ts";
 import { fieldConfig as fc } from "@/lib/fieldConfig";
+import FieldWrapper from "../FieldWrapper";
 
 function TextIcon() {
   return (

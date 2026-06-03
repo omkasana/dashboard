@@ -38,7 +38,7 @@ export default function ListEngine({ data, density, moduleId }: Props) {
               {item.status}
             </span>
 
-            <ActionMenu id={item.id} moduleId={moduleId} />
+            <ActionMenu id={item.id} module={moduleId} />
           </div>
         </div>
       ))}

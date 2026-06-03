@@ -1,10 +1,7 @@
 "use client";
 
-
 import { FormField } from "@/types/module";
-import FileUploadField from "../form/fields/FileUploadField";
-
-
+import FileUploadField from "../Form/fields/FileUploadField";
 
 export default function ProfileMedia() {
   const field: FormField = {
@@ -22,7 +19,7 @@ export default function ProfileMedia() {
         border border-white/10
         bg-white/40 dark:bg-white/[0.04]
         backdrop-blur-xl
-        shadow-[0_10px_30px_rgba(0,0,0,0.25)]
+        // shadow-[0_10px_30px_rgba(0,0,0,0.25)]
       "
     >
       <h3 className="text-sm font-semibold mb-4 text-foreground">

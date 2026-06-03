@@ -1,28 +1,84 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 
 import CalendarView from "../List/View/CalendarVIew";
 import DataGrid from "../List/View/DataGrid/DataGrid";
 import GridEngine from "../List/View/GridEngine";
 import KanbanEngine from "../List/View/KanbanEngine";
 import ListEngine from "../List/View/ListEngine";
-import TableEngine from "../List/View/TableEngine";
 import BulkActionsBar from "../List/BulkActionsBar";
 
 interface Props {
   view: string;
-  config: any;
-  data: any[];
+  config: {
+    id: string;
+    table?: {
+      enabled?: boolean;
+      columns: {
+        key: string;
+        label: string;
+        type?: string;
+        strong?: boolean;
+        variant?: "primary" | "neutral" | "info";
+      }[];
+    };
+    grid?: {
+      enabled?: boolean;
+      layout: {
+        header: {
+          title: string;
+          subtitle?: string;
+          badge?: string;
+        };
+        meta?: string[];
+        stats?: string[];
+        footer?: string[];
+      };
+    };
+    kanban?: {
+      groupBy: string;
+      columns: {
+        key: string;
+        label: string;
+        color?: "success" | "warning" | "danger" | "info" | "neutral";
+      }[];
+      card: {
+        title: string;
+        subtitle?: string;
+        meta?: string[];
+        highlight?: string;
+        badge?: string;
+      };
+    };
+    calendar?: {
+      enabled?: boolean;
+      dateField: string;
+      layout?: {
+        title: string;
+        subtitle?: string;
+        badge?: string;
+      };
+    };
+  };
+  data: Record<string, unknown>[];
+}
+
+function rowId(item: Record<string, unknown>) {
+  const id = item.id ?? item._id;
+  return typeof id === "string" || typeof id === "number" ? id : "";
 }
 
 export default function ViewRenderer({ view, config, data }: Props) {
   const [selectedIds, setSelectedIds] = useState<(string | number)[]>([]);
-  const [rows, setRows] = useState(data); // ✅ local state
+  const [deletedIds, setDeletedIds] = useState<(string | number)[]>([]);
+  const rows = useMemo(
+    () => data.filter((item) => !deletedIds.includes(rowId(item))),
+    [data, deletedIds],
+  );
 
   const handleDelete = (id: string | number) => {
-    setRows((prev) => prev.filter((item) => (item.id ?? item._id) !== id));
-
+    setDeletedIds((prev) => [...prev, id]);
     setSelectedIds((prev) => prev.filter((x) => x !== id));
   };
 

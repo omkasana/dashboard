@@ -1,6 +1,8 @@
 "use client";
 
-import { FormField } from "@/types/module";
+import type { ComponentType } from "react";
+import type { FormField } from "@/types/module";
+import type { FieldComponentProps } from "@/types/formFieldProps.ts";
 
 import TextField from "./fields/TextField";
 import EmailField from "./fields/EmailField";
@@ -8,6 +10,7 @@ import PhoneField from "./fields/PhoneField";
 import SelectField from "./fields/SelectField";
 import TextAreaField from "./fields/TextAreaField";
 import TagsField from "./fields/TagsField";
+import PermissionAccessField from "./fields/PermissionAccessField";
 import FileUploadField from "./fields/FileUploadField";
 import DateField from "./fields/DateField";
 import RadioField from "./fields/RadioField";
@@ -27,7 +30,11 @@ import DividerField from "./fields/DividerField";
 import HeadingField from "./fields/HeadingField";
 import SlugField from "./fields/SlugField";
 
-const fieldMap: Record<string, any> = {
+type RendererProps = FieldComponentProps & {
+  formValues?: Record<string, unknown>;
+};
+
+const fieldMap: Partial<Record<FormField["type"], ComponentType<RendererProps>>> = {
   text: TextField,
   number: NumberField,
   decimal: DecimalField,
@@ -36,6 +43,8 @@ const fieldMap: Record<string, any> = {
   url: UrlField,
   textarea: TextAreaField,
   select: SelectField,
+  multiselect: SelectField,
+  "search-select": SelectField,
   checkbox: CheckboxField,
   file: FileUploadField,
   image: FileUploadField,
@@ -48,6 +57,7 @@ const fieldMap: Record<string, any> = {
   radio: RadioField,
   boolean: BooleanField,
   tags: TagsField,
+  "permission-access": PermissionAccessField,
   object: ObjectField,
   array: ArrayField,
   email: EmailField,
@@ -57,9 +67,9 @@ const fieldMap: Record<string, any> = {
 interface Props {
   field: FormField;
   error?: string;
-  value?: any;
-  formValues?: Record<string, any>;
-  onChange?: (name: string, value: any) => void;
+  value?: unknown;
+  formValues?: Record<string, unknown>;
+  onChange?: (name: string, value: unknown) => void;
 }
 
 export default function FieldRenderer({

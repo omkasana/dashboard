@@ -14,6 +14,7 @@ export type FieldType =
   | "multiselect"
   | "search-select"
   | "tags"
+  | "permission-access"
   | "textarea"
   | "editor"
   | "markdown"
@@ -55,6 +56,7 @@ export interface FieldSchema {
   required?: boolean;
   placeholder?: string;
   options?: FieldOption[];
+  actionOptions?: FieldOption[];
 
   multiple?: boolean;
   accept?: string;

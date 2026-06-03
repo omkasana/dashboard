@@ -11,16 +11,34 @@ import ViewRenderer from "./ViewRendered";
 import { useModuleState } from "@/hooks/useModule";
 import Pagination from "../List/Pagination";
 import ExportDialog from "@/components/List/ExportDialog";
-import { deleteModel, fetchModuleData } from "@/lib/api";
+import { fetchModuleData } from "@/lib/api";
 
 interface Props {
   config: ModuleConfig;
 }
 
+type ModuleRow = Record<string, unknown> & {
+  id?: string | number;
+  _id?: string | number;
+  slug?: string;
+};
+
+function sortValue(value: unknown) {
+  if (typeof value === "number") return value;
+  if (typeof value === "string") return value.toLowerCase();
+  if (value instanceof Date) return value.getTime();
+  return String(value ?? "").toLowerCase();
+}
+
 export default function DynamicModule({ config }: Props) {
   const router = useRouter();
 
-  const [data, setData] = useState<any[]>([]);
+  const fallbackData = useMemo(
+    () => (Array.isArray(config.data) ? (config.data as ModuleRow[]) : []),
+    [config.data],
+  );
+
+  const [data, setData] = useState<ModuleRow[]>(fallbackData);
   const [loading, setLoading] = useState(true);
   const [showExport, setShowExport] = useState(false);
 
@@ -28,31 +46,28 @@ export default function DynamicModule({ config }: Props) {
 
   useEffect(() => {
     async function load() {
+      if (
+        (config.id === "users" || config.id === "user-organizations") &&
+        fallbackData.length > 0
+      ) {
+        setData(fallbackData);
+        setLoading(false);
+        return;
+      }
+
       try {
         const json = await fetchModuleData(config.id);
-        setData(json);
+        setData(Array.isArray(json) ? (json as ModuleRow[]) : []);
       } catch (err) {
         console.error("Failed to load module data", err);
+        setData(fallbackData);
       } finally {
         setLoading(false);
       }
     }
 
     load();
-  }, [config.id]);
-
-  // delete
-  const handleDelete = async (slug: string) => {
-    if (!confirm("Delete this model?")) return;
-
-    try {
-      await deleteModel(slug);
-
-      setData((prev) => prev.filter((m) => m.slug !== slug));
-    } catch (err) {
-      console.error("Delete failed", err);
-    }
-  };
+  }, [config.id, fallbackData]);
 
   /* ================= MODULE STATE ================= */
 
@@ -79,8 +94,8 @@ export default function DynamicModule({ config }: Props) {
     if (!sortField) return processedData;
 
     return [...processedData].sort((a, b) => {
-      const aVal = a[sortField];
-      const bVal = b[sortField];
+      const aVal = sortValue(a[sortField]);
+      const bVal = sortValue(b[sortField]);
 
       if (aVal === bVal) return 0;
 
@@ -124,9 +139,11 @@ export default function DynamicModule({ config }: Props) {
   const handleExport = () => {
     setShowExport(true);
   };
-  const handleImport = (file: File) => {
-    // Implement your import logic here
+
+  const handleImport = () => {
+    // TODO: implement
   };
+
   /* ================= LOADING ================= */
 
   if (loading) {
@@ -136,59 +153,63 @@ export default function DynamicModule({ config }: Props) {
   /* ================= RENDER ================= */
 
   return (
-    <div className="p-4 space-y-8">
-      <ListHeader
-        module={config.id}
-        title={config.title}
-        description={config.description}
-        onAdd={config.actions?.add ? handleAdd : undefined}
-        onExport={config.actions?.export ? handleExport : undefined}
-        onImport={config.actions?.import ? handleImport : undefined}
-        onSearch={config.search?.enabled ? setSearchQuery : undefined}
-        onFilterToggle={
-          config.filters?.enabled
-            ? () => setShowFilters((prev) => !prev)
-            : undefined
-        }
-        currentView={view}
-        availableViews={config.views?.available}
-        onViewChange={config.views?.enabled ? setView : undefined}
-      />
-
-      {showFilters && config.filters?.enabled && (
-        <FilterPanel
-          fields={config.filters.fields}
-          columns={config.table.columns}
-          filters={filters}
-          setFilters={setFilters}
-          sortField={sortField}
-          setSortField={setSortField}
-          sortOrder={sortOrder}
-          setSortOrder={setSortOrder}
-          onReset={() => setFilters({})}
+    <div className="p-4">
+      {/* 🔹 Main content with spacing */}
+      <div className="space-y-8">
+        <ListHeader
+          module={config.id}
+          title={config.title}
+          description={config.description}
+          onAdd={config.actions?.add ? handleAdd : undefined}
+          onExport={config.actions?.export ? handleExport : undefined}
+          onImport={config.actions?.import ? handleImport : undefined}
+          onSearch={config.search?.enabled ? setSearchQuery : undefined}
+          onFilterToggle={
+            config.filters?.enabled
+              ? () => setShowFilters((prev) => !prev)
+              : undefined
+          }
+          currentView={view}
+          availableViews={config.views?.available}
+          onViewChange={config.views?.enabled ? setView : undefined}
         />
-      )}
 
-      <ViewRenderer
-        view={view}
-        config={config}
-        data={
-          view === "table" || view === "grid" || view === "list"
-            ? paginatedData
-            : processedData
-        }
-      />
+        {showFilters && config.filters?.enabled && (
+          <FilterPanel
+            fields={config.filters.fields}
+            columns={config.table.columns}
+            filters={filters}
+            setFilters={setFilters}
+            sortField={sortField}
+            setSortField={setSortField}
+            sortOrder={sortOrder}
+            setSortOrder={setSortOrder}
+            onReset={() => setFilters({})}
+          />
+        )}
 
-      {showExport && (
-        <ExportDialog
-          data={processedData}
-          filename={config.id}
-          onClose={() => setShowExport(false)}
+        <ViewRenderer
+          view={view}
+          config={config}
+          data={
+            view === "table" || view === "grid" || view === "list"
+              ? paginatedData
+              : processedData
+          }
         />
-      )}
 
+        {showExport && (
+          <ExportDialog
+            data={processedData}
+            filename={config.id}
+            onClose={() => setShowExport(false)}
+          />
+        )}
+      </div>
+
+      {/* 🔹 Sticky pagination (isolated from spacing) */}
       {(view === "table" || view === "grid" || view === "list") && (
-        <div className="sticky bottom-0 bg-background/80 backdrop-blur-xl py-2">
+        <div className="sticky bottom-0 mt-6 bg-background/80 backdrop-blur-xl py-2">
           <Pagination
             currentPage={currentPage}
             totalPages={totalPages}
