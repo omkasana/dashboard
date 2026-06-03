@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import FormEngine from "@/components/Form/FormEngine";
 import { modulesRegistry } from "@/config/modules";
-import BackButton from "@/components/UI/BackButton";
+import BackButton from "@/components/ui/BackButton";
 
 export default function UpdateModelPage() {
   const params = useParams();

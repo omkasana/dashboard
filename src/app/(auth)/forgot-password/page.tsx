@@ -1,340 +1,209 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
-import {
-  ArrowLeft,
-  CheckCircle2,
-  Eye,
-  EyeOff,
-  KeyRound,
-  Lock,
-  Mail,
-} from "lucide-react";
 
-type Step =
-  | "forgot-password"
-  | "check-email"
-  | "reset-password"
-  | "password-reset";
+import Image from "next/image";
 
-export default function PasswordResetPage() {
-  const [step, setStep] = useState<Step>("forgot-password");
+import toast from "react-hot-toast";
 
-  const [email, setEmail] = useState("");
+import { FiMail, FiShield, FiArrowRight } from "react-icons/fi";
 
-  const [otp, setOtp] = useState(["", "", "", "", "", ""]);
+import { useForgotPassword } from "@/hooks/useSignup";
 
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+export default function ForgotPasswordPage() {
+  const [value, setValue] = useState("");
 
-  const [showPassword, setShowPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
 
-  const hasMinLength = password.length >= 8;
-  const hasSpecialCharacter = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  const forgotPasswordMutation = useForgotPassword();
 
-  const isPasswordValid =
-    hasMinLength &&
-    hasSpecialCharacter &&
-    password === confirmPassword &&
-    password.length > 0;
+  // ========================================
+  // HANDLE FORGOT PASSWORD
+  // ========================================
 
-  const isOtpComplete = otp.every((digit) => digit !== "");
+  const handleForgotPassword = async () => {
+    try {
+      if (!value) {
+        setError("Please enter your email");
+
+        return;
+      }
+
+      setError("");
+
+      const response = await forgotPasswordMutation.mutateAsync({
+        email: value,
+      });
+
+      toast.success(
+        response.message || "Password reset link sent successfully",
+      );
+
+      // TEST ONLY
+      console.log(response.link);
+    } catch (error: any) {
+      setError(error?.response?.data?.message || "Something went wrong");
+    }
+  };
 
   return (
-    <main className="flex min-h-screen items-center justify-center bg-[#f8f8f8] px-4">
-      <div className="w-full max-w-105">
-        {/* FORGOT PASSWORD */}
-        {step === "forgot-password" && (
-          <div className="flex flex-col items-center text-center">
-            <AuthIcon icon={<KeyRound className="h-6 w-6" />} />
+    <div className="min-h-screen bg-background">
+      <div className="grid min-h-screen lg:grid-cols-[1.05fr_0.95fr]">
+        {/* LEFT SECTION */}
+        <div className="relative hidden overflow-hidden border-r border-border/40 bg-muted/[0.18] lg:flex">
+          {/* GRID */}
+          <div className="absolute inset-0 bg-[linear-gradient(to_right,hsl(var(--border)/0.25)_1px,transparent_1px),linear-gradient(to_bottom,hsl(var(--border)/0.25)_1px,transparent_1px)] bg-[size:44px_44px] opacity-30" />
 
-            <h1 className="mt-8 text-[42px] font-semibold tracking-[-0.03em] text-neutral-900">
-              Forgot password?
-            </h1>
-
-            <p className="mt-3 text-[18px] text-neutral-500">
-              No worries, we&apos;ll send you reset instructions.
-            </p>
-
-            <div className="mt-10 w-full text-left">
-              <label className="mb-2 block text-sm font-medium text-neutral-700">
-                Email
-              </label>
-
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="h-14 w-full rounded-xl border border-neutral-300 bg-white px-4 text-[16px] outline-none transition focus:border-violet-500"
-              />
-            </div>
-
-            <button
-              onClick={() => setStep("check-email")}
-              className="mt-6 flex h-14 w-full items-center justify-center rounded-xl bg-violet-600 text-[17px] font-semibold text-white shadow-sm transition hover:bg-violet-700"
-            >
-              Reset password
-            </button>
-
-            <BackToLogin />
-          </div>
-        )}
-
-        {/* OTP VERIFICATION */}
-        {step === "check-email" && (
-          <div className="flex flex-col items-center text-center">
-            <AuthIcon icon={<Mail className="h-6 w-6" />} />
-
-            <h1 className="mt-8 text-[42px] font-semibold tracking-[-0.03em] text-neutral-900">
-              Verify OTP
-            </h1>
-
-            <p className="mt-3 max-w-90 text-[18px] leading-8 text-neutral-500">
-              We sent a 6-digit verification code to
-              <span className="font-medium text-neutral-800"> {email}</span>
-            </p>
-
-            {/* OTP INPUTS */}
-            <div className="mt-10 flex items-center justify-center gap-3">
-              {otp.map((digit, index) => (
-                <input
-                  key={index}
-                  type="text"
-                  maxLength={1}
-                  inputMode="numeric"
-                  value={digit}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-
-                    const newOtp = [...otp];
-                    newOtp[index] = value;
-                    setOtp(newOtp);
-
-                    if (value && index < 5) {
-                      const nextInput = document.getElementById(
-                        `otp-${index + 1}`,
-                      ) as HTMLInputElement;
-
-                      nextInput?.focus();
-                    }
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Backspace" && !otp[index] && index > 0) {
-                      const prevInput = document.getElementById(
-                        `otp-${index - 1}`,
-                      ) as HTMLInputElement;
-
-                      prevInput?.focus();
-                    }
-                  }}
-                  id={`otp-${index}`}
-                  className="h-14 w-14 rounded-xl border border-neutral-300 bg-white text-center text-xl font-semibold outline-none transition focus:border-violet-500"
+          <div className="relative z-10 flex w-full flex-col justify-between p-12">
+            {/* LOGO */}
+            <div className="flex items-center">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/60 bg-background shadow-sm">
+                <Image
+                  src="/images/logo.svg"
+                  alt="Logo"
+                  width={22}
+                  height={22}
+                  priority
+                  className="opacity-90"
                 />
-              ))}
+              </div>
             </div>
 
-            <button
-              disabled={!isOtpComplete}
-              onClick={() => setStep("reset-password")}
-              className="mt-8 flex h-14 w-full items-center justify-center rounded-xl bg-violet-600 text-[17px] font-semibold text-white shadow-sm transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Verify OTP
-            </button>
+            {/* HERO */}
+            <div className="max-w-lg">
+              <div className="mb-8 inline-flex items-center rounded-full border border-border/60 bg-background/80 px-3 py-1 text-xs font-medium text-muted-foreground backdrop-blur">
+                Secure Account Recovery
+              </div>
 
-            <p className="mt-8 text-[16px] text-neutral-500">
-              Didn&apos;t receive the code?{" "}
-              <button className="font-semibold text-violet-600 hover:text-violet-700">
-                Resend OTP
-              </button>
-            </p>
+              <div className="space-y-5">
+                <h1 className="text-5xl font-semibold leading-[1.05] tracking-[-0.04em] text-foreground">
+                  Reset your password securely.
+                </h1>
 
-            <BackToLogin />
+                <p className="max-w-md text-base leading-7 text-muted-foreground">
+                  Recover access to your account through secure email
+                  verification and protected password reset workflows.
+                </p>
+              </div>
+
+              {/* INFO CARDS */}
+              <div className="mt-10 grid grid-cols-2 gap-4">
+                <div className="rounded-2xl border border-border/60 bg-background/70 p-5 backdrop-blur">
+                  <h3 className="text-2xl font-semibold text-foreground">
+                    256-bit
+                  </h3>
+
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Encryption
+                  </p>
+                </div>
+
+                <div className="rounded-2xl border border-border/60 bg-background/70 p-5 backdrop-blur">
+                  <h3 className="text-2xl font-semibold text-foreground">
+                    15 Min
+                  </h3>
+
+                  <p className="mt-1 text-sm text-muted-foreground">
+                    Secure reset link
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* FOOTER */}
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              <div className="h-2 w-2 rounded-full bg-emerald-500" />
+              Password recovery protection enabled
+            </div>
           </div>
-        )}
+        </div>
 
-        {/* RESET PASSWORD */}
-        {step === "reset-password" && (
-          <div className="flex flex-col items-center text-center">
-            <AuthIcon icon={<Lock className="h-6 w-6" />} />
+        {/* RIGHT SECTION */}
+        <div className="flex items-center justify-center px-6 py-10 sm:px-8 lg:px-12">
+          <div className="w-full max-w-[420px]">
+            {/* MOBILE LOGO */}
+            <div className="mb-10 lg:hidden">
+              <div className="flex h-11 w-11 items-center justify-center rounded-xl border border-border/60 bg-background shadow-sm">
+                <Image
+                  src="/images/logo.svg"
+                  alt="Logo"
+                  width={22}
+                  height={22}
+                  priority
+                  className="opacity-90"
+                />
+              </div>
+            </div>
 
-            <h1 className="mt-8 text-[42px] font-semibold tracking-[-0.03em] text-neutral-900">
-              Set new password
-            </h1>
+            <div className="space-y-8">
+              {/* HEADER */}
+              <div className="space-y-2">
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-border/60 bg-muted/[0.3]">
+                  <FiShield className="text-xl text-foreground" />
+                </div>
 
-            <p className="mt-3 max-w-90 text-[18px] leading-8 text-neutral-500">
-              Your new password must be different to previously used passwords.
-            </p>
+                <div className="pt-2">
+                  <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+                    Forgot password
+                  </h1>
 
-            <div className="mt-10 w-full space-y-6 text-left">
-              {/* PASSWORD */}
-              <div>
-                <label className="mb-2 block text-sm font-medium text-neutral-700">
-                  Password
-                </label>
-
-                <div className="relative">
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Enter password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className="h-14 w-full rounded-xl border border-neutral-300 bg-white px-4 pr-12 text-[16px] outline-none transition focus:border-violet-500"
-                  />
-
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
+                  <p className="mt-2 text-sm leading-6 text-muted-foreground">
+                    Enter your email address and we’ll send you a secure
+                    password reset link.
+                  </p>
                 </div>
               </div>
 
-              {/* CONFIRM PASSWORD */}
-              <div>
-                <label className="mb-2 block text-sm font-medium text-neutral-700">
-                  Confirm password
-                </label>
+              {/* FORM */}
+              <div className="space-y-5">
+                {/* INPUT */}
+                <div className="space-y-2">
+                  <label className="text-sm font-medium">Email address</label>
 
-                <div className="relative">
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="h-14 w-full rounded-xl border border-neutral-300 bg-white px-4 pr-12 text-[16px] outline-none transition focus:border-violet-500"
-                  />
+                  <div className="relative">
+                    <FiMail className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground" />
 
-                  <button
-                    type="button"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-neutral-400"
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-5 w-5" />
-                    ) : (
-                      <Eye className="h-5 w-5" />
-                    )}
-                  </button>
+                    <input
+                      type="email"
+                      placeholder="john@company.com"
+                      value={value}
+                      onChange={(e) => setValue(e.target.value)}
+                      className="h-11 w-full rounded-lg border border-border/60 bg-background pl-11 pr-4 text-sm outline-none transition-all focus:border-foreground/20 focus:ring-2 focus:ring-foreground/5"
+                    />
+                  </div>
                 </div>
+
+                {/* BUTTON */}
+                <button
+                  onClick={handleForgotPassword}
+                  disabled={forgotPasswordMutation.isPending}
+                  className="group flex h-11 w-full items-center justify-center rounded-lg bg-foreground text-sm font-medium text-background transition-all hover:opacity-90 disabled:pointer-events-none disabled:opacity-60"
+                >
+                  {forgotPasswordMutation.isPending
+                    ? "Sending reset link..."
+                    : "Send reset link"}
+
+                  <FiArrowRight className="ml-2 transition-transform duration-200 group-hover:translate-x-0.5" />
+                </button>
+
+                {/* SUCCESS */}
+                {forgotPasswordMutation.isSuccess && (
+                  <div className="rounded-xl border border-emerald-500/10 bg-emerald-500/5 px-4 py-3 text-sm text-emerald-600">
+                    Password reset link has been sent successfully.
+                  </div>
+                )}
+
+                {/* ERROR */}
+                {error && (
+                  <div className="rounded-xl border border-red-500/10 bg-red-500/5 px-4 py-3 text-sm text-red-500">
+                    {error}
+                  </div>
+                )}
               </div>
-
-              {/* RULES */}
-              <div className="space-y-3">
-                <PasswordRule
-                  valid={hasMinLength}
-                  label="Must be at least 8 characters"
-                />
-
-                <PasswordRule
-                  valid={hasSpecialCharacter}
-                  label="Must contain one special character"
-                />
-              </div>
-
-              <button
-                onClick={() => {
-                  if (isPasswordValid) {
-                    setStep("password-reset");
-                  }
-                }}
-                className="flex h-14 w-full items-center justify-center rounded-xl bg-violet-600 text-[17px] font-semibold text-white shadow-sm transition hover:bg-violet-700 disabled:cursor-not-allowed disabled:opacity-50"
-                disabled={!isPasswordValid}
-              >
-                Reset password
-              </button>
             </div>
-
-            <BackToLogin />
           </div>
-        )}
-
-        {/* SUCCESS */}
-        {step === "password-reset" && (
-          <div className="flex flex-col items-center text-center">
-            <AuthIcon icon={<CheckCircle2 className="h-6 w-6" />} />
-
-            <h1 className="mt-8 text-[42px] font-semibold tracking-[-0.03em] text-neutral-900">
-              Password reset
-            </h1>
-
-            <p className="mt-3 max-w-90 text-[18px] leading-8 text-neutral-500">
-              Your password has been successfully reset. Click below to log in
-              magically.
-            </p>
-
-            <button className="mt-10 flex h-14 w-full items-center justify-center rounded-xl bg-violet-600 text-[17px] font-semibold text-white shadow-sm transition hover:bg-violet-700">
-              Continue
-            </button>
-
-            <BackToLogin />
-          </div>
-        )}
+        </div>
       </div>
-    </main>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                                   ICON                                     */
-/* -------------------------------------------------------------------------- */
-
-function AuthIcon({ icon }: { icon: React.ReactNode }) {
-  return (
-    <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-neutral-300 bg-white text-neutral-700 shadow-sm">
-      {icon}
     </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                              PASSWORD RULE                                 */
-/* -------------------------------------------------------------------------- */
-
-function PasswordRule({ valid, label }: { valid: boolean; label: string }) {
-  return (
-    <div className="flex items-center gap-3">
-      <div
-        className={`flex h-6 w-6 items-center justify-center rounded-full border text-white transition ${
-          valid
-            ? "border-green-500 bg-green-500"
-            : "border-neutral-300 bg-neutral-200"
-        }`}
-      >
-        <CheckCircle2 className="h-4 w-4" />
-      </div>
-
-      <span
-        className={`text-[15px] ${
-          valid ? "text-neutral-800" : "text-neutral-500"
-        }`}
-      >
-        {label}
-      </span>
-    </div>
-  );
-}
-
-/* -------------------------------------------------------------------------- */
-/*                              BACK TO LOGIN                                 */
-/* -------------------------------------------------------------------------- */
-
-function BackToLogin() {
-  return (
-    <Link
-      href="/login"
-      className="mt-10 inline-flex items-center gap-2 text-[16px] font-medium text-neutral-500 transition hover:text-neutral-800"
-    >
-      <ArrowLeft className="h-4 w-4" />
-      Back to log in
-    </Link>
   );
 }
