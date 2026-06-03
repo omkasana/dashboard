@@ -8,7 +8,7 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/UI/DropdownMenu";
+} from "@/components/ui/DropdownMenu";
 import Link from "next/link";
 
 export function NotificationsDropdown() {
