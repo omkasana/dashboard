@@ -216,3 +216,12 @@
   80% { transform: translateX(3px); }
   100% { transform: translateX(0); }
 }
+
+/* Hide scrollbar */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
